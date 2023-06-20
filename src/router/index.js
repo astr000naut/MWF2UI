@@ -1,32 +1,37 @@
 import EmployeeList from "../components/views/employee-management/EmployeeList";
 import UnderDevelopment from "../components/views/under-development/UnderDevelopment";
 import EmployeeForm from "../components/views/employee-management/EmployeeForm";
+import CategoryPage from "../components/views/category/CategoryPage";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
-    path: "/employee",
-    components: {
-      default: EmployeeList,
-    },
+    path: "/DI",
+    component: CategoryPage,
     children: [
       {
-        path: "create",
-        components: {
-          default: EmployeeList,
-          EmployeeForm: EmployeeForm,
-        },
-      },
-      {
-        path: ":id",
-        components: {
-          default: EmployeeList,
-          EmployeeForm: EmployeeForm,
-        },
+        path: "DIEmployee",
+        component: EmployeeList,
+        children: [
+          {
+            path: "create",
+            components: {
+              default: EmployeeList,
+              EmployeeForm: EmployeeForm,
+            },
+          },
+          {
+            path: ":id",
+            components: {
+              default: EmployeeList,
+              EmployeeForm: EmployeeForm,
+            },
+          },
+        ],
       },
     ],
   },
-  { path: "/under-development", component: UnderDevelopment },
+  { path: "/under-development/:id", component: UnderDevelopment },
 ];
 
 const router = createRouter({

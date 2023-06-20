@@ -82,10 +82,14 @@
     background-color: #616164;
     cursor: pointer;
   }
-  
-  .sidebar__item--highlight {
-    background-color: #58595d;
+
+  .router-link-active div {
+    background-color: #616164;
   }
+  
+  /* .sidebar__item--highlight {
+    background-color: #58595d;
+  } */
 
   hr {
     margin-top: 4px;

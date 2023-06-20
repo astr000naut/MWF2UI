@@ -1,3 +1,4 @@
+import category from "./category-page";
 const lang = {
   sidebar_items: {
     dashboard: "Tổng quan",
@@ -175,5 +176,6 @@ const lang = {
     closeForm: "Đóng (ESC)",
     help: "Giúp",
   },
+  category: category,
 };
 export default lang;
