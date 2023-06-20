@@ -1,0 +1,120 @@
+<template>
+  <div
+    class="sidebar"
+    :style="{ 'flex-basis': isSidebarBig ? '200px' : '78px' }"
+  >
+    <div class="sidebar__main">
+      <router-link
+        v-for="item in sidebarItems"
+        :key="item.name"
+        :to="item.link"
+      >
+        <div
+          class="sidebar__item"
+          :class="item.name == itemSelected ? 'sidebar__item--highlight' : ''"
+          @mouseover="sideBarItemOnMouseOver($event, item)"
+          @mouseleave="item.displayLabel = !isSidebarBig & false"
+          @click="sidebarItemOnClick(item.name)"
+        >
+          <div class="item__icon mi mi-24" :class="item.icon"></div>
+          <div v-show="isSidebarBig" class="item__text">
+            {{ item.name }}
+          </div>
+          <div
+            v-show="item.displayLabel"
+            :style="{ top: item.labelPos + 'px' }"
+            class="item__hoverbox"
+          >
+            <div class="hover__arrow"></div>
+            <div class="hover__text">{{ item.name }}</div>
+          </div>
+        </div>
+      </router-link>
+    </div>
+    <div
+      class="sidebar__footer"
+      @click="resizeSidebar"
+      @mouseenter="displayExpandTooltip = true"
+      @mouseleave="displayExpandTooltip = false"
+    >
+      <div
+        class="item__icon mi mi-24"
+        :class="
+          isSidebarBig ? 'mi-sidebar-left-arrow' : 'mi-sidebar-right-arrow'
+        "
+      ></div>
+      <div v-show="isSidebarBig" class="item__text" data-text="Thu gọn">
+        {{ lang.sidebar_items.minimize }}
+      </div>
+      <div
+        v-show="!isSidebarBig && displayExpandTooltip"
+        class="item__hoverbox"
+      >
+        <div class="hover__arrow"></div>
+        <div class="hover__text">{{ lang.sidebar_items.maximize }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+// #region import
+import { ref, inject } from "vue";
+const lang = inject("$lang");
+const $common = inject("$common");
+const $emitter = inject("$emitter");
+// #endregion
+
+// #region init
+const sidebarItems = ref($common.sidebarItems);
+const isSidebarBig = ref(true);
+const itemSelected = ref("");
+sidebarItems.value.forEach((item) => {
+  item.displayLabel = false;
+  item.labelPos = 0;
+});
+const displayExpandTooltip = ref(false);
+// #endregion
+
+// #region function
+/**
+ * Thay đổi kích cỡ sidebar
+ *
+ * Author: Dũng (27/05/2023)
+ */
+function resizeSidebar() {
+  isSidebarBig.value = !isSidebarBig.value;
+  $emitter.emit("resizeSidebar", isSidebarBig.value);
+  $emitter.emit("rerenderTable");
+}
+// #endregion
+
+// #region handle event
+
+/**
+ * Sự kiện click vào sidebar item
+ *
+ * Author: Dũng (27/05/2023)
+ */
+function sidebarItemOnClick(itemName) {
+  itemSelected.value = itemName;
+}
+
+/**
+ * Sự kiện mouseover qua sidebar item
+ *
+ * Author: Dũng (27/05/2023)
+ */
+function sideBarItemOnMouseOver($event, item) {
+  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
+  item.displayLabel = !isSidebarBig.value & true;
+}
+
+// #endregion
+</script>
+
+<style
+  scoped
+  lang="css"
+  src="../../css/components/layout/the-sidebar.css"
+></style>
