@@ -30,6 +30,10 @@
         @click="btnAddOnClick"
       />
     </div>
+    <div class="pcontent__goback" @click="goToCategoryOnClick">
+      <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
+      <div class="goback__text">Tất cả danh mục</div>
+    </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
@@ -355,6 +359,14 @@ async function deleteBatchEmployee() {
 // #endregion
 
 // #region handle event
+/**
+ * Sự kiện click Tất cả danh mục
+ *
+ * Author: Dũng (21/06/2023)
+ */
+function goToCategoryOnClick() {
+  router.push("/DI");
+}
 
 /**
  * Sự kiện click Export Excel

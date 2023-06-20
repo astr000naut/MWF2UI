@@ -42,7 +42,7 @@ const rows = ref([
         links: [
           {
             name: lang.category.link.customer,
-            to: "/DICustomer",
+            to: "/DI/DICustomer",
           },
           {
             name: lang.category.link.provider,

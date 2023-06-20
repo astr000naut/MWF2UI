@@ -29,6 +29,26 @@ const routes = [
           },
         ],
       },
+      {
+        path: "DICustomer",
+        component: EmployeeList,
+        children: [
+          {
+            path: "create",
+            components: {
+              default: EmployeeList,
+              EmployeeForm: EmployeeForm,
+            },
+          },
+          {
+            path: ":id",
+            components: {
+              default: EmployeeList,
+              EmployeeForm: EmployeeForm,
+            },
+          },
+        ],
+      },
     ],
   },
   { path: "/under-development/:id", component: UnderDevelopment },

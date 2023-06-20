@@ -97,6 +97,10 @@ transform: rotate(180deg);
 background-position: -29px -356px;
 }
 
+.mi-chevron-left--primary {
+background-position: -224px -360px;
+}
+
 .mi-arrowleft:not(.disabled):active {
 background-position: -29px -355px;
 }
