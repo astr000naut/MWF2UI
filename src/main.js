@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import router from "./js/router/router";
+import router from "./router";
 import commonVal from "./js/common/value";
 import axios from "axios";
 import "./css/main.css";

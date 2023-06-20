@@ -1,21 +1,32 @@
+import EmployeeList from "../components/views/employee-management/EmployeeList";
+import UnderDevelopment from "../components/views/under-development/UnderDevelopment";
+import EmployeeForm from "../components/views/employee-management/EmployeeForm";
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: HomeView,
+    path: "/employee",
+    components: {
+      default: EmployeeList,
+    },
+    children: [
+      {
+        path: "create",
+        components: {
+          default: EmployeeList,
+          EmployeeForm: EmployeeForm,
+        },
+      },
+      {
+        path: ":id",
+        components: {
+          default: EmployeeList,
+          EmployeeForm: EmployeeForm,
+        },
+      },
+    ],
   },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
+  { path: "/under-development", component: UnderDevelopment },
 ];
 
 const router = createRouter({
