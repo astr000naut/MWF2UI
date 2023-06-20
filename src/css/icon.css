@@ -198,6 +198,20 @@ background-position: -29px -357px;
 background-position: -78px -357px;
 }
 
+.mi-sidebar-category {
+background-image: url(../assets//img//Sprites.v2.svg);
+background-position: -764px -1661px;   
+}
+
+.mi-sidebar-opn {
+background-image: url(../assets//img//Sprites.v2.svg);
+background-position: -854px -1660px;
+}
+
+.mi-sidebar-news {
+background-image: url(../assets//img//Sprites.v2.svg);
+background-position: -548px -1661px;
+}
 
 /* Button icon */
 

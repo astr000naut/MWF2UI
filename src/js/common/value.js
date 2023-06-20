@@ -81,6 +81,21 @@ const commonVal = {
       link: "/under-development",
       icon: "mi-sidebar-finance",
     },
+    {
+      name: "Danh mục",
+      link: "/DI",
+      icon: "mi-sidebar-category",
+    },
+    {
+      name: "Số dư ban đầu",
+      link: "/under-development",
+      icon: "mi-sidebar-opn",
+    },
+    {
+      name: "Kiến thức",
+      link: "/under-development",
+      icon: "mi-sidebar-news",
+    },
   ],
 };
 export default commonVal;

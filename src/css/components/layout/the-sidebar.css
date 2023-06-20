@@ -86,3 +86,8 @@
   .sidebar__item--highlight {
     background-color: #58595d;
   }
+
+  hr {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }

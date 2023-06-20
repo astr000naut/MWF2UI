@@ -5,7 +5,7 @@
   >
     <div class="sidebar__main">
       <router-link
-        v-for="item in sidebarItems"
+        v-for="(item, index) in sidebarItems"
         :key="item.name"
         :to="item.link"
       >
@@ -29,6 +29,7 @@
             <div class="hover__text">{{ item.name }}</div>
           </div>
         </div>
+        <hr size="1px" v-if="index == 14" />
       </router-link>
     </div>
     <div
