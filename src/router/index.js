@@ -1,6 +1,6 @@
-import EmployeeList from "../components/views/employee-management/EmployeeList";
+import EmployeeList from "../components/views/category/employee/EmployeeList";
 import UnderDevelopment from "../components/views/under-development/UnderDevelopment";
-import EmployeeForm from "../components/views/employee-management/EmployeeForm";
+import EmployeeForm from "../components/views/category/employee/EmployeeForm";
 import CategoryPage from "../components/views/category/CategoryPage";
 import { createRouter, createWebHistory } from "vue-router";
 

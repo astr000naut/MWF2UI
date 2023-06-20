@@ -326,12 +326,12 @@ import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import $enum from "@/js/common/enum";
 import { ref, inject, onMounted, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { Employee } from "../../../js/model/employee";
+import { Employee } from "../../../../js/model/employee";
 const $axios = inject("$axios");
-import $api from "../../../js/api/index";
+import $api from "../../../../js/api/index";
 import { Department } from "@/js/model/department";
-import $formatter from "../../../js/common/formater";
-import $error from "../../../js/resources/error";
+import $formatter from "../../../../js/common/formater";
+import $error from "../../../../js/resources/error";
 const lang = inject("$lang");
 var _ = require("lodash");
 import { onKeyStroke, useMagicKeys, whenever } from "@vueuse/core";
@@ -1168,5 +1168,5 @@ async function btnCloseOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../css/components/views/employee-management/employee-form.css"
+  src="../../../../css/components/views/employee-management/employee-form.css"
 ></style>

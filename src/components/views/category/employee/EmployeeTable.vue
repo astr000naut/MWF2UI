@@ -493,5 +493,5 @@ function trOnDblclick(empId) {
 <style
   lang="css"
   scoped
-  src="../../../css/components/views/employee-management/employee-table.css"
+  src="../../../../css/components/views/employee-management/employee-table.css"
 ></style>

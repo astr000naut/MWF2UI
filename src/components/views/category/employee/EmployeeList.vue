@@ -94,7 +94,7 @@
 
 <script setup>
 // #region import
-import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
+import EmployeeTable from "@/components/views/category/employee/EmployeeTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
@@ -102,8 +102,8 @@ import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
-import $error from "../../../js/resources/error";
-import $message from "../../../js/resources/message";
+import $error from "../../../../js/resources/error";
+import $message from "../../../../js/resources/message";
 import $enum from "@/js/common/enum";
 const lang = inject("$lang");
 // #endregion
@@ -679,5 +679,5 @@ function btnAddOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../css/components/views/employee-management/employee-list.css"
+  src="../../../../css/components/views/employee-management/employee-list.css"
 ></style>
