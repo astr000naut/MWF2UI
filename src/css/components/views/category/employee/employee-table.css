@@ -332,7 +332,7 @@
   }
   
   .noti__img {
-    background: url(../../../../assets/img/nodata.svg) no-repeat 0px 0px;
+    background: url(../../../../../assets/img/nodata.svg) no-repeat 0px 0px;
     width: 132px;
     height: 76px;
   }

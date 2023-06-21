@@ -1168,5 +1168,5 @@ async function btnCloseOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/employee-management/employee-form.css"
+  src="../../../../css/components/views/category/employee/employee-form.css"
 ></style>

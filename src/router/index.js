@@ -1,7 +1,9 @@
-import EmployeeList from "../components/views/category/employee/EmployeeList";
 import UnderDevelopment from "../components/views/under-development/UnderDevelopment";
-import EmployeeForm from "../components/views/category/employee/EmployeeForm";
 import CategoryPage from "../components/views/category/CategoryPage";
+import EmployeeList from "../components/views/category/employee/EmployeeList";
+import EmployeeForm from "../components/views/category/employee/EmployeeForm";
+import CustomerList from "../components/views/category/customer/CustomerList";
+import CustomerForm from "../components/views/category/customer/CustomerForm";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -31,20 +33,20 @@ const routes = [
       },
       {
         path: "DICustomer",
-        component: EmployeeList,
+        component: CustomerList,
         children: [
           {
             path: "create",
             components: {
-              default: EmployeeList,
-              EmployeeForm: EmployeeForm,
+              default: CustomerList,
+              CustomerForm: CustomerForm,
             },
           },
           {
             path: ":id",
             components: {
-              default: EmployeeList,
-              EmployeeForm: EmployeeForm,
+              default: CustomerList,
+              CustomerForm: CustomerForm,
             },
           },
         ],

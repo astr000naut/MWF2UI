@@ -1,5 +1,7 @@
 import category from "./category-page";
+import cat_customer from "./category-customer";
 const lang = {
+  cat_customer: cat_customer,
   sidebar_items: {
     dashboard: "Tổng quan",
     cash: "Tiền mặt",

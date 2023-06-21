@@ -17,13 +17,13 @@
     :remove-toast="removeToast"
   />
   <router-view
-    name="EmployeeForm"
+    name="CustomerForm"
     v-model:metadata="formMetadata"
-    @update-emplist="employeeOnUpdate"
+    @update-empList="employeeOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
-      <div class="pcontent__title">{{ lang.employeeList.title }}</div>
+      <div class="pcontent__title">{{ lang.cat_customer.pageTitle }}</div>
       <BaseButton
         :bname="lang.button.addEmployee"
         class="btn--primary"
@@ -77,7 +77,7 @@
           />
         </div>
       </div>
-      <EmployeeTable
+      <CustomerTable
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
@@ -98,7 +98,7 @@
 
 <script setup>
 // #region import
-import EmployeeTable from "@/components/views/category/employee/EmployeeTable.vue";
+import CustomerTable from "@/components/views/category/customer/CustomerTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
@@ -637,7 +637,7 @@ async function loadEmployeeData() {
  * Author: Dũng (08/05/2023)
  */
 async function employeeOnUpdate(type, data) {
-  // console.log("Employee list updated");
+  // console.log("Customer list updated");
   // console.log(type);
   // console.log(data);
   switch (type) {
@@ -691,5 +691,5 @@ function btnAddOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/employee/employee-list.css"
+  src="../../../../css/components/views/category/customer/customer-list.css"
 ></style>
