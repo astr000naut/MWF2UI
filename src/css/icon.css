@@ -91,6 +91,10 @@ background-position: -940px -356px;
     transform: rotate(180deg);
 }
 
+.mi-arrowup--black {
+    background-position: -560px -359px;
+}
+
 .mi-arrowdown-small:active {
 background-position: -940px -355px;
 }

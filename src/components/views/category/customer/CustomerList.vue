@@ -74,7 +74,12 @@
           <div class="filter">
             <div class="filter__btn">
               <div class="btn__text">Lọc</div>
-              <div class="btn__icon">V</div>
+              <div class="btn__icon mi mi-16 mi-arrowup--black"></div>
+            </div>
+            <div class="filter__panel">
+              <div class="panel__top"></div>
+              <div class="panel__mid"></div>
+              <div class="panel__bot"></div>
             </div>
           </div>
           <BaseTextfield

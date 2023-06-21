@@ -248,3 +248,34 @@
     font-size: inherit;
     white-space: nowrap;
 }
+
+.filter {
+    position: relative;
+}
+
+.filter__btn {
+    display: flex;
+    cursor: pointer;
+    border: 1px solid var(--clr-t-border);
+    height: 36px;
+    padding: 0px 12px 0px 18px;
+    display: flex;
+    align-items: center;
+    column-gap: 4px;
+    border-radius: 4px;   
+}
+
+.filter__btn:hover {
+    background-color: #eaeaeb;
+}
+
+.filter__panel {
+    width: 200px;
+    height: 150px;
+    background-color: yellowgreen;
+    position: absolute;
+    display: none;
+    top: 40px;
+    left: 0px;
+    z-index: 1;
+}
