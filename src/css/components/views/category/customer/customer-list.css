@@ -5,7 +5,6 @@
     padding: 24px;
     display: flex;
     flex-direction: column;
-    row-gap: 12px;
     position: relative;
   }
   
@@ -168,8 +167,84 @@
     cursor: pointer;
     color: #0075c0;
     align-items: center;
+    margin: 12px 0px;
+    width: fit-content;
 }
 .goback__text {
     font-size: 13px;
     user-select: none;
+}
+
+.overview__container {
+    height: 60px;
+    display: flex;
+    column-gap: 8px;
+}
+
+.item--dued-debit {
+    border-left: 8px solid #ff7f2c;
+}
+
+.item--total-debt {
+    border-left: 8px solid #b8bcc3;
+}
+
+.item--paid {
+    border-left: 8px solid #74cb2f;
+}
+
+.overview__expand {
+    height: 14px;
+    display: flex;
+    justify-content: center;
+}
+
+.expand__button {   
+    background-color: #fff;
+    height: 100%;
+    width: 48px; 
+    background-color: #d4d7dc;
+    cursor: pointer; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.o_item {
+    height: 100%;
+    flex: 1;
+    padding: 8px 12px;
+    background-color: #fff;
+}
+
+
+.item__top {
+    margin-bottom: 4px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top__number {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.funnel-icon {
+    height: 22px;
+    width: 18px;
+    background-position: -1814px -202px;
+}
+
+.item__bottom {
+    display: flex;
+    font-size: 12px;
+    justify-content: space-between;
+    column-gap: 8px;
+}
+
+.left__text, .right__text {
+    font-size: inherit;
+    white-space: nowrap;
 }

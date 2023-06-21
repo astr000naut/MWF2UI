@@ -25,7 +25,7 @@
     <div class="pcontent__heading">
       <div class="pcontent__title">{{ lang.cat_customer.pageTitle }}</div>
       <BaseButton
-        :bname="lang.button.addEmployee"
+        :bname="lang.cat_customer.button.addCustomer"
         class="btn--primary"
         @click="btnAddOnClick"
       />
@@ -34,9 +34,49 @@
       <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
       <div class="goback__text">Tất cả danh mục</div>
     </div>
+    <div class="pcontent__overview">
+      <div class="overview__container">
+        <div class="o_item item--dued-debit">
+          <div class="item__top">
+            <div class="top__number">0</div>
+            <div class="top__filter mi funnel-icon"></div>
+          </div>
+          <div class="item__bottom">Nợ quá hạn</div>
+        </div>
+        <div class="o_item item--total-debt">
+          <div class="item__top">
+            <div class="top__number">0</div>
+            <div class="top__filter mi funnel-icon"></div>
+          </div>
+          <div class="item__bottom">Tổng nợ phải thu</div>
+        </div>
+        <div class="o_item item--paid">
+          <div class="item__top">
+            <div class="top__number">0</div>
+          </div>
+          <div class="item__bottom">
+            <div class="left__text">Đã thanh toán (30 ngày gần đây)</div>
+            <div class="right__text">Số liệu tính đến: 13h48</div>
+          </div>
+        </div>
+      </div>
+      <div class="overview__expand">
+        <div class="expand__button">
+          <div
+            class="expand__icon minc mi-8 mi-arrow-dropdown-8px rotate-180"
+          ></div>
+        </div>
+      </div>
+    </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
+          <div class="filter">
+            <div class="filter__btn">
+              <div class="btn__text">Lọc</div>
+              <div class="btn__icon">V</div>
+            </div>
+          </div>
           <BaseTextfield
             :pholder="lang.textfield.searchBar.pholder"
             class="txtfield--search mw-300"
