@@ -1,5 +1,6 @@
 .dpicker {
   position: relative;
+  width: fit-content;
 }
 
 .dpicker__label {

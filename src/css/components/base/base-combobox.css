@@ -77,7 +77,7 @@
     background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat -1225px -360px;
   }
   
-  ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 0px;
     background-color: transparent;
   }

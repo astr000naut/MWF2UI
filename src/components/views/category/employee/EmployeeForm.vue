@@ -137,6 +137,7 @@
             <div class="fu__right__top">
               <div class="fu__dob">
                 <BaseDatepicker
+                  pholder=""
                   :label="lang.datepicker.empDob.label"
                   v-model:inputText="employee.dateOfBirth"
                   v-model:noti="formNoti.dateOfBirth"
@@ -168,6 +169,7 @@
               </div>
               <div class="fu__cmnddate">
                 <BaseDatepicker
+                  pholder=""
                   :label="lang.datepicker.empIdentityDate.label"
                   v-model:inputText="employee.identityDate"
                   v-model:noti="formNoti.identityDate"

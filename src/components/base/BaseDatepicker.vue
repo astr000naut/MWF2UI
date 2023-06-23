@@ -9,7 +9,7 @@
       <div class="dpicker__input">
         <input
           type="text"
-          :placeholder="$formatter.dateFormat"
+          :placeholder="pholder.length > 0 ? pholder : $formatter.dateFormat"
           :value="inputText"
           ref="refInput"
           @input="$emit('update:inputText', $event.target.value)"
@@ -160,6 +160,7 @@ import { vOnClickOutside } from "@vueuse/components";
 const refInput = ref(null);
 const props = defineProps({
   label: String,
+  pholder: String,
   inputText: String,
   noti: String,
 });

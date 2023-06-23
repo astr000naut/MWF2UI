@@ -727,7 +727,7 @@ async function employeeOnUpdate(type, data) {
  * Author: Dũng (08/05/2023)
  */
 function btnAddOnClick() {
-  router.replace("/DI/DIEmployee/create");
+  router.replace("/DI/DICustomer/create");
 }
 
 // #endregion

@@ -1,6 +1,6 @@
 <template>
   <div class="input--radio">
-    <div class="radio__label">{{ label }}</div>
+    <div class="radio__label" v-if="label.length > 0">{{ label }}</div>
     <div class="radio__container">
       <div v-for="option in options" :key="option.value" class="radio__item">
         <input

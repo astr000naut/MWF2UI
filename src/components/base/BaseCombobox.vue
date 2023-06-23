@@ -13,6 +13,7 @@
         <div class="select__input">
           <input
             type="text"
+            :placeholder="pholder"
             :value="text"
             ref="refInput"
             @input="$emit('update:text', $event.target.value)"
@@ -77,7 +78,7 @@
           </template>
           <div v-show="optionListDisplay.length == 0" class="option__item">
             <div class="option__text">
-              {{ lang.combobox.empDepart.notFound }}
+              {{ lang.combobox.notFound }}
             </div>
           </div>
         </div>
@@ -110,6 +111,7 @@ const props = defineProps({
   selectedItemId: String,
   optionList: Array,
   noti: String,
+  pholder: String,
 });
 
 const emits = defineEmits([

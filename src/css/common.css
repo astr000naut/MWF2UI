@@ -82,6 +82,21 @@
   .mw-300 {
       min-width: 300px;
   }
+
+  .w-25 {
+    width: 25px;
+    max-width: 25px;
+  }
+
+  .w-50 {
+    width: 50px;
+    max-width: 50px;
+  }
+
+  .w-70 {
+    width: 70px;
+    max-width: 70px;
+  }
   
   .wrapper {
     position: fixed;

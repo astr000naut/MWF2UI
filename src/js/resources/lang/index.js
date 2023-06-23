@@ -86,9 +86,9 @@ const lang = {
     },
   },
   combobox: {
+    notFound: "Không có dữ liệu",
     empDepart: {
       label: "Đơn vị",
-      notFound: "Không tìm thấy đơn vị này",
     },
   },
   radioGroup: {
