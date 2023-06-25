@@ -150,7 +150,7 @@ import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
-import { Employee } from "@/js/model/employee";
+import { Customer } from "@/js/model/customer";
 import $error from "../../../../js/resources/error";
 import $message from "../../../../js/resources/message";
 import $enum from "@/js/common/enum";
@@ -465,7 +465,7 @@ async function exportExcelOnClick() {
 function dupplicateEmpOnUpdate(emp) {
   formMetadata.value.isDupplicate = true;
   formMetadata.value.employeeDupplicate = emp;
-  router.push("/DI/DIEmployee/create");
+  router.push("/DI/DICustomer/create");
 }
 
 /**
@@ -637,7 +637,7 @@ async function loadEmployeeData() {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Gọi API filter nhân viên
-    const response = await $axios.get($api.employee.filter, {
+    const response = await $axios.get($api.customer.filter, {
       params: {
         skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
         take: pagingData.value.pageSize,
@@ -649,7 +649,8 @@ async function loadEmployeeData() {
     if (response.data.filteredList) {
       for (const emp of response.data.filteredList) {
         // Chuyển đổi từ employee nhận từ server sang Class employee của frontend
-        const empConverted = new Employee(emp);
+        console.log(emp);
+        const empConverted = new Customer(emp);
         const isSelected = selectedEmpIds.value.includes(
           empConverted.employeeId
         );
@@ -660,6 +661,7 @@ async function loadEmployeeData() {
           emp: empConverted,
         });
       }
+      console.log(rowList.value);
     }
     // console.log(1);
     // console.log(rowList.value);

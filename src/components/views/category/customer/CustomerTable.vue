@@ -21,16 +21,16 @@
             </div>
           </th>
           <th>
-            <div class="text-left mw-120">{{ lang.tableHeader.empCode }}</div>
+            <div class="text-left mw-120">Mã khách hàng</div>
           </th>
           <th>
-            <div class="text-left mw-200">{{ lang.tableHeader.empName }}</div>
+            <div class="text-left mw-200">Tên khách hàng</div>
           </th>
           <th>
-            <div class="text-left mw-90">{{ lang.tableHeader.empGender }}</div>
+            <div class="text-left mw-90">Địa chỉ</div>
           </th>
           <th>
-            <div class="text-center mw-120">{{ lang.tableHeader.empDob }}</div>
+            <div class="text-left mw-120">Số điện thoại</div>
           </th>
           <th class="zindex--8">
             <div class="text-left mw-150">
@@ -39,14 +39,14 @@
                 @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
                 @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
               >
-                {{ lang.tableHeader.empIdentity }}
+                Số CMND
               </span>
               <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
                 {{ lang.tableHeader.empIdentityTooltip }}
               </div>
             </div>
           </th>
-          <th>
+          <!-- <th>
             <div class="text-left mw-180">{{ lang.tableHeader.empPos }}</div>
           </th>
           <th>
@@ -75,7 +75,7 @@
                 {{ lang.tableHeader.empBankBranchTooltip }}
               </div>
             </div>
-          </th>
+          </th> -->
           <th class="thn--sticky">
             <div class="text-left mw-90">{{ lang.tableHeader.tool }}</div>
           </th>
@@ -83,9 +83,9 @@
       </thead>
       <tbody>
         <template v-if="isLoadingData">
-          <tr v-for="i in Math.min(15, pagingData.pageSize)" :key="i">
+          <tr v-for="i in Math.min(10, pagingData.pageSize)" :key="i">
             <td class="td1--sticky"><div class="loading-item"></div></td>
-            <td v-for="j in 10" :key="j">
+            <td v-for="j in 5" :key="j">
               <div class="loading-item"></div>
             </td>
             <td class="tdn--sticky">
@@ -96,12 +96,12 @@
         <template v-else>
           <tr
             v-for="({ active, selected, emp } = row, index) in rowList"
-            :key="emp.employeeId"
+            :key="emp.customerId"
             :class="{
               active: active,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(emp.employeeId)"
+            @dblclick="trOnDblclick(emp.customerId)"
           >
             <td class="td1--sticky" @dblclick.stop>
               <div class="align-center">
@@ -117,46 +117,19 @@
               </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.employeeCode }}</div>
+              <div class="text-left">{{ emp.customerCode }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.employeeFullName }}</div>
+              <div class="text-left">{{ emp.customerFullName }}</div>
             </td>
             <td>
-              <div class="text-left">
-                {{
-                  emp.gender == 0
-                    ? lang.gender.male
-                    : emp.gender == 1
-                    ? lang.gender.female
-                    : emp.gender == 2
-                    ? lang.gender.other
-                    : ""
-                }}
-              </div>
+              <div class="text-left">{{ emp.address }}</div>
             </td>
             <td>
-              <div class="text-center">
-                {{ emp.dateOfBirth }}
-              </div>
+              <div class="text-left">{{ emp.phoneNumber }}</div>
             </td>
             <td>
               <div class="text-left">{{ emp.identityNumber }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.positionName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.departmentName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankAccount }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankBranch }}</div>
             </td>
             <td
               :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
@@ -484,7 +457,7 @@ function trOnClick(rowIndex) {
  * Author: Dũng (08/05/2023)
  */
 function trOnDblclick(empId) {
-  router.push(`/DI/DIEmployee/${empId}`);
+  router.push(`/DI/DICustomer/${empId}`);
 }
 
 // #endregion
