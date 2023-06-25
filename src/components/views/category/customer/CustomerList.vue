@@ -35,7 +35,7 @@
       <div class="goback__text">Tất cả danh mục</div>
     </div>
     <div class="pcontent__overview">
-      <div class="overview__container">
+      <div class="overview__container" v-show="displayOverview">
         <div class="o_item item--dued-debit">
           <div class="item__top">
             <div class="top__number">0</div>
@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="overview__expand">
-        <div class="expand__button">
+        <div class="expand__button" @click="overviewExpandBtnOnClick">
           <div
             class="expand__icon minc mi-8 mi-arrow-dropdown-8px rotate-180"
           ></div>
@@ -191,6 +191,7 @@ const formMetadata = ref({
   isDupplicate: false,
   employeeDupplicate: null,
 });
+const displayOverview = ref(true);
 // #endregion
 
 // #region hook
@@ -728,6 +729,10 @@ async function employeeOnUpdate(type, data) {
  */
 function btnAddOnClick() {
   router.replace("/DI/DICustomer/create");
+}
+
+function overviewExpandBtnOnClick() {
+  displayOverview.value = !displayOverview.value;
 }
 
 // #endregion

@@ -374,6 +374,7 @@
                     <tr
                       v-for="(bankAcc, index) in customerBankAccList"
                       :key="bankAcc.bankAccount"
+                      ref="bankAccRowRefs"
                     >
                       <td>
                         <div class="td__wrapper">
@@ -478,6 +479,7 @@
                       <tr
                         v-for="(item, index) in customerShippingAddressList"
                         :key="item.id"
+                        ref="osAddressRowRefs"
                       >
                         <td>
                           <div class="address__input">
@@ -535,7 +537,7 @@ import BaseTextfield from "../../../../components/base/BaseTextfield";
 import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
 import BaseComboboxMultiSelect from "@/components/base/BaseComboboxMultiSelect.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const cusType = ref(0);
@@ -598,6 +600,9 @@ const tabList = ref([
   },
 ]);
 
+const bankAccRowRefs = ref([]);
+const osAddressRowRefs = ref([]);
+
 function closeBtnOnClick() {
   router.replace("/DI/DICustomer");
 }
@@ -606,24 +611,32 @@ function tabInfoOnClick(tabId) {
   selectedTabId.value = tabId;
 }
 
-function bankAccAddOnClick() {
+async function bankAccAddOnClick() {
   customerBankAccList.value.push({
     bankAccount: "",
     bankName: "",
     bankBranch: "",
     bankProvince: "",
   });
+  await nextTick();
+  bankAccRowRefs.value[
+    customerBankAccList.value.length - 1
+  ].firstChild.firstChild.firstChild.focus();
 }
 
 function customerBankAccDeleteOnClick(index) {
   customerBankAccList.value.splice(index, 1);
 }
 
-function osAddressBtnAddOnClick() {
+async function osAddressBtnAddOnClick() {
   customerShippingAddressList.value.push({
     id: customerShippingAddressList.value.length + 1,
     address: "",
   });
+  await nextTick();
+  osAddressRowRefs.value[
+    customerShippingAddressList.value.length - 1
+  ].firstChild.firstChild.firstChild.focus();
 }
 
 function osAddressBtnDeleteOnClick(index) {

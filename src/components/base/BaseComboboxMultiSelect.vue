@@ -273,8 +273,7 @@ watch(dataList, (newDataList) => {
 watch(
   selectedElementCode,
   () => {
-    console.log(refInput.value.focus);
-    refInput.value.focus();
+    if (isTableOpen.value) refInput.value.focus();
   },
   { deep: true }
 );

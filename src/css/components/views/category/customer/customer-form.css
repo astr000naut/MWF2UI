@@ -386,6 +386,11 @@
     column-gap: 12px;
 }
 
+.title__checkbox .checkbox {
+    border: 1px solid var(--clr-t-border);
+    border-radius: 4px;
+}
+
 .title__text {
     font-weight: 500;
 }
