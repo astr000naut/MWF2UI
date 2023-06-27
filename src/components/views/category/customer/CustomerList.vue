@@ -19,7 +19,7 @@
   <router-view
     name="CustomerForm"
     v-model:metadata="formMetadata"
-    @update-empList="employeeOnUpdate"
+    @update-entityList="entityOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
@@ -189,7 +189,7 @@ const toastList = ref([]);
 var toastId = 0;
 const formMetadata = ref({
   isDupplicate: false,
-  employeeDupplicate: null,
+  customerDupplicate: null,
 });
 const displayOverview = ref(true);
 // #endregion
@@ -484,7 +484,7 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         row.selected = true;
         row.active = true;
-        selectedEmpIds.value.push(row.emp.employeeId);
+        selectedEmpIds.value.push(row.cus.customerId);
       }
     } else {
       // Nếu có ít nhất một employee đang được chọn
@@ -493,7 +493,7 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         row.selected = false;
         row.active = false;
-        const index = selectedEmpIds.value.indexOf(row.emp.employeeId);
+        const index = selectedEmpIds.value.indexOf(row.cus.customerId);
         if (index > -1) selectedEmpIds.value.splice(index, 1);
       }
     }
@@ -507,12 +507,12 @@ function rowStatusOnUpdate(data) {
     // Nếu selected true thì thêm vào selectedEmpIds và bật active
     if (rowList.value[rowIndex].selected) {
       ++selectedAmountInPage.value;
-      selectedEmpIds.value.push(rowList.value[rowIndex].emp.employeeId);
+      selectedEmpIds.value.push(rowList.value[rowIndex].cus.customerId);
       rowList.value[rowIndex].active = true;
       // Tắt active của những ô khác mà không được selected
       for (const row of rowList.value) {
         if (
-          row.emp.employeeId != rowList.value[rowIndex].emp.employeeId &&
+          row.cus.customerId != rowList.value[rowIndex].cus.customerId &&
           !row.selected
         )
           row.active = false;
@@ -522,7 +522,7 @@ function rowStatusOnUpdate(data) {
       // Nếu seleted của employee này false
       // Xóa khỏi selectedEmpIds và tắt active
       selectedEmpIds.value.splice(
-        selectedEmpIds.value.indexOf(rowList.value[rowIndex].emp.employeeId),
+        selectedEmpIds.value.indexOf(rowList.value[rowIndex].cus.customerId),
         1
       );
       rowList.value[rowIndex].active = false;
@@ -541,7 +541,7 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         if (
           !row.selected &&
-          row.emp.employeeId != rowList.value[rowIndex].emp.employeeId
+          row.cus.customerId != rowList.value[rowIndex].cus.customerId
         )
           row.active = false;
       }
@@ -582,7 +582,7 @@ function deleteEmployeeOnClick(empId) {
   let empCode = "";
   cache.value.empDeleteId = empId;
   for (let index in rowList.value) {
-    if (rowList.value[index].emp.employeeId == empId) {
+    if (rowList.value[index].cus.customerId == empId) {
       cache.value.empDeleteIndex = index;
       empCode = rowList.value[index].emp.employeeCode;
       break;
@@ -649,19 +649,17 @@ async function loadEmployeeData() {
     if (response.data.filteredList) {
       for (const emp of response.data.filteredList) {
         // Chuyển đổi từ employee nhận từ server sang Class employee của frontend
-        console.log(emp);
-        const empConverted = new Customer(emp);
+        const cusConverted = new Customer(emp);
         const isSelected = selectedEmpIds.value.includes(
-          empConverted.employeeId
+          cusConverted.customerId
         );
         if (isSelected) ++selectedAmountInPage.value;
         rowList.value.push({
           active: isSelected,
           selected: isSelected,
-          emp: empConverted,
+          cus: cusConverted,
         });
       }
-      console.log(rowList.value);
     }
     // console.log(1);
     // console.log(rowList.value);
@@ -684,7 +682,7 @@ async function loadEmployeeData() {
  * @param {Object} data dữ liệu của employee mới
  * Author: Dũng (08/05/2023)
  */
-async function employeeOnUpdate(type, data) {
+async function entityOnUpdate(type, data) {
   // console.log("Customer list updated");
   // console.log(type);
   // console.log(data);
@@ -695,7 +693,7 @@ async function employeeOnUpdate(type, data) {
       rowList.value.unshift({
         active: false,
         selected: false,
-        emp: data,
+        cus: data,
       });
       if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
         await loadEmployeeData();
@@ -708,7 +706,7 @@ async function employeeOnUpdate(type, data) {
       break;
     case "edit":
       for (const row of rowList.value) {
-        if (row.emp.employeeId == data.employeeId) {
+        if (row.cus.customerId == data.customerId) {
           row.emp = data;
           break;
         }

@@ -53,8 +53,9 @@
                   pholder=""
                   label="Mã số thuế"
                   :isrequired="false"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.customerTIN"
+                  noti=""
+                  ref="customerTINRef"
                 />
               </div>
               <div class="fu__code">
@@ -64,6 +65,7 @@
                   :isrequired="true"
                   v-model:text="customer.customerCode"
                   v-model:noti="formNoti.customerCode"
+                  ref="customerCodeRef"
                 />
               </div>
             </div>
@@ -73,21 +75,19 @@
                   pholder=""
                   label="Tên khách hàng"
                   :isrequired="true"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.customerFullName"
+                  v-model:noti="formNoti.customerFullName"
                 />
               </div>
             </div>
             <div class="fu__left__mid m-top-24" v-show="cusType == 1">
               <div class="fu__name_xungho">
-                <BaseCombobox
-                  label="Tên khách hàng"
+                <BaseTextfield
                   pholder="Xưng hô"
+                  label="Tên khách hàng"
                   :isrequired="false"
-                  :option-list="[]"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
-                  v-model:selectedItemId="formNoti.customerCode"
+                  v-model:text="customer.contactNamePrefix"
+                  noti=""
                 />
               </div>
               <div class="fu__name_real">
@@ -95,8 +95,8 @@
                   pholder="Họ và tên"
                   label=""
                   :isrequired="false"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.contactName"
+                  noti=""
                 />
               </div>
             </div>
@@ -106,8 +106,8 @@
                   pholder=""
                   label="Địa chỉ"
                   :isrequired="false"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.address"
+                  noti=""
                 />
               </div>
             </div>
@@ -119,8 +119,8 @@
                   pholder=""
                   label="Điện thoại"
                   :isrequired="false"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.phoneNumber"
+                  noti=""
                 />
               </div>
               <div class="fu__website">
@@ -128,8 +128,8 @@
                   pholder=""
                   label="Website"
                   :isrequired="false"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
+                  v-model:text="customer.website"
+                  noti=""
                 />
               </div>
             </div>
@@ -137,13 +137,8 @@
               <BaseComboboxMultiSelect />
             </div>
             <div class="fu__right__bot">
-              <BaseCombobox
-                label="Nhân viên bán hàng"
-                :isrequired="false"
-                :option-list="[]"
-                v-model:text="customer.customerCode"
-                v-model:noti="formNoti.customerCode"
-                v-model:selectedItemId="formNoti.customerCode"
+              <EmployeeCombobox
+                v-model:selectedEmployeeId="customer.employeeId"
               />
             </div>
           </div>
@@ -166,14 +161,12 @@
                 <div class="custype--org" v-show="cusType == 0">
                   <div class="mileft__top">
                     <div class="mileft__call">
-                      <BaseCombobox
-                        label="Người liên hệ"
+                      <BaseTextfield
                         pholder="Xưng hô"
+                        label="Người liên hệ"
                         :isrequired="false"
-                        :option-list="[]"
-                        v-model:text="customer.customerCode"
-                        v-model:noti="formNoti.customerCode"
-                        v-model:selectedItemId="formNoti.customerCode"
+                        v-model:text="customer.contactNamePrefix"
+                        noti=""
                       />
                     </div>
                     <div class="mileft__name">
@@ -181,8 +174,8 @@
                         pholder="Họ và tên"
                         label=""
                         :isrequired="false"
-                        v-model:text="customer.customerCode"
-                        v-model:noti="formNoti.customerCode"
+                        v-model:text="customer.contactName"
+                        noti=""
                       />
                     </div>
                   </div>
@@ -191,8 +184,8 @@
                       pholder="Email"
                       label=""
                       :isrequired="false"
-                      v-model:text="customer.customerCode"
-                      v-model:noti="formNoti.customerCode"
+                      v-model:text="customer.contactEmail"
+                      noti=""
                     />
                   </div>
                   <div class="mileft__bot m-top-6">
@@ -200,8 +193,8 @@
                       pholder="Số điện thoại"
                       label=""
                       :isrequired="false"
-                      v-model:text="customer.customerCode"
-                      v-model:noti="formNoti.customerCode"
+                      v-model:text="customer.contactMobile"
+                      noti=""
                     />
                   </div>
                 </div>
@@ -210,24 +203,24 @@
                     pholder="Email"
                     label="Thông tin liên hệ"
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.contactEmail"
+                    noti=""
                   />
                   <BaseTextfield
                     class="m-top-6"
                     pholder="Điện thoại di động"
                     label=""
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.phoneNumber"
+                    noti=""
                   />
                   <BaseTextfield
                     class="m-top-6"
                     pholder="Điện thoại cố định"
                     label=""
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.landLineNumber"
+                    noti=""
                   />
                 </div>
                 <div class="mileft__last m-top-12">
@@ -235,8 +228,8 @@
                     pholder="Đại diện theo PL"
                     label="Đại diện theo PL"
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.legalRepresentative"
+                    noti=""
                   />
                 </div>
               </div>
@@ -247,8 +240,8 @@
                       pholder="Họ và tên"
                       label="Người nhận hóa đơn điện tử"
                       :isrequired="false"
-                      v-model:text="customer.customerCode"
-                      v-model:noti="formNoti.customerCode"
+                      v-model:text="customer.envoiceContactName"
+                      noti=""
                     />
                   </div>
                   <div class="miright__mid m-top-6">
@@ -256,8 +249,8 @@
                       pholder="Email (Ngăn cách nhiều email bởi dấu chấm phẩy ';')"
                       label=""
                       :isrequired="false"
-                      v-model:text="customer.customerCode"
-                      v-model:noti="formNoti.customerCode"
+                      v-model:text="customer.envoiceContactEmail"
+                      noti=""
                     />
                   </div>
                   <div class="miright__bot m-top-6">
@@ -265,8 +258,8 @@
                       pholder="Số điện thoại"
                       label=""
                       :isrequired="false"
-                      v-model:text="customer.customerCode"
-                      v-model:noti="formNoti.customerCode"
+                      v-model:text="customer.envoiceContactMobile"
+                      noti=""
                     />
                   </div>
                 </div>
@@ -275,23 +268,23 @@
                     pholder="Số CMND/Thẻ căn cước"
                     label="Thông tin CMND/Thẻ căn cước"
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.identityNumber"
+                    noti=""
                   />
                   <BaseDatepicker
                     pholder="Ngày cấp"
                     class="m-top-6"
                     label=""
-                    v-model:inputText="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:inputText="customer.identityDate"
+                    noti=""
                   />
                   <BaseTextfield
                     class="m-top-6"
                     pholder="Nơi cấp"
                     label=""
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.identityPlace"
+                    noti=""
                   />
                 </div>
               </div>
@@ -304,9 +297,9 @@
                     pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
-                    v-model:selectedItemId="formNoti.customerCode"
+                    v-model:text="customer.paymentTermName"
+                    noti=""
+                    selectedItemId=""
                   />
                 </div>
                 <div class="mp__top__mid">
@@ -314,8 +307,8 @@
                     pholder=""
                     label="Số ngày được nợ"
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.dueTime"
+                    noti=""
                   />
                 </div>
                 <div class="mp__top__right">
@@ -323,8 +316,8 @@
                     pholder=""
                     label="Số nợ tối đa"
                     :isrequired="false"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
+                    v-model:text="customer.maximizeDebtAmount"
+                    noti=""
                   />
                 </div>
               </div>
@@ -334,9 +327,9 @@
                   pholder=""
                   :isrequired="false"
                   :option-list="[]"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
-                  v-model:selectedItemId="formNoti.customerCode"
+                  v-model:text="customer.receiveAccount"
+                  noti=""
+                  selectedItemId=""
                 />
                 <BaseCombobox
                   v-show="isProvider"
@@ -344,9 +337,9 @@
                   pholder=""
                   :isrequired="false"
                   :option-list="[]"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
-                  v-model:selectedItemId="formNoti.customerCode"
+                  v-model:text="customer.payAccount"
+                  noti=""
+                  selectedItemId=""
                 />
               </div>
             </div>
@@ -425,9 +418,9 @@
                     pholder="Quốc gia"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
-                    v-model:selectedItemId="formNoti.customerCode"
+                    v-model:text="customer.country"
+                    noti=""
+                    selectedItemId=""
                   />
 
                   <BaseCombobox
@@ -435,9 +428,9 @@
                     pholder="Tỉnh/Thành phố"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
-                    v-model:selectedItemId="formNoti.customerCode"
+                    v-model:text="customer.provinceOrCity"
+                    noti=""
+                    selectedItemId=""
                   />
                 </div>
                 <div class="oad__left__bot m-top-6">
@@ -446,9 +439,9 @@
                     pholder="Quận/Huyện"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
-                    v-model:selectedItemId="formNoti.customerCode"
+                    v-model:text="customer.district"
+                    noti=""
+                    selectedItemId=""
                   />
 
                   <BaseCombobox
@@ -456,9 +449,9 @@
                     pholder="Xã/Phường"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.customerCode"
-                    v-model:noti="formNoti.customerCode"
-                    v-model:selectedItemId="formNoti.customerCode"
+                    v-model:text="customer.wardOrCommune"
+                    noti=""
+                    selectedItemId=""
                   />
                 </div>
               </div>
@@ -511,7 +504,13 @@
             <div class="main__panel main__note" v-show="selectedTabId == 4">
               <div class="text__area">
                 <div class="text__area__label">Ghi chú</div>
-                <textarea name="" id="" cols="100" rows="10"></textarea>
+                <textarea
+                  name=""
+                  id=""
+                  cols="100"
+                  rows="10"
+                  v-model="customer.description"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -532,24 +531,35 @@
 </template>
 
 <script setup>
+//#region import
 import BaseRadiogroup from "../../../../components/base/BaseRadiogroup";
 import BaseTextfield from "../../../../components/base/BaseTextfield";
 import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
 import BaseComboboxMultiSelect from "@/components/base/BaseComboboxMultiSelect.vue";
+import EmployeeCombobox from "./EmployeeCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
-import { nextTick, ref } from "vue";
-import { useRouter } from "vue-router";
+import { nextTick, ref, onMounted, inject } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import $enum from "@/js/common/enum";
+import $error from "@/js/resources/error";
+import $api from "@/js/api";
+import { Customer } from "@/js/model/customer";
+//#endregion
+
+//#region init
+const $axios = inject("$axios");
 const router = useRouter();
+const route = useRoute();
 const cusType = ref(0);
 const isProvider = ref(false);
-const customer = ref({
-  customerCode: "",
-});
+const customer = ref({});
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
   notiboxMessage: "",
+
   customerCode: "",
+  customerFullName: "",
 });
 const customerBankAccList = ref([
   {
@@ -576,7 +586,7 @@ const customerShippingAddressList = ref([
     address: "10 Ho Tung Mau",
   },
 ]);
-const selectedTabId = ref(3);
+const selectedTabId = ref(0);
 const tabList = ref([
   {
     id: 0,
@@ -603,6 +613,155 @@ const tabList = ref([
 const bankAccRowRefs = ref([]);
 const osAddressRowRefs = ref([]);
 
+const form = ref({
+  type: "",
+  cusId: "",
+  isLoading: false,
+});
+
+const customerCodeRef = ref(null);
+const customerTINRef = ref(null);
+
+const props = defineProps({
+  metadata: Object,
+});
+const emits = defineEmits(["updateCuslist", "update:metadata"]);
+resetFormState();
+//#endregion
+
+//#region hook
+onMounted(async () => {
+  try {
+    // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /DI/DICustomer
+    if (form.value.type == $enum.form.infoType && !isUUID(form.value.empId)) {
+      await router.replace("/DI/DICustomer");
+      return;
+    }
+    form.value.isLoading = true;
+    // Lấy dữ liệu từ Server
+    await getDataFromApi();
+    form.value.isLoading = false;
+    // Focus vào ô nhập liệu đầu tiên
+    focusOnFirstInput();
+  } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
+  }
+});
+//#endregion
+
+//#region function
+
+function focusOnFirstInput() {
+  if (cusType.value == $enum.customer.type.org) {
+    customerTINRef.value.refInput.focus();
+  } else {
+    customerCodeRef.value.refInput.focus();
+  }
+}
+
+/**
+ * Reset giá trị customer và trạng thái form
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function resetFormState() {
+  form.value = {
+    type: route.params.id
+      ? $enum.form.infoType
+      : props.metadata.isDupplicate
+      ? $enum.form.dupplicateType
+      : $enum.form.createType,
+    cusId: route.params.id ?? "",
+    isLoading: false,
+  };
+  // Nếu form là dupplicate thì tắt bỏ cờ báo isDupplicate để lần sau mở lại form không bị vào trường hợp dupplicate nữa
+  if (form.value.type == $enum.form.dupplicateType) {
+    emits("update:metadata", {
+      isDupplicate: false,
+      customerDupplicate: props.metadata.customerDupplicate,
+    });
+  }
+  customer.value = new Customer({});
+}
+
+/**
+ * Quản lý các mã HTTP Code trả về sau khi gọi API
+ * @param {code}
+ * Author: Dũng (08/05/2023)
+ */
+async function handleResponseStatusCode(code, error) {
+  formNoti.value.notiboxType = "alert";
+  if (code == 400) {
+    // Trường hợp backend trả về BadRequest
+    formNoti.value.notiboxMessage = $error.invalidInput;
+    // await displayNotiBox();
+  } else if (code == 404) {
+    // Trường hợp không tìm thấy ID của nhân viên trên URL
+    await router.replace("/DI/DICustomer");
+  } else {
+    // Các trường hợp còn lại
+    formNoti.value.notiboxMessage = error.response.data.UserMessage;
+    // await displayNotiBox();
+  }
+}
+
+/**
+ * Gọi API khởi tạo dữ liệu cho form
+ *
+ * Author: Dũng (08/05/2023)
+ */
+async function getDataFromApi() {
+  if (form.value.type == $enum.form.createType) {
+    // Fetch new customer code
+    await fetchNewCustomerCode();
+    return;
+  }
+
+  // if (form.value.type == $enum.form.infoType) {
+  //   // Fetch customer information
+  //   await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
+  //   const oldEmp = new Employee({});
+  //   oldEmp.cloneFromOtherEmployee(employee.value);
+  //   oldEmployee = oldEmp;
+  //   return;
+  // }
+
+  // if (form.value.type == $enum.form.dupplicateType) {
+  //   // Fetch employee information
+  //   const emp = new Employee({});
+  //   emp.cloneFromOtherEmployee(props.metadata.employeeDupplicate);
+  //   employee.value = emp;
+  //   employee.value.employeeCode = "";
+  //   employee.value.employeeId = "";
+  //   await fetchNewEmployeeCode();
+  //   return;
+  // }
+}
+
+/**
+ * Gọi API lấy mã nhân viên mới
+ *
+ * Author: Dũng (08/05/2023)
+ */
+async function fetchNewCustomerCode() {
+  const response = await $axios.get($api.customer.newCode);
+  customer.value.customerCode = response.data;
+}
+
+/**
+ * Kiểm tra một string có phải UUID không
+ *
+ * Author: Dũng (11/06/2023)
+ */
+function isUUID(str) {
+  const uuidRegex =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  return uuidRegex.test(str);
+}
+//#endregion
+
+//#region handle event
 function closeBtnOnClick() {
   router.replace("/DI/DICustomer");
 }
@@ -642,6 +801,7 @@ async function osAddressBtnAddOnClick() {
 function osAddressBtnDeleteOnClick(index) {
   customerShippingAddressList.value.splice(index, 1);
 }
+//#endregion
 </script>
 
 <style

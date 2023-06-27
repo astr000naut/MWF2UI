@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th class="th1--sticky">
-            <div class="align-center mw-40">
+            <div class="align-center">
               <div
                 class="t__checkbox mi-24"
                 :class="[selectedAmountInPage > 0 ? 'selected' : '']"
@@ -21,16 +21,16 @@
             </div>
           </th>
           <th>
-            <div class="text-left mw-120">Mã khách hàng</div>
+            <div class="text-left w-120">Mã khách hàng</div>
           </th>
           <th>
-            <div class="text-left mw-200">Tên khách hàng</div>
+            <div class="text-left w-200">Tên khách hàng</div>
           </th>
           <th>
-            <div class="text-left mw-90">Địa chỉ</div>
+            <div class="text-left w-250">Địa chỉ</div>
           </th>
           <th>
-            <div class="text-left mw-120">Số điện thoại</div>
+            <div class="text-left w-120">Số điện thoại</div>
           </th>
           <th class="zindex--8">
             <div class="text-left mw-150">
@@ -46,36 +46,6 @@
               </div>
             </div>
           </th>
-          <!-- <th>
-            <div class="text-left mw-180">{{ lang.tableHeader.empPos }}</div>
-          </th>
-          <th>
-            <div class="text-left mw-240">{{ lang.tableHeader.empDepart }}</div>
-          </th>
-          <th>
-            <div class="text-left mw-150">
-              {{ lang.tableHeader.empBankAcc }}
-            </div>
-          </th>
-          <th>
-            <div class="text-left mw-150">
-              {{ lang.tableHeader.empBankName }}
-            </div>
-          </th>
-          <th class="zindex--8">
-            <div class="text-left mw-200">
-              <span
-                class="text"
-                @mouseenter="thOnMouseEnter('isShowBankPlace')"
-                @mouseleave="thOnMouseLeave('isShowBankPlace')"
-              >
-                {{ lang.tableHeader.empBankBranch }}
-              </span>
-              <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
-                {{ lang.tableHeader.empBankBranchTooltip }}
-              </div>
-            </div>
-          </th> -->
           <th class="thn--sticky">
             <div class="text-left mw-90">{{ lang.tableHeader.tool }}</div>
           </th>
@@ -83,7 +53,7 @@
       </thead>
       <tbody>
         <template v-if="isLoadingData">
-          <tr v-for="i in Math.min(10, pagingData.pageSize)" :key="i">
+          <tr v-for="i in Math.min(12, pagingData.pageSize)" :key="i">
             <td class="td1--sticky"><div class="loading-item"></div></td>
             <td v-for="j in 5" :key="j">
               <div class="loading-item"></div>
@@ -95,13 +65,13 @@
         </template>
         <template v-else>
           <tr
-            v-for="({ active, selected, emp } = row, index) in rowList"
-            :key="emp.customerId"
+            v-for="({ active, selected, cus } = row, index) in rowList"
+            :key="cus.customerId"
             :class="{
               active: active,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(emp.customerId)"
+            @dblclick="trOnDblclick(cus.customerId)"
           >
             <td class="td1--sticky" @dblclick.stop>
               <div class="align-center">
@@ -117,48 +87,48 @@
               </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.customerCode }}</div>
+              <div class="text-left">{{ cus.customerCode }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.customerFullName }}</div>
+              <div class="text-left">{{ cus.customerFullName }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.address }}</div>
+              <div class="text-left">{{ cus.address }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.phoneNumber }}</div>
+              <div class="text-left">{{ cus.phoneNumber }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.identityNumber }}</div>
+              <div class="text-left">{{ cus.identityNumber }}</div>
             </td>
             <td
-              :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
+              :class="[table.expandEmpId == cus.customerId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
             >
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(emp.employeeId)"
+                  @click="btnEditOnClick(cus.customerId)"
                 >
                   {{ lang.table_items.edit }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
-                  @click="btnExpandOnClick(emp.employeeId)"
+                  @click="btnExpandOnClick(cus.customerId)"
                 ></button>
                 <ul
                   class="actions-list btn__expand"
                   :class="
-                    (emp.employeeId ==
-                      rowList[rowList.length - 1].emp.employeeId ||
-                      emp.employeeId ==
-                        rowList[rowList.length - 2].emp.employeeId) &&
+                    (cus.customerId ==
+                      rowList[rowList.length - 1].cus.customerId ||
+                      cus.customerId ==
+                        rowList[rowList.length - 2].cus.customerId) &&
                     rowList.length > 6
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandEmpId == emp.employeeId"
+                  v-show="table.expandEmpId == cus.customerId"
                   @mouseleave="table.expandEmpId = ''"
                 >
                   <li>
@@ -172,7 +142,7 @@
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteEmployeeFunction(emp.employeeId)"
+                      @click="deleteEmployeeFunction(cus.customerId)"
                     >
                       {{ lang.table_items.delete }}
                     </div>
@@ -456,8 +426,9 @@ function trOnClick(rowIndex) {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function trOnDblclick(empId) {
-  router.push(`/DI/DICustomer/${empId}`);
+function trOnDblclick(cusId) {
+  console.log(cusId);
+  router.push(`/DI/DICustomer/${cusId}`);
 }
 
 // #endregion

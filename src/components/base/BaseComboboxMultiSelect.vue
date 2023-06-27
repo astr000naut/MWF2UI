@@ -17,14 +17,20 @@
           </div>
         </div>
         <div class="selected__input">
-          <input type="text" ref="refInput" />
+          <input
+            type="text"
+            ref="refInput"
+            v-model="inputText"
+            @keyup="inputKeyupHandler"
+            @keypress="inputKeyPressHandler"
+          />
         </div>
       </div>
       <div class="main__action">
         <div class="btn__add">
           <div class="btn__add__icon mi mi-12 mi-add--green"></div>
         </div>
-        <button class="btn__dropdown" @click="isTableOpen = !isTableOpen">
+        <button class="btn__dropdown" @click="btnDropDownOnClick">
           <i class="fas fa-chevron-down"></i>
         </button>
       </div>
@@ -44,34 +50,39 @@
           </thead>
         </table>
       </div>
-      <div class="table__content">
+      <div class="t__loader" v-show="isLoadingData">
+        <BaseLoader />
+      </div>
+      <div class="table__content" v-show="!isLoadingData">
         <table class="t__content">
           <tbody>
             <tr
-              v-for="element in dataListNormalized"
-              :key="element.code"
-              @click="trOnclick(element.code)"
+              v-for="element in dataListStandardized"
+              :key="element.groupCode"
+              @click="trOnclick(element.groupCode)"
               :class="[
-                selectedElementCode.includes(element.code) ? 'selected' : '',
+                selectedElementCode.includes(element.groupCode)
+                  ? 'selected'
+                  : '',
               ]"
             >
               <td
                 :style="{
-                  paddingLeft: 10 * (element.level % 9) + 'px',
+                  paddingLeft: 10 * (element.grade % 9) + 'px',
                 }"
                 class="w-180"
               >
                 <div
                   class="td__text align--left"
-                  :class="[element.isLeaf ? '' : 'text--bold']"
+                  :class="[element.isParent ? 'text--bold' : '']"
                 >
-                  {{ element.code }}
+                  {{ element.groupCode }}
                 </div>
               </td>
               <td>
                 <div class="right__container">
                   <div class="td__text align--left w-180">
-                    {{ element.name }}
+                    {{ element.groupName }}
                   </div>
                   <div class="td__check"></div>
                 </div>
@@ -79,163 +90,25 @@
             </tr>
           </tbody>
         </table>
+        <div v-show="dataListStandardized.length == 0">
+          <div class="no__data">Không có dữ liệu</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, inject } from "vue";
 const refInput = ref(null);
 const isTableOpen = ref(false);
-const dataList = ref([
-  {
-    code: "11111",
-    name: "Nhom 1",
-    childs: [
-      {
-        code: "111112",
-        name: "Nhom 1 1",
-        childs: [
-          {
-            code: "asd",
-            name: "asdas",
-            childs: [],
-          },
-          {
-            code: "abc",
-            name: "asdasdasd",
-            childs: [
-              {
-                code: "abcd",
-                name: "asdasdasd",
-                childs: [
-                  {
-                    code: "abcdd",
-                    name: "asdasdasd",
-                    childs: [
-                      {
-                        code: "abf",
-                        name: "asdasdasd",
-                        childs: [
-                          {
-                            code: "abde",
-                            name: "000",
-                            childs: [
-                              {
-                                code: "con 1",
-                                name: "1111",
-                                childs: [
-                                  {
-                                    code: "con 2",
-                                    name: "2222",
-                                    childs: [
-                                      {
-                                        code: "con 3",
-                                        name: "3333",
-                                        childs: [
-                                          {
-                                            code: "con 4",
-                                            name: "4444",
-                                            childs: [],
-                                          },
-                                        ],
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        code: "code so 88",
-        name: "Nhom 1 2",
-        childs: [
-          {
-            code: "code so 89",
-            name: "Nhom 1 1",
-            childs: [
-              {
-                code: "code so 90",
-                name: "asdas",
-                childs: [],
-              },
-              {
-                code: "code so 92",
-                name: "asdasdasd",
-                childs: [
-                  {
-                    code: "code so 91",
-                    name: "asdasdasd",
-                    childs: [
-                      {
-                        code: "code so 93",
-                        name: "asdasdasd",
-                        childs: [
-                          {
-                            code: "code so 94",
-                            name: "asdasdasd",
-                            childs: [
-                              {
-                                code: "code so 995",
-                                name: "000",
-                                childs: [
-                                  {
-                                    code: "code so 96",
-                                    name: "1111",
-                                    childs: [
-                                      {
-                                        code: "code so 97",
-                                        name: "2222",
-                                        childs: [
-                                          {
-                                            code: "code so 98",
-                                            name: "3333",
-                                            childs: [
-                                              {
-                                                code: "code so 99",
-                                                name: "4444",
-                                                childs: [],
-                                              },
-                                            ],
-                                          },
-                                        ],
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    code: "1123",
-    name: "Nhom 2",
-    childs: [],
-  },
-]);
-// dataListNormalized = [
+const $axios = inject("$axios");
+import $api from "../../js/api";
+import BaseLoader from "./BaseLoader.vue";
+const dataList = ref([]);
+const inputText = ref("");
+const isLoadingData = ref(false);
+// dataListStandardized = [
 //   {
 //     code: "11111",
 //     name: "Nhom 1",
@@ -243,42 +116,48 @@ const dataList = ref([
 //     isLeaf: false,
 //   },
 // ]
-const dataListNormalized = ref([]);
+const dataListStandardized = ref([]);
 const selectedElementCode = ref([]);
+const typingTimers = [];
+const timeoutVal = 500;
 
-function explore(element, level) {
-  dataListNormalized.value.push({
-    code: element.code,
-    name: element.name,
-    level: level,
-    isLeaf: element.childs.length == 0,
-  });
-  if (element.childs.length != 0) {
-    for (let i = 0; i < element.childs.length; ++i) {
-      explore(element.childs[i], level + 1);
+const emits = defineEmits("update:selectedElementCode");
+
+function standardizeDataList() {
+  let maxGrade = 0;
+  for (let i = 0; i < dataList.value.length; ++i) {
+    if (dataList.value[i].grade > maxGrade) maxGrade = dataList.value[i].grade;
+  }
+  dataListStandardized.value = [];
+
+  let index = 0;
+  let inserted = false;
+  console.log(maxGrade);
+  for (let g = 0; g <= maxGrade; ++g) {
+    for (let i = 0; i < dataList.value.length; ++i) {
+      if (dataList.value[i].grade == g) {
+        index = 0;
+        inserted = false;
+        while (index < dataListStandardized.value.length && !inserted) {
+          if (
+            dataListStandardized.value[index].groupId ==
+            dataList.value[i].parentId
+          ) {
+            dataListStandardized.value.splice(index + 1, 0, dataList.value[i]);
+            inserted = true;
+            ++index;
+          }
+          ++index;
+        }
+        if (!inserted) dataListStandardized.value.push(dataList.value[i]);
+      }
     }
   }
+  console.log("Final");
+  console.log(dataListStandardized.value);
 }
 
-for (let i = 0; i < dataList.value.length; ++i) {
-  explore(dataList.value[i], 0);
-}
-
-watch(dataList, (newDataList) => {
-  for (let i = 0; i < newDataList.value.length; ++i) {
-    explore(newDataList.value[i], 0);
-  }
-});
-
-watch(
-  selectedElementCode,
-  () => {
-    if (isTableOpen.value) refInput.value.focus();
-  },
-  { deep: true }
-);
-
-function trOnclick(elementCode) {
+async function trOnclick(elementCode) {
   if (!selectedElementCode.value.includes(elementCode)) {
     selectedElementCode.value.push(elementCode);
   } else {
@@ -287,6 +166,11 @@ function trOnclick(elementCode) {
       selectedElementCode.value.splice(index, 1);
     }
   }
+  if (inputText.value != "") {
+    inputText.value = "";
+    await fetchNewData(0, null, inputText.value, true);
+  }
+  refInput.value.focus();
 }
 
 function itemCloseOnClick(elementCode) {
@@ -294,6 +178,80 @@ function itemCloseOnClick(elementCode) {
   if (index > -1) {
     selectedElementCode.value.splice(index, 1);
   }
+}
+
+async function fetchNewData(skip, take, keySearch, reload) {
+  console.log(keySearch);
+  const response = await $axios.get($api.group.filter, {
+    params: {
+      skip: skip,
+      take: take,
+      keySearch: keySearch,
+    },
+  });
+  if (reload) dataList.value = [];
+  for (const group of response.data.filteredList) {
+    dataList.value.push(group);
+  }
+  console.log(dataList.value);
+  standardizeDataList();
+}
+
+async function btnDropDownOnClick() {
+  if (!isTableOpen.value && dataList.value.length == 0) {
+    await fetchNewData(0, null, inputText.value, false);
+  }
+  isTableOpen.value = !isTableOpen.value;
+}
+
+function inputKeyupHandler($event) {
+  if (!isNormalCharacterKey($event.key)) return;
+
+  // 500ms sau khi Typing tự động mở optionBox
+  if (isTableOpen.value == false && $event.key != "Tab") {
+    setTimeout(() => {
+      isTableOpen.value = true;
+    }, 500);
+  }
+  // Xóa các timeout trước trong khi typing
+  while (typingTimers.length > 0) {
+    clearTimeout(typingTimers[0]);
+    typingTimers.splice(0, 1);
+  }
+
+  typingTimers.push(
+    setTimeout(() => {
+      // Display loading
+      isLoadingData.value = true;
+      emits("update:selectedElementCode", selectedElementCode);
+      fetchNewData(0, null, inputText.value, true);
+      isLoadingData.value = false;
+    }, timeoutVal)
+  );
+}
+
+/**
+ * Sự kiện Typing vào ô input
+ * Author: Dũng (08/05/2023)
+ */
+function inputKeyPressHandler($event) {
+  if (!isNormalCharacterKey($event.key)) return;
+  isLoadingData.value = true;
+  // Xóa setTimeout đã tạo từ tước
+  while (typingTimers.length > 0) {
+    clearTimeout(typingTimers[0]);
+    typingTimers.splice(0, 1);
+  }
+}
+
+/**
+ * Kiểm tra keypress có là ký tự text bình thường không
+ * @param {String} key là $event.key
+ *
+ * Author: Dũng(12/05/2023)
+ */
+function isNormalCharacterKey(key) {
+  return key.length == 1 || key == "Backspace" ? true : false;
 }
 </script>
 

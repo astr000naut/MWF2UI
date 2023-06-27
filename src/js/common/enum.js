@@ -13,6 +13,12 @@ const $enum = {
     alertType: "alert",
   },
   exportedFileName: "Danh_sach_nhan_vien.xlsx",
+  customer: {
+    type: {
+      org: 0,
+      per: 0,
+    },
+  },
 };
 
 export default $enum;
