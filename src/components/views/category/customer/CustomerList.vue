@@ -19,7 +19,7 @@
   <router-view
     name="CustomerForm"
     v-model:metadata="formMetadata"
-    @update-entityList="entityOnUpdate"
+    @update-cuslist="entityOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
@@ -86,11 +86,11 @@
             :pholder="lang.textfield.searchBar.pholder"
             class="txtfield--search mw-300"
             noti=""
-            v-model:text="cache.empSearchPattern"
+            v-model:text="cache.cusSearchPattern"
             :realTimeSearch="true"
             :doSearch="doSearchEmployee"
           />
-          <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
+          <BaseButton class="mi mi-36 mi-refresh" @click="loadCustomerData" />
           <div class="button__hoverbox--refresh">
             <div class="hover__arrow"></div>
             <div class="hover__text">{{ lang.button.reload }}</div>
@@ -108,9 +108,9 @@
             <BaseLoader></BaseLoader>
           </div>
         </div>
-        <div class="searchbar__left" v-show="selectedEmpIds.length > 1">
+        <div class="searchbar__left" v-show="selectedCusIds.length > 1">
           <div class="left__info">
-            Đã chọn: <strong>{{ selectedEmpIds.length }}</strong>
+            Đã chọn: <strong>{{ selectedCusIds.length }}</strong>
           </div>
           <div class="left__cancel" @click="cancelSelectOnClick">
             {{ lang.button.cancelSelect }}
@@ -126,8 +126,8 @@
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
-        :delete-employee-function="deleteEmployeeOnClick"
-        :selected-emp-ids="selectedEmpIds"
+        :delete-customer-function="deleteCustomerOnClick"
+        :selected-emp-ids="selectedCusIds"
         :selected-amount-in-page="selectedAmountInPage"
         :have-data-after-call-api="haveDataAfterCallApi"
         v-model:pagingData="pagingData"
@@ -179,11 +179,11 @@ const dialog = ref({
   action: null,
 });
 const cache = ref({
-  empDeleteId: "",
-  empDeleteIndex: "",
-  empSearchPattern: "",
+  cusDeleteId: "",
+  cusDeleteIndex: "",
+  cusSearchPattern: "",
 });
-const selectedEmpIds = ref([]);
+const selectedCusIds = ref([]);
 const selectedAmountInPage = ref(0);
 const toastList = ref([]);
 var toastId = 0;
@@ -197,7 +197,7 @@ const displayOverview = ref(true);
 // #region hook
 onMounted(async () => {
   // Gọi API lấy danh sách nhân viên
-  await loadEmployeeData();
+  await loadCustomerData();
   // Lắng nghe sự kiện sau khi thay đổi kích cỡ sidebar thì vẽ lại table
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
  */
 async function doSearchEmployee() {
   pagingData.value.pageNumber = 1;
-  await loadEmployeeData();
+  await loadCustomerData();
 }
 /**
  * Tạo toast message mới và đẩy vào toastList
@@ -273,15 +273,15 @@ function setToastTimeToLive(id, timeToLive) {
 
 /**
  * Hiển thị cảnh báo xóa nhân viên
- * @param {String} empCode mã nhân viên
+ * @param {String} cusCode mã nhân viên
  *
  * Author: Dũng (08/05/2023)
  */
-function showDeleteOneConfirmDialog(empCode) {
-  dialog.value.message = $message.employeeDeleteConfirm(empCode);
+function showDeleteOneConfirmDialog(cusCode) {
+  dialog.value.message = $message.customerDeleteConfirm(cusCode);
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
-    await deleteEmployee();
+    await deleteCustomer();
   };
   dialog.value.isDisplay = true;
 }
@@ -292,13 +292,13 @@ function showDeleteOneConfirmDialog(empCode) {
  * Author: Dũng (08/05/2023)
  */
 function showBatchDeleteConfirmDialog() {
-  dialog.value.message = $message.employeeMultipleDeleteConfirm(
-    selectedEmpIds.value.length
+  dialog.value.message = $message.customerMultipleDeleteConfirm(
+    selectedCusIds.value.length
   );
   dialog.value.isDisplay = true;
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
-    await deleteBatchEmployee();
+    await deleteBatchCustomer();
   };
 }
 
@@ -322,40 +322,40 @@ function handleApiErrorResponse(error) {
 }
 
 /**
- * Gọi API xóa nhân viên
+ * Gọi API xóa KH
  * Author: Dũng (08/05/2023)
  */
-async function deleteEmployee() {
+async function deleteCustomer() {
   try {
     isLoadingPage.value = true;
-    // Gọi API xóa nhân viên theo ID
-    await $axios.delete($api.employee.one(cache.value.empDeleteId));
-    // Xóa nhân viên đó trên table
-    rowList.value.splice(cache.value.empDeleteIndex, 1);
+    // Gọi API xóa KH theo ID
+    await $axios.delete($api.customer.one(cache.value.cusDeleteId));
+    // Xóa KH đó trên table
+    rowList.value.splice(cache.value.cusDeleteIndex, 1);
 
-    const index = selectedEmpIds.value.indexOf(cache.value.empDeleteId);
+    const index = selectedCusIds.value.indexOf(cache.value.cusDeleteId);
     if (index > -1) {
-      // Nếu employee đó đang được select thì xóa khỏi danh sách select
-      selectedEmpIds.value.splice(index, 1);
+      // Nếu Customer đó đang được select thì xóa khỏi danh sách select
+      selectedCusIds.value.splice(index, 1);
       selectedAmountInPage.value -= 1;
     }
 
     isLoadingPage.value = false;
 
     // Update pagingData
-    // Cập nhật lại thông tin số bản ghi nhân viên
+    // Cập nhật lại thông tin số bản ghi khách hàng
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
     if (pagingData.value.curAmount == 0) {
       // Nếu trang hiện tại bị xóa hết thì load lại trang trước đó
       if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
-      await loadEmployeeData();
+      await loadCustomerData();
     }
 
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
-      message: $message.employeeDeleted,
+      message: $message.customerDeleted,
       timeToLive: 1500,
     });
   } catch (error) {
@@ -368,32 +368,32 @@ async function deleteEmployee() {
  * Gọi API xóa hàng loạt nhân viên
  * Author: Dũng (08/05/2023)
  */
-async function deleteBatchEmployee() {
+async function deleteBatchCustomer() {
   try {
-    // Số lượng nhân viên đã bị xóa thành công
+    // Số lượng KH đã bị xóa thành công
     let deletedSucess = 0;
     let idList = [];
     let batchAmount = 0;
     isLoadingPage.value = true;
 
-    while (selectedEmpIds.value.length) {
-      // Số lượng nhân viên bị xóa tối đa trong một lượt
-      batchAmount = Math.min(20, selectedEmpIds.value.length);
+    while (selectedCusIds.value.length) {
+      // Số lượng KH bị xóa tối đa trong một lượt
+      batchAmount = Math.min(20, selectedCusIds.value.length);
       idList = [];
       for (let i = 0; i < batchAmount; ++i)
-        idList.push(selectedEmpIds.value[i]);
-      await $axios.post($api.employee.deleteMultiple, idList);
+        idList.push(selectedCusIds.value[i]);
+      await $axios.post($api.customer.deleteMultiple, idList);
       deletedSucess += batchAmount;
-      selectedEmpIds.value.splice(0, batchAmount);
+      selectedCusIds.value.splice(0, batchAmount);
     }
     // Load lại dữ liệu cho table từ trang 1
     pagingData.value.pageNumber = 1;
     isLoadingPage.value = false;
-    await loadEmployeeData();
+    await loadCustomerData();
 
     pushToast({
       type: "success",
-      message: $message.employeeMultipeDeleted(deletedSucess),
+      message: $message.customerMultipeDeleted(deletedSucess),
       timeToLive: 1500,
     });
   } catch (error) {
@@ -484,7 +484,7 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         row.selected = true;
         row.active = true;
-        selectedEmpIds.value.push(row.cus.customerId);
+        selectedCusIds.value.push(row.cus.customerId);
       }
     } else {
       // Nếu có ít nhất một employee đang được chọn
@@ -493,8 +493,8 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         row.selected = false;
         row.active = false;
-        const index = selectedEmpIds.value.indexOf(row.cus.customerId);
-        if (index > -1) selectedEmpIds.value.splice(index, 1);
+        const index = selectedCusIds.value.indexOf(row.cus.customerId);
+        if (index > -1) selectedCusIds.value.splice(index, 1);
       }
     }
     return;
@@ -504,10 +504,10 @@ function rowStatusOnUpdate(data) {
     // Đổi trạng thái selected của row
     rowList.value[rowIndex].selected = !rowList.value[rowIndex].selected;
 
-    // Nếu selected true thì thêm vào selectedEmpIds và bật active
+    // Nếu selected true thì thêm vào selectedCusIds và bật active
     if (rowList.value[rowIndex].selected) {
       ++selectedAmountInPage.value;
-      selectedEmpIds.value.push(rowList.value[rowIndex].cus.customerId);
+      selectedCusIds.value.push(rowList.value[rowIndex].cus.customerId);
       rowList.value[rowIndex].active = true;
       // Tắt active của những ô khác mà không được selected
       for (const row of rowList.value) {
@@ -520,9 +520,9 @@ function rowStatusOnUpdate(data) {
     } else {
       --selectedAmountInPage.value;
       // Nếu seleted của employee này false
-      // Xóa khỏi selectedEmpIds và tắt active
-      selectedEmpIds.value.splice(
-        selectedEmpIds.value.indexOf(rowList.value[rowIndex].cus.customerId),
+      // Xóa khỏi selectedCusIds và tắt active
+      selectedCusIds.value.splice(
+        selectedCusIds.value.indexOf(rowList.value[rowIndex].cus.customerId),
         1
       );
       rowList.value[rowIndex].active = false;
@@ -559,7 +559,7 @@ function cancelSelectOnClick() {
     selectedAmountInPage.value = 0;
     row.selected = false;
     row.active = false;
-    selectedEmpIds.value = [];
+    selectedCusIds.value = [];
   }
 }
 
@@ -574,21 +574,21 @@ function dialogCloseOnClick() {
 
 /**
  * Sự kiện click vào nút xóa nhân viên
- * @param {String} empId Id nhân viên
+ * @param {String} cusId Id nhân viên
  *
  * Author: Dũng (08/05/2023)
  */
-function deleteEmployeeOnClick(empId) {
-  let empCode = "";
-  cache.value.empDeleteId = empId;
+function deleteCustomerOnClick(cusId) {
+  let cusCode = "";
+  cache.value.cusDeleteId = cusId;
   for (let index in rowList.value) {
-    if (rowList.value[index].cus.customerId == empId) {
-      cache.value.empDeleteIndex = index;
-      empCode = rowList.value[index].emp.employeeCode;
+    if (rowList.value[index].cus.customerId == cusId) {
+      cache.value.cusDeleteIndex = index;
+      cusCode = rowList.value[index].cus.customerCode;
       break;
     }
   }
-  showDeleteOneConfirmDialog(empCode);
+  showDeleteOneConfirmDialog(cusCode);
 }
 
 /**
@@ -599,7 +599,7 @@ function deleteEmployeeOnClick(empId) {
  */
 async function pagingDataOnUpdate(newData) {
   pagingData.value = newData;
-  await loadEmployeeData();
+  await loadCustomerData();
 }
 
 /**
@@ -609,7 +609,7 @@ async function pagingDataOnUpdate(newData) {
  */
 async function pagingNextPage() {
   pagingData.value.pageNumber += 1;
-  await loadEmployeeData();
+  await loadCustomerData();
   // console.log("n next");
 }
 
@@ -620,7 +620,7 @@ async function pagingNextPage() {
  */
 async function pagingPrevPage() {
   pagingData.value.pageNumber -= 1;
-  await loadEmployeeData();
+  await loadCustomerData();
   // console.log("p prev");
 }
 
@@ -628,7 +628,7 @@ async function pagingPrevPage() {
  * Gọi API lấy dữ liệu nhân viên theo filter
  * Author: Dũng (08/05/2023)
  */
-async function loadEmployeeData() {
+async function loadCustomerData() {
   try {
     // Nếu dữ liệu đang được gọi thì return
     if (isLoadingData.value == true) return;
@@ -636,21 +636,21 @@ async function loadEmployeeData() {
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // Gọi API filter nhân viên
+    // Gọi API filter KH
     const response = await $axios.get($api.customer.filter, {
       params: {
         skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
         take: pagingData.value.pageSize,
-        keySearch: cache.value.empSearchPattern,
+        keySearch: cache.value.cusSearchPattern,
       },
     });
     rowList.value = [];
     // console.log(response.data);
     if (response.data.filteredList) {
-      for (const emp of response.data.filteredList) {
-        // Chuyển đổi từ employee nhận từ server sang Class employee của frontend
-        const cusConverted = new Customer(emp);
-        const isSelected = selectedEmpIds.value.includes(
+      for (const cus of response.data.filteredList) {
+        // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
+        const cusConverted = new Customer(cus);
+        const isSelected = selectedCusIds.value.includes(
           cusConverted.customerId
         );
         if (isSelected) ++selectedAmountInPage.value;
@@ -696,7 +696,7 @@ async function entityOnUpdate(type, data) {
         cus: data,
       });
       if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
-        await loadEmployeeData();
+        await loadCustomerData();
       }
       pushToast({
         type: "success",
@@ -720,7 +720,7 @@ async function entityOnUpdate(type, data) {
     default:
       break;
   }
-  // await loadEmployeeData();
+  // await loadCustomerData();
 }
 
 /**

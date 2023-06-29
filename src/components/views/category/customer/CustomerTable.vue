@@ -142,7 +142,7 @@
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteEmployeeFunction(cus.customerId)"
+                      @click="deleteCustomerFunction(cus.customerId)"
                     >
                       {{ lang.table_items.delete }}
                     </div>
@@ -253,7 +253,7 @@ const props = defineProps({
   pagingData: Object,
   isLoadingData: Boolean,
   rowList: Array,
-  deleteEmployeeFunction: Function,
+  deleteCustomerFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
   selectedEmpIds: Array,

@@ -117,11 +117,13 @@ const isLoadingData = ref(false);
 //   },
 // ]
 const dataListStandardized = ref([]);
-const selectedElementCode = ref([]);
 const typingTimers = [];
 const timeoutVal = 500;
 
-const emits = defineEmits("update:selectedElementCode");
+const props = defineProps({
+  selectedElementCode: Array,
+});
+const emits = defineEmits(["update:selectedElementCode"]);
 
 function standardizeDataList() {
   let maxGrade = 0;
@@ -132,7 +134,6 @@ function standardizeDataList() {
 
   let index = 0;
   let inserted = false;
-  console.log(maxGrade);
   for (let g = 0; g <= maxGrade; ++g) {
     for (let i = 0; i < dataList.value.length; ++i) {
       if (dataList.value[i].grade == g) {
@@ -153,17 +154,19 @@ function standardizeDataList() {
       }
     }
   }
-  console.log("Final");
-  console.log(dataListStandardized.value);
 }
 
 async function trOnclick(elementCode) {
-  if (!selectedElementCode.value.includes(elementCode)) {
-    selectedElementCode.value.push(elementCode);
+  if (!props.selectedElementCode.includes(elementCode)) {
+    let tempArr = [...props.selectedElementCode];
+    tempArr.push(elementCode);
+    emits("update:selectedElementCode", tempArr);
   } else {
-    const index = selectedElementCode.value.indexOf(elementCode);
+    const index = props.selectedElementCode.indexOf(elementCode);
     if (index > -1) {
-      selectedElementCode.value.splice(index, 1);
+      let tempArr = [...props.selectedElementCode];
+      tempArr.splice(index, 1);
+      emits("update:selectedElementCode", tempArr);
     }
   }
   if (inputText.value != "") {
@@ -174,14 +177,15 @@ async function trOnclick(elementCode) {
 }
 
 function itemCloseOnClick(elementCode) {
-  const index = selectedElementCode.value.indexOf(elementCode);
+  const index = props.selectedElementCode.indexOf(elementCode);
   if (index > -1) {
-    selectedElementCode.value.splice(index, 1);
+    let tempArr = [...props.selectedElementCode];
+    tempArr.splice(index, 1);
+    emits("update:selectedElementCode", tempArr);
   }
 }
 
 async function fetchNewData(skip, take, keySearch, reload) {
-  console.log(keySearch);
   const response = await $axios.get($api.group.filter, {
     params: {
       skip: skip,
@@ -193,7 +197,6 @@ async function fetchNewData(skip, take, keySearch, reload) {
   for (const group of response.data.filteredList) {
     dataList.value.push(group);
   }
-  console.log(dataList.value);
   standardizeDataList();
 }
 
@@ -223,7 +226,6 @@ function inputKeyupHandler($event) {
     setTimeout(() => {
       // Display loading
       isLoadingData.value = true;
-      emits("update:selectedElementCode", selectedElementCode);
       fetchNewData(0, null, inputText.value, true);
       isLoadingData.value = false;
     }, timeoutVal)

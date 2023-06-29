@@ -1,14 +1,35 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
-    <!-- Notibox -->
-    <div class="form__wrapper" v-show="false"></div>
-    <!-- Dialog -->
-    <div class="form__wrapper" v-show="false"></div>
-    <!-- Loader -->
-    <div class="form__loader" v-show="false"></div>
+    <div class="form__wrapper" v-show="formNoti.showNotibox">
+      <BaseNotibox
+        :type="formNoti.notiboxType"
+        :message="formNoti.notiboxMessage"
+        :yes-on-click="formNotiboxYesBtnOnClick"
+        ref="notiRef"
+      />
+    </div>
+    <div class="form__wrapper" v-show="formDialog.isShow">
+      <BaseDialog
+        :title="lang.dialog.savingChanges.title"
+        :message="lang.dialog.savingChanges.message"
+        :close-on-click="formDialogCloseBtnOnClick"
+        :no-on-click="formDialogNoBtnOnClick"
+        :yes-on-click="formDialogYesBtnOnClick"
+        ref="dialogRef"
+      />
+    </div>
+    <div class="form__loader" v-show="form.isLoading">
+      <BaseLoader />
+    </div>
     <div class="form">
       <div class="form__header">
-        <div class="header__left">Thêm mới khách hàng</div>
+        <div class="header__left">
+          {{
+            form.type == "create"
+              ? "Thêm mới khách hàng"
+              : "Thông tin khách hàng"
+          }}
+        </div>
         <div class="header__mid">
           <div class="hm__left">
             <BaseRadiogroup
@@ -77,6 +98,7 @@
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
+                  ref="customerFullNameRef"
                 />
               </div>
             </div>
@@ -134,11 +156,14 @@
               </div>
             </div>
             <div class="fu__right__mid m-bot-24">
-              <BaseComboboxMultiSelect />
+              <BaseComboboxMultiSelect
+                v-model:selectedElementCode="selectedElementCode"
+              />
             </div>
             <div class="fu__right__bot">
               <EmployeeCombobox
                 v-model:selectedEmployeeId="customer.employeeId"
+                v-model:selectedEmployeeName="customer.employeeFullName"
               />
             </div>
           </div>
@@ -522,7 +547,11 @@
           <BaseButton bname="Hủy" class="btn--secondary" />
         </div>
         <div class="footer__right">
-          <BaseButton bname="Cất" class="btn--secondary" />
+          <BaseButton
+            bname="Cất"
+            class="btn--secondary"
+            @click="btnSaveOnClick"
+          />
           <BaseButton bname="Cất và Thêm" class="btn--primary" />
         </div>
       </div>
@@ -535,6 +564,9 @@
 import BaseRadiogroup from "../../../../components/base/BaseRadiogroup";
 import BaseTextfield from "../../../../components/base/BaseTextfield";
 import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
+import BaseNotibox from "@/components/base/BaseNotibox.vue";
+import BaseDialog from "@/components/base/BaseDialog.vue";
+import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseComboboxMultiSelect from "@/components/base/BaseComboboxMultiSelect.vue";
 import EmployeeCombobox from "./EmployeeCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
@@ -553,6 +585,12 @@ const route = useRoute();
 const cusType = ref(0);
 const isProvider = ref(false);
 const customer = ref({});
+const lang = inject("$lang");
+
+const formDialog = ref({
+  isShow: false,
+});
+
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
@@ -576,6 +614,8 @@ const customerBankAccList = ref([
   },
 ]);
 
+const selectedElementCode = ref([]);
+let firstErrorRef = null;
 const customerShippingAddressList = ref([
   {
     id: 0,
@@ -612,6 +652,7 @@ const tabList = ref([
 
 const bankAccRowRefs = ref([]);
 const osAddressRowRefs = ref([]);
+const notiRef = ref(null);
 
 const form = ref({
   type: "",
@@ -619,8 +660,11 @@ const form = ref({
   isLoading: false,
 });
 
+// var oldCustomer = null;
+
 const customerCodeRef = ref(null);
 const customerTINRef = ref(null);
+const customerFullNameRef = ref(null);
 
 const props = defineProps({
   metadata: Object,
@@ -633,7 +677,7 @@ resetFormState();
 onMounted(async () => {
   try {
     // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /DI/DICustomer
-    if (form.value.type == $enum.form.infoType && !isUUID(form.value.empId)) {
+    if (form.value.type == $enum.form.infoType && !isUUID(form.value.cusId)) {
       await router.replace("/DI/DICustomer");
       return;
     }
@@ -676,12 +720,12 @@ function resetFormState() {
     isLoading: false,
   };
   // Nếu form là dupplicate thì tắt bỏ cờ báo isDupplicate để lần sau mở lại form không bị vào trường hợp dupplicate nữa
-  if (form.value.type == $enum.form.dupplicateType) {
-    emits("update:metadata", {
-      isDupplicate: false,
-      customerDupplicate: props.metadata.customerDupplicate,
-    });
-  }
+  // if (form.value.type == $enum.form.dupplicateType) {
+  //   emits("update:metadata", {
+  //     isDupplicate: false,
+  //     customerDupplicate: props.metadata.customerDupplicate,
+  //   });
+  // }
   customer.value = new Customer({});
 }
 
@@ -707,6 +751,19 @@ async function handleResponseStatusCode(code, error) {
 }
 
 /**
+ * Gọi API lấy thông tin khách hàng và gán vào customer object
+ * @param {String} cusId Id khách hàng
+ *
+ * Author: Dũng (28/06/2023)
+ */
+async function fetchCustomerInfoToCustomerObject(cusId) {
+  const response = await $axios.get($api.customer.one(cusId));
+  const cusFromApi = response.data;
+  customer.value = new Customer(cusFromApi);
+  selectedElementCode.value = customer.value.groupCodeList;
+}
+
+/**
  * Gọi API khởi tạo dữ liệu cho form
  *
  * Author: Dũng (08/05/2023)
@@ -718,14 +775,18 @@ async function getDataFromApi() {
     return;
   }
 
-  // if (form.value.type == $enum.form.infoType) {
-  //   // Fetch customer information
-  //   await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
-  //   const oldEmp = new Employee({});
-  //   oldEmp.cloneFromOtherEmployee(employee.value);
-  //   oldEmployee = oldEmp;
-  //   return;
-  // }
+  if (form.value.type == $enum.form.infoType) {
+    // Fetch customer information
+    await fetchCustomerInfoToCustomerObject(form.value.cusId, form.value.type);
+    // const getEmployeeResponse = await $axios.get(
+    //   $api.employee.one(customer.value.employeeId)
+    // );
+    // selectedEmployeeName.value = getEmployeeResponse.data.employeeFullName;
+    // const oldCus = new Customer({});
+    // oldCus.cloneFromOtherCustomer(customer.value);
+    // oldCustomer = oldCus;
+    return;
+  }
 
   // if (form.value.type == $enum.form.dupplicateType) {
   //   // Fetch employee information
@@ -801,6 +862,192 @@ async function osAddressBtnAddOnClick() {
 function osAddressBtnDeleteOnClick(index) {
   customerShippingAddressList.value.splice(index, 1);
 }
+
+/**
+ * Validate các thông tin có trong form
+ *
+ * Author: Dũng (08/05/2023)
+ */
+async function validateData() {
+  firstErrorRef = null;
+  // Validate mã khách hàng
+  // Mã trống
+  if (customer.value.customerCode.trim() == "") {
+    customer.value.employeeCode = "";
+    formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã khách hàng");
+    firstErrorRef = firstErrorRef ?? customerCodeRef;
+  } else {
+    // Mã quá dài
+    if (customer.value.customerCode.length > 50) {
+      formNoti.value.customerCode = $error.fieldTooLong("Mã khách hàng", 50);
+      firstErrorRef = firstErrorRef ?? customerCodeRef;
+    } else {
+      // Kiểm tra trùng mã
+      const isCodeExist = await isCusCodeExist(
+        customer.value.customerCode,
+        form.value.cusId
+      );
+      if (isCodeExist) {
+        formNoti.value.customerCode = "Mã khách hàng đã tồn tại";
+        firstErrorRef = firstErrorRef ?? customerCodeRef;
+      }
+    }
+  }
+  // Kiểm tra tên nhân viên
+  // Tên bị trống
+  if (customer.value.customerFullName.trim() == "") {
+    formNoti.value.customerFullName = $error.fieldCannotEmpty("Tên khách hàng");
+    firstErrorRef = firstErrorRef ?? customerFullNameRef;
+  } else {
+    // Tên quá dài
+    if (customer.value.customerFullName.length > 100) {
+      formNoti.value.customerFullName = $error.fieldTooLong(
+        "Tên khách hàng",
+        100
+      );
+      firstErrorRef = firstErrorRef ?? customerFullNameRef;
+    }
+  }
+}
+
+/**
+ * Kiểm tra mã customerCode đã tồn tại chưa
+ * @param {String} cusCode mã cần check
+ * @param {String} cusId id cua cus (chỉ cần nếu form là form sửa)
+ * Author: Dux(28/06/2023)
+ */
+async function isCusCodeExist(cusCode, cusId) {
+  const response = await $axios.get($api.customer.checkCodeExist, {
+    params: {
+      id: cusId,
+      code: cusCode,
+    },
+  });
+  return response.data;
+}
+
+/**
+ * Hiển thị notibox thông báo
+ * Author: Duxng(03/06/2023)
+ */
+async function displayNotiBox() {
+  formNoti.value.showNotibox = true;
+  await nextTick();
+  // notiRef.value.yesBtn.refBtn.focus();
+}
+
+/**
+ * Gọi API tạo mới khách hàng
+ *
+ * Author: Dũng (08/05/2023)
+ */
+async function callCreateCustomerApi() {
+  for (const code of selectedElementCode.value) {
+    customer.value.groupCodeList.push(code);
+  }
+  const requestBody = customer.value.convertToApiFormat();
+  const response = await $axios.post($api.customer.index, requestBody);
+  return response.data;
+}
+
+/**
+ * Sự kiện click vào nút cất
+ *
+ *
+ * Author: Dũng (27/06/2023)
+ */
+async function btnSaveOnClick() {
+  try {
+    form.value.isLoading = true;
+
+    // Validate dữ liệu của các trường thông tin
+    await validateData();
+
+    // Nếu có một lỗi nào đó sau khi validate
+    if (formNoti.value.notiboxMessage.length) {
+      form.value.isLoading = false;
+      // show notibox
+      await displayNotiBox();
+    } else {
+      // Nếu Validate thành công
+
+      // Nếu form là form cập nhật thông tin
+      if (form.value.type == $enum.form.infoType) {
+        // Gọi API sửa nhân viên
+        //await callEditEmployeeApi();
+        // Emit sự kiện cập nhật Employee lên EmployeeList để cập nhật trên table
+        // emits("updateEmplist", "edit", employee.value);
+      } else {
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới nhân viên
+        const newCustomerId = await callCreateCustomerApi();
+        customer.value.customerId = newCustomerId;
+        // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
+        emits("updateCuslist", "create", customer.value);
+      }
+
+      form.value.isLoading = false;
+      router.replace("/DI/DICustomer");
+    }
+  } catch (error) {
+    form.value.isLoading = false;
+    console.log(error);
+    // await handleResponseStatusCode(error.response.status, error);
+  }
+}
+
+/**
+ * Focus vào ô lỗi đầu tiên
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function focusOnFirstErrorInput() {
+  firstErrorRef.value.refInput.focus();
+}
+
+/**
+ * Sự kiện click vào nút có trong notibox
+ * Author: Dũng (08/05/2023)
+ */
+function formNotiboxYesBtnOnClick() {
+  formNoti.value.showNotibox = false;
+  focusOnFirstErrorInput();
+}
+
+/**
+ * Sự kiện click vào nút đóng dialog
+ * Author: Dũng (08/05/2023)
+ */
+async function formDialogCloseBtnOnClick() {
+  formDialog.value.isShow = false;
+  // Next tick để đợi đến khi formDialog được ẩn đi
+  await nextTick();
+  if (firstErrorRef != null) {
+    focusOnFirstErrorInput();
+  } else {
+    customerCodeRef.value.refInput.focus();
+  }
+}
+
+/**
+ * Sự kiện click vào nút không trong notibox
+ * Author: Dũng (08/05/2023)
+ */
+function formDialogNoBtnOnClick() {
+  formDialog.value.isShow = false;
+  router.replace("/DI/DICustomer");
+}
+
+/**
+ * Sự kiện click vào btn yes khi đóng dialog
+ *
+ * Author: Dũng (27/05/2023)
+ */
+async function formDialogYesBtnOnClick() {
+  formDialog.value.isShow = false;
+  await btnSaveOnClick();
+}
+
 //#endregion
 </script>
 

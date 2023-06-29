@@ -7,7 +7,8 @@
           <input
             type="text"
             ref="refInput"
-            v-model="inputText"
+            :value="selectedEmployeeName"
+            @input="$emit('update:selectedEmployeeName', $event.target.value)"
             @keyup="inputKeyupHandler"
             @keypress="inputKeyPressHandler"
           />
@@ -88,15 +89,18 @@ const $axios = inject("$axios");
 const employeeList = ref([]);
 const typingTimers = [];
 const timeoutVal = 500;
-const inputText = ref("");
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
 const selectedEmployeeIndex = ref(0);
 
 const props = defineProps({
   selectedEmployeeId: String,
+  selectedEmployeeName: String,
 });
-const emits = defineEmits(["update:selectedEmployeeId"]);
+const emits = defineEmits([
+  "update:selectedEmployeeId",
+  "update:selectedEmployeeName",
+]);
 
 async function fetchNewEmployee(skip, take, keySearch, reload) {
   console.log(keySearch);
@@ -126,7 +130,7 @@ async function tableContentOnScroll(e) {
     await fetchNewEmployee(
       employeeList.value.length,
       10,
-      inputText.value,
+      props.selectedEmployeeName,
       false
     );
   }
@@ -137,7 +141,7 @@ async function btnDropDownOnClick() {
     await fetchNewEmployee(
       employeeList.value.length,
       10,
-      inputText.value,
+      props.selectedEmployeeName,
       false
     );
   }
@@ -171,7 +175,7 @@ function inputKeyupHandler($event) {
       // Display loading
       isLoadingData.value = true;
       emits("update:selectedEmployeeId", "");
-      fetchNewEmployee(0, 20, inputText.value, true);
+      fetchNewEmployee(0, 20, props.selectedEmployeeName, true);
       isLoadingData.value = false;
     }, timeoutVal)
   );
@@ -203,7 +207,10 @@ function isNormalCharacterKey(key) {
 }
 
 function trOnClick(index) {
-  inputText.value = employeeList.value[index].employeeFullName;
+  emits(
+    "update:selectedEmployeeName",
+    employeeList.value[index].employeeFullName
+  );
   emits("update:selectedEmployeeId", employeeList.value[index].employeeId);
   selectedEmployeeIndex.value = index;
   isTableOpen.value = false;
