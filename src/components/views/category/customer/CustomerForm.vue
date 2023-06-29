@@ -119,7 +119,7 @@
                   :hideLabel="true"
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
-                  v-model:noti="formNoti.perCustomerName"
+                  v-model:noti="formNoti.customerFullName"
                 />
               </div>
             </div>
@@ -599,7 +599,6 @@ const formNoti = ref({
 
   customerCode: "",
   customerFullName: "",
-  perCustomerName: "",
 });
 const customerBankAccList = ref([
   {

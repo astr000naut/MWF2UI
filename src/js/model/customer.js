@@ -41,7 +41,7 @@ export class Customer {
     this.customerTIN = e.customerTIN ?? "";
     this.customerCode = e.customerCode ?? "";
     this.customerFullName = e.customerFullName ?? "";
-    this.employeeId = e.employeeId ?? "";
+    this.employeeId = e.employeeId ?? null;
     this.employeeFullName = e.employeeFullName ?? "";
     this.address = e.address ?? "";
     this.phoneNumber = e.phoneNumber ?? "";
@@ -84,7 +84,7 @@ export class Customer {
       customerTIN: this.customerTIN,
       customerCode: this.customerCode,
       customerFullName: this.customerFullName,
-      employeeId: this.employeeId,
+      employeeId: this.employeeId ?? null,
       address: this.address,
       phoneNumber: this.phoneNumber,
       website: this.website,
