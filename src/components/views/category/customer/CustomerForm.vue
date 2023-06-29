@@ -115,10 +115,11 @@
               <div class="fu__name_real">
                 <BaseTextfield
                   pholder="Họ và tên"
-                  label=""
-                  :isrequired="false"
-                  v-model:text="customer.contactName"
-                  noti=""
+                  label="Tên khách hàng"
+                  :hideLabel="true"
+                  :isrequired="true"
+                  v-model:text="customer.customerFullName"
+                  v-model:noti="formNoti.perCustomerName"
                 />
               </div>
             </div>
@@ -598,6 +599,7 @@ const formNoti = ref({
 
   customerCode: "",
   customerFullName: "",
+  perCustomerName: "",
 });
 const customerBankAccList = ref([
   {

@@ -7,7 +7,7 @@
     ]"
   >
     <div
-      v-show="label"
+      v-show="!hideLabel"
       class="txtfield__label label"
       @mouseenter="labelOnMouseEnter"
       @mouseleave="labelOnMouseOut"
@@ -32,8 +32,8 @@
         @keydown.shift.f8.prevent="autoFill"
       />
       <div class="txtfield__icon"></div>
+      <div class="txtfield__noti noti">{{ noti }}</div>
     </div>
-    <div class="txtfield__noti noti">{{ noti }}</div>
   </div>
 </template>
 
@@ -49,6 +49,7 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
   tooltip: String,
+  hideLabel: Boolean,
   noti: String,
   realTimeSearch: Boolean,
   doSearch: Function,
