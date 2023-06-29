@@ -941,9 +941,6 @@ async function displayNotiBox() {
  * Author: Dũng (08/05/2023)
  */
 async function callCreateCustomerApi() {
-  for (const code of customer.value.groupCodeList) {
-    customer.value.groupCodeList.push(code);
-  }
   const requestBody = customer.value.convertToApiFormat();
   const response = await $axios.post($api.customer.index, requestBody);
   return response.data;

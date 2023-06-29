@@ -84,6 +84,7 @@
           </div>
           <BaseTextfield
             :pholder="lang.textfield.searchBar.pholder"
+            :hideLabel="true"
             class="txtfield--search mw-300"
             noti=""
             v-model:text="cache.cusSearchPattern"

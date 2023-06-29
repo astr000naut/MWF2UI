@@ -41,6 +41,7 @@
             :pholder="lang.textfield.searchBar.pholder"
             class="txtfield--search mw-300"
             noti=""
+            :hideLabel="true"
             v-model:text="cache.empSearchPattern"
             :realTimeSearch="true"
             :doSearch="doSearchEmployee"
