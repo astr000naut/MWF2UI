@@ -157,7 +157,7 @@
             </div>
             <div class="fu__right__mid m-bot-24">
               <BaseComboboxMultiSelect
-                v-model:selectedElementCode="selectedElementCode"
+                v-model:selectedElementCode="customer.groupCodeList"
               />
             </div>
             <div class="fu__right__bot">
@@ -614,7 +614,6 @@ const customerBankAccList = ref([
   },
 ]);
 
-const selectedElementCode = ref([]);
 let firstErrorRef = null;
 const customerShippingAddressList = ref([
   {
@@ -760,7 +759,6 @@ async function fetchCustomerInfoToCustomerObject(cusId) {
   const response = await $axios.get($api.customer.one(cusId));
   const cusFromApi = response.data;
   customer.value = new Customer(cusFromApi);
-  selectedElementCode.value = customer.value.groupCodeList;
 }
 
 /**
@@ -942,7 +940,7 @@ async function displayNotiBox() {
  * Author: Dũng (08/05/2023)
  */
 async function callCreateCustomerApi() {
-  for (const code of selectedElementCode.value) {
+  for (const code of customer.value.groupCodeList) {
     customer.value.groupCodeList.push(code);
   }
   const requestBody = customer.value.convertToApiFormat();
