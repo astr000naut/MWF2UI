@@ -41,14 +41,14 @@
                   value: 1,
                 },
               ]"
-              v-model:radioValue="cusType"
+              v-model:radioValue="customer.customerType"
             />
           </div>
           <div class="hm__right">
             <div
               class="checkbox mi mi-18"
-              :class="[isProvider ? 'mi-checkbox-checked' : '']"
-              @click="isProvider = !isProvider"
+              :class="[customer.isProvider ? 'mi-checkbox-checked' : '']"
+              @click="customer.isProvider = !customer.isProvider"
             ></div>
             <div class="checkbox__label">Là nhà cung cấp</div>
           </div>
@@ -67,7 +67,9 @@
           <div class="fu__left">
             <div
               class="fu__left__top"
-              :style="{ flexDirection: cusType == 1 ? 'row-reverse' : '' }"
+              :style="{
+                flexDirection: customer.customerType == 1 ? 'row-reverse' : '',
+              }"
             >
               <div class="fu__taxCode">
                 <BaseTextfield
@@ -90,7 +92,10 @@
                 />
               </div>
             </div>
-            <div class="fu__left__mid m-top-24" v-show="cusType == 0">
+            <div
+              class="fu__left__mid m-top-24"
+              v-show="customer.customerType == 0"
+            >
               <div class="fu__name">
                 <BaseTextfield
                   pholder=""
@@ -102,11 +107,14 @@
                 />
               </div>
             </div>
-            <div class="fu__left__mid m-top-24" v-show="cusType == 1">
+            <div
+              class="fu__left__mid m-top-24"
+              v-show="customer.customerType == 1"
+            >
               <div class="fu__name_xungho">
                 <BaseTextfield
-                  pholder="Xưng hô"
-                  label="Tên khách hàng"
+                  pholder=""
+                  label="Xưng hô"
                   :isrequired="false"
                   v-model:text="customer.contactNamePrefix"
                   noti=""
@@ -116,7 +124,6 @@
                 <BaseTextfield
                   pholder="Họ và tên"
                   label="Tên khách hàng"
-                  :hideLabel="true"
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
@@ -136,7 +143,10 @@
             </div>
           </div>
           <div class="fu__right">
-            <div class="fu__right__top m-bot-24" v-show="cusType == 0">
+            <div
+              class="fu__right__top m-bot-24"
+              v-show="customer.customerType == 0"
+            >
               <div class="fu__phone">
                 <BaseTextfield
                   pholder=""
@@ -184,7 +194,7 @@
           <div class="fl__main">
             <div class="main__panel main__info" v-show="selectedTabId == 0">
               <div class="main__info__left">
-                <div class="custype--org" v-show="cusType == 0">
+                <div class="custype--org" v-show="customer.customerType == 0">
                   <div class="mileft__top">
                     <div class="mileft__call">
                       <BaseTextfield
@@ -224,7 +234,7 @@
                     />
                   </div>
                 </div>
-                <div class="custype--per" v-show="cusType == 1">
+                <div class="custype--per" v-show="customer.customerType == 1">
                   <BaseTextfield
                     pholder="Email"
                     label="Thông tin liên hệ"
@@ -260,7 +270,7 @@
                 </div>
               </div>
               <div class="main__info__right">
-                <div class="miright--org" v-show="cusType == 0">
+                <div class="miright--org" v-show="customer.customerType == 0">
                   <div class="miright__top">
                     <BaseTextfield
                       pholder="Họ và tên"
@@ -289,7 +299,7 @@
                     />
                   </div>
                 </div>
-                <div class="miright--per" v-show="cusType == 1">
+                <div class="miright--per" v-show="customer.customerType == 1">
                   <BaseTextfield
                     pholder="Số CMND/Thẻ căn cước"
                     label="Thông tin CMND/Thẻ căn cước"
@@ -358,7 +368,7 @@
                   selectedItemId=""
                 />
                 <BaseCombobox
-                  v-show="isProvider"
+                  v-show="customer.isProvider"
                   label="Tài khoản công nợ phải trả"
                   pholder=""
                   :isrequired="false"
@@ -583,8 +593,6 @@ import { Customer } from "@/js/model/customer";
 const $axios = inject("$axios");
 const router = useRouter();
 const route = useRoute();
-const cusType = ref(0);
-const isProvider = ref(false);
 const customer = ref({});
 const lang = inject("$lang");
 
@@ -697,7 +705,7 @@ onMounted(async () => {
 //#region function
 
 function focusOnFirstInput() {
-  if (cusType.value == $enum.customer.type.org) {
+  if (customer.value.customerType == $enum.customer.type.org) {
     customerTINRef.value.refInput.focus();
   } else {
     customerCodeRef.value.refInput.focus();
@@ -892,7 +900,7 @@ async function validateData() {
       }
     }
   }
-  // Kiểm tra tên nhân viên
+  // Kiểm tra tên KH
   // Tên bị trống
   if (customer.value.customerFullName.trim() == "") {
     formNoti.value.customerFullName = $error.fieldCannotEmpty("Tên khách hàng");
@@ -906,6 +914,14 @@ async function validateData() {
       );
       firstErrorRef = firstErrorRef ?? customerFullNameRef;
     }
+  }
+
+  if (firstErrorRef != null) {
+    // Update notibox value
+    formNoti.value.notiboxType = "alert";
+    formNoti.value.notiboxMessage = $error.invalidInput;
+  } else {
+    formNoti.value.notiboxMessage = "";
   }
 }
 
@@ -932,7 +948,7 @@ async function isCusCodeExist(cusCode, cusId) {
 async function displayNotiBox() {
   formNoti.value.showNotibox = true;
   await nextTick();
-  // notiRef.value.yesBtn.refBtn.focus();
+  notiRef.value.yesBtn.refBtn.focus();
 }
 
 /**
@@ -970,9 +986,9 @@ async function btnSaveOnClick() {
       // Nếu form là form cập nhật thông tin
       if (form.value.type == $enum.form.infoType) {
         // Gọi API sửa nhân viên
-        //await callEditEmployeeApi();
-        // Emit sự kiện cập nhật Employee lên EmployeeList để cập nhật trên table
-        // emits("updateEmplist", "edit", employee.value);
+        await callEditCustomerApi();
+        // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
+        emits("updateCuslist", "edit", customer.value);
       } else {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới nhân viên
@@ -990,6 +1006,18 @@ async function btnSaveOnClick() {
     console.log(error);
     // await handleResponseStatusCode(error.response.status, error);
   }
+}
+
+/**
+ * Gọi API sửa khách hàng
+ *
+ * Author: Dũng (29/06/2023)
+ */
+async function callEditCustomerApi() {
+  const requestBody = customer.value.convertToApiFormat();
+  console.log(requestBody);
+  // console.log(requestBody);
+  await $axios.put($api.customer.one(form.value.cusId), requestBody);
 }
 
 /**

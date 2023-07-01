@@ -1,3 +1,4 @@
+import $formatter from "../common/formater";
 export class Customer {
   customerId;
   customerType;
@@ -36,8 +37,10 @@ export class Customer {
   groupCodeList;
 
   constructor(e) {
+    console.log(e);
     this.customerId = e.customerId ?? "";
     this.customerType = e.customerType ?? 0;
+    this.isProvider = e.isProvider ?? false;
     this.customerTIN = e.customerTIN ?? "";
     this.customerCode = e.customerCode ?? "";
     this.customerFullName = e.customerFullName ?? "";
@@ -68,7 +71,7 @@ export class Customer {
     this.shippingAddressList = e.shippingAddressList ?? "";
     this.description = e.description ?? "";
     this.identityNumber = e.identityNumber ?? "";
-    this.identityDate = e.identityDate ?? "";
+    this.identityDate = $formatter.changeFormat(e.identityDate);
     this.identityPlace = e.identityPlace ?? "";
     this.groupCodeList = e.groupCodeList ? e.groupCodeList.split(",") : [];
   }
@@ -81,10 +84,11 @@ export class Customer {
   convertToApiFormat() {
     let obj = {
       customerType: this.customerType,
+      isProvider: this.isProvider,
       customerTIN: this.customerTIN,
       customerCode: this.customerCode,
       customerFullName: this.customerFullName,
-      employeeId: this.employeeId ?? null,
+      employeeId: this.employeeId?.length > 0 ? this.employeeId : null,
       address: this.address,
       phoneNumber: this.phoneNumber,
       website: this.website,
@@ -110,10 +114,11 @@ export class Customer {
       shippingAddressList: null,
       description: this.description,
       identityNumber: this.identityNumber,
-      identityDate: null,
+      identityDate: $formatter.formatDateToApiDate(this.identityDate),
       identityPlace: this.identityPlace,
       groupCodeList: this.groupCodeList.join(","),
     };
+    console.log(obj);
     return obj;
   }
 }

@@ -19,7 +19,7 @@
   <router-view
     name="CustomerForm"
     v-model:metadata="formMetadata"
-    @update-cuslist="entityOnUpdate"
+    @update-cuslist="customerOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
@@ -683,7 +683,7 @@ async function loadCustomerData() {
  * @param {Object} data dữ liệu của employee mới
  * Author: Dũng (08/05/2023)
  */
-async function entityOnUpdate(type, data) {
+async function customerOnUpdate(type, data) {
   // console.log("Customer list updated");
   // console.log(type);
   // console.log(data);
@@ -708,7 +708,7 @@ async function entityOnUpdate(type, data) {
     case "edit":
       for (const row of rowList.value) {
         if (row.cus.customerId == data.customerId) {
-          row.emp = data;
+          row.cus = data;
           break;
         }
       }
