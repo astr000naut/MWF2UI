@@ -148,6 +148,7 @@
 
   .li-data {
     padding: 8px;
+    font-weight: 200;
   }
   
   .option__edit {
@@ -323,4 +324,27 @@
   .right__loading{
     width: 2ch;
     height: 18px;
+  }
+
+  .account__number {
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+  }
+
+
+  .an__text {
+    line-height: 24px;
+  }
+
+  .mi-tree-expand--small {
+    background-position: -607px -312px;
+  }
+
+  .mi-tree-collapse--small {
+    background-position: -559px -312px;
+  }
+
+  .text--bold:not(.li-data) {
+    font-weight: 500;
   }

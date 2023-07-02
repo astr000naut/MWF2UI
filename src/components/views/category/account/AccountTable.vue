@@ -3,23 +3,10 @@
     <table class="m-table">
       <thead>
         <tr>
-          <th>
-            <div class="text-left w-120">Số tài khoản</div>
-          </th>
-          <th>
-            <div class="text-left w-200">Tên tài khoản</div>
-          </th>
-          <th>
-            <div class="text-left w-250">Tính chất</div>
-          </th>
-          <th>
-            <div class="text-left w-120">Tên tiếng Anh</div>
-          </th>
-          <th>
-            <div class="text-left w-120">Diễn giải</div>
-          </th>
-          <th>
-            <div class="text-left w-120">Trạng thái</div>
+          <th v-for="header in tableStructure.headerList" :key="header.name">
+            <div :class="header.align" :style="{ width: header.width + 'px' }">
+              {{ header.name }}
+            </div>
           </th>
           <th class="thn--sticky">
             <div class="align-center mw-90">{{ lang.tableHeader.tool }}</div>
@@ -40,74 +27,95 @@
         </template>
         <template v-else>
           <tr
-            v-for="({ active, cus } = row, index) in rowList"
-            :key="cus.customerId"
+            v-for="({ active, acc, isExpand } = row, index) in rowList"
+            :key="acc.accountId"
             :class="{
               active: active,
+              'text--bold': acc.isParent,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(cus.customerId)"
+            @dblclick="trOnDblclick(acc.accountId)"
           >
             <td>
-              <div class="text-left">{{ cus.customerCode }}</div>
+              <div
+                class="text-left account__number"
+                :style="{
+                  paddingLeft:
+                    24 * (acc.grade % 9) +
+                    (!acc.isParent && acc.parentId == '' ? 24 : 0) +
+                    'px',
+                }"
+              >
+                <div
+                  class="an__expand mi mi-16"
+                  :class="[
+                    !isExpand
+                      ? 'mi-tree-expand--small'
+                      : 'mi-tree-collapse--small',
+                  ]"
+                  v-show="acc.isParent"
+                  @click="accNumberExpandOnClick(acc, index)"
+                  @dblclick.stop
+                ></div>
+                <div class="an__text">
+                  {{ acc["accountNumber"] }}
+                </div>
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ cus.customerFullName }}</div>
+              <div class="text-left">{{ acc.accountNameVi }}</div>
             </td>
             <td>
-              <div class="text-left">{{ cus.address }}</div>
+              <div class="text-left">{{ acc.property }}</div>
             </td>
             <td>
-              <div class="text-left">{{ cus.phoneNumber }}</div>
+              <div class="text-left">{{ acc.accountNameEn }}</div>
             </td>
             <td>
-              <div class="text-left">{{ cus.identityNumber }}</div>
+              <div class="text-left">{{ acc.description }}</div>
             </td>
             <td>
-              <div class="text-left">Đang sử dụng</div>
+              <div class="text-left">{{ acc.status }}</div>
             </td>
             <td
-              :class="[table.expandEmpId == cus.customerId ? 'above' : '']"
+              :class="[table.expandAccId == acc.accountId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
             >
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(cus.customerId)"
+                  @click="btnEditOnClick(acc.accountId)"
                 >
                   {{ lang.table_items.edit }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
-                  @click="btnExpandOnClick(cus.customerId)"
+                  @click="btnExpandOnClick(acc.accountId)"
                 ></button>
                 <ul
                   class="actions-list btn__expand"
                   :class="
-                    (cus.customerId ==
-                      rowList[rowList.length - 1].cus.customerId ||
-                      cus.customerId ==
-                        rowList[rowList.length - 2].cus.customerId) &&
+                    (acc.accountId ==
+                      rowList[rowList.length - 1].acc.accountId ||
+                      acc.accountId ==
+                        rowList[rowList.length - 2].acc.accountId) &&
                     rowList.length > 6
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandEmpId == cus.customerId"
-                  @mouseleave="table.expandEmpId = ''"
+                  v-show="table.expandAccId == acc.accountId"
+                  @mouseleave="table.expandAccId = ''"
                 >
                   <li>
-                    <div
-                      class="li-data"
-                      @click="dupplicateEmployeeOnClick(emp)"
-                    >
+                    <div class="li-data">
                       {{ lang.table_items.dupplicate }}
                     </div>
                   </li>
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteCustomerFunction(cus.customerId)"
+                      @click="deleteCustomerFunction(acc.accountId)"
                     >
                       {{ lang.table_items.delete }}
                     </div>
@@ -212,6 +220,41 @@ const lang = inject("$lang");
 // #endregion
 
 // #region init
+const tableStructure = {
+  allowMultipeOperation: true,
+  headerList: [
+    {
+      name: "SỐ TÀI KHOẢN",
+      align: "text-left",
+      width: 200,
+    },
+    {
+      name: "TÊN TÀI KHOẢN",
+      align: "text-left",
+      width: 220,
+    },
+    {
+      name: "TÍNH CHẤT",
+      align: "text-left",
+      width: 150,
+    },
+    {
+      name: "TÊN TIẾNG ANH",
+      align: "text-left",
+      width: 220,
+    },
+    {
+      name: "DIỄN GIẢI",
+      align: "text-left",
+      width: 220,
+    },
+    {
+      name: "TRẠNG THÁI",
+      align: "text-left",
+      width: 150,
+    },
+  ],
+};
 const router = useRouter();
 
 const props = defineProps({
@@ -233,7 +276,7 @@ const emits = defineEmits([
 const table = ref({
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
-  expandEmpId: "",
+  expandAccId: "",
 });
 
 // #endregion
@@ -253,14 +296,6 @@ const isLastPage = computed(() => {
 // #endregion
 
 // #region handle event
-/**
- * Sự kiện click vào nhân bản
- * Author: Dũng (03/06/2023)
- */
-function dupplicateEmployeeOnClick(emp) {
-  emits("updateDupplicateEmp", emp);
-  // router.push(`/employee/dupplicate/${empId}`);
-}
 
 /**
  * Click next chuyển trang
@@ -281,6 +316,14 @@ async function prevPageOnClick() {
   console.log("Prev");
 }
 
+function accNumberExpandOnClick(acc, index) {
+  if (props.rowList[index].isExpand == false) {
+    emits("updateRowStatus", { type: "expand", rowIndex: index });
+  } else {
+    emits("updateRowStatus", { type: "collapse", rowIndex: index });
+  }
+}
+
 /**
  * Click vào btn sửa nhân viên
  * @param {String} empId Id nhân viên
@@ -296,10 +339,10 @@ function btnEditOnClick(empId) {
  * Author: Dũng (08/05/2023)
  */
 function btnExpandOnClick(empId) {
-  if (table.value.expandEmpId == empId) {
-    table.value.expandEmpId = "";
+  if (table.value.expandAccId == empId) {
+    table.value.expandAccId = "";
   } else {
-    table.value.expandEmpId = empId;
+    table.value.expandAccId = empId;
   }
 }
 
@@ -328,7 +371,7 @@ function pagArrowdownOnClick() {
 
 /**
  * Click vào tr
- * @param {String} empId Id nhân viên
+ * @param {String} rowIndex index của dòng
  * Author: Dũng (08/05/2023)
  */
 function trOnClick(rowIndex) {
@@ -340,12 +383,11 @@ function trOnClick(rowIndex) {
 
 /**
  * DblClick vào checkbox
- * @param {String} empId Id nhân viên
+ * @param {String} accId Id account
  * Author: Dũng (08/05/2023)
  */
-function trOnDblclick(cusId) {
-  console.log(cusId);
-  router.push(`/DI/DICustomer/${cusId}`);
+function trOnDblclick(accId) {
+  router.push(`/DI/DIAccount/${accId}`);
 }
 
 // #endregion

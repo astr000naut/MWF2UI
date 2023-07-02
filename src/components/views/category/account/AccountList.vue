@@ -46,7 +46,7 @@
             :realTimeSearch="true"
             :doSearch="doSearchEmployee"
           />
-          <BaseButton class="mi mi-36 mi-refresh" @click="loadCustomerData" />
+          <BaseButton class="mi mi-36 mi-refresh" @click="loadAccountData" />
           <div class="button__hoverbox--refresh">
             <div class="hover__arrow"></div>
             <div class="hover__text">{{ lang.button.reload }}</div>
@@ -64,27 +64,12 @@
             <BaseLoader></BaseLoader>
           </div>
         </div>
-        <div class="searchbar__left" v-show="selectedCusIds.length > 1">
-          <div class="left__info">
-            Đã chọn: <strong>{{ selectedCusIds.length }}</strong>
-          </div>
-          <div class="left__cancel" @click="cancelSelectOnClick">
-            {{ lang.button.cancelSelect }}
-          </div>
-          <BaseButton
-            bname="Xóa hàng loạt"
-            class="btn--secondary"
-            @click="showBatchDeleteConfirmDialog"
-          />
-        </div>
       </div>
       <AccountTable
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
         :delete-customer-function="deleteCustomerOnClick"
-        :selected-emp-ids="selectedCusIds"
-        :selected-amount-in-page="selectedAmountInPage"
         :have-data-after-call-api="haveDataAfterCallApi"
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
@@ -99,17 +84,17 @@
 
 <script setup>
 // #region import
-import AccountTable from "@/components/views/category/account/AccountTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
-import { Customer } from "@/js/model/customer";
+import { Account } from "@/js/model/account";
 import $error from "../../../../js/resources/error";
 import $message from "../../../../js/resources/message";
 import $enum from "@/js/common/enum";
+import AccountTable from "./AccountTable.vue";
 const lang = inject("$lang");
 // #endregion
 
@@ -139,20 +124,112 @@ const cache = ref({
   cusDeleteIndex: "",
   cusSearchPattern: "",
 });
-const selectedCusIds = ref([]);
-const selectedAmountInPage = ref(0);
+
 const toastList = ref([]);
 var toastId = 0;
 const formMetadata = ref({
   isDupplicate: false,
   customerDupplicate: null,
 });
+var sampleData = [
+  {
+    accountId: "49203211-0b8a-48ec-bb3e-2e138ef40912",
+    accountNumber: "112",
+    accountNameVi: "Ten tai khoan",
+    accountNameEn: "Account name",
+    parentId: "",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: true,
+    grade: 0,
+    mCode: "001",
+  },
+  {
+    accountId: "f016b6e4-62e3-46a0-8f08-abb158ccffd4",
+    accountNumber: "1121",
+    accountNameVi: "Ten tai khoan 1",
+    accountNameEn: "Account name 1",
+    parentId: "49203211-0b8a-48ec-bb3e-2e138ef40912",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: true,
+    grade: 1,
+    mCode: "001/002",
+  },
+  {
+    accountId: "f29efa99-8a42-434a-8dee-a6a13f76b93f",
+    accountNumber: "11211",
+    accountNameVi: "Ten tai khoan 2",
+    accountNameEn: "Account name 2",
+    parentId: "f016b6e4-62e3-46a0-8f08-abb158ccffd4",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: false,
+    grade: 2,
+    mCode: "001/002/003",
+  },
+  {
+    accountId: "97c096fa-ee8c-4ad8-b473-662315448511",
+    accountNumber: "323",
+    accountNameVi: "Ten tai khoan 5",
+    accountNameEn: "Account name 5",
+    parentId: "",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: false,
+    grade: 0,
+    mCode: "004",
+  },
+  {
+    accountId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
+    accountNumber: "11201",
+    accountNameVi: "Tai khoan no",
+    accountNameEn: "Account name 7",
+    parentId: "",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: true,
+    grade: 0,
+    mCode: "005",
+  },
+  {
+    accountId: "3b734659-7bff-4320-8b12-63aae9590e33",
+    accountNumber: "112012",
+    accountNameVi: "Tai khoan thu",
+    accountNameEn: "Account name 8",
+    parentId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: false,
+    grade: 1,
+    mCode: "005/006",
+  },
+  {
+    accountId: "1fd07ec7-c14e-440b-95c4-22017340231a",
+    accountNumber: "112014",
+    accountNameVi: "Tai khoan so 123",
+    accountNameEn: "Account name 123",
+    parentId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
+    property: "",
+    description: "",
+    status: "Đang sử dụng",
+    isParent: false,
+    grade: 1,
+    mCode: "005/007",
+  },
+];
 // #endregion
 
 // #region hook
 onMounted(async () => {
-  // Gọi API lấy danh sách nhân viên
-  await loadCustomerData();
+  // Gọi API lấy danh sách account
+  await loadAccountData();
   // Lắng nghe sự kiện sau khi thay đổi kích cỡ sidebar thì vẽ lại table
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
@@ -174,7 +251,7 @@ onBeforeUnmount(() => {
  */
 async function doSearchEmployee() {
   pagingData.value.pageNumber = 1;
-  await loadCustomerData();
+  await loadAccountData();
 }
 /**
  * Tạo toast message mới và đẩy vào toastList
@@ -242,22 +319,6 @@ function showDeleteOneConfirmDialog(cusCode) {
 }
 
 /**
- * Hiển thị cảnh báo xóa hàng loạt
- *
- * Author: Dũng (08/05/2023)
- */
-function showBatchDeleteConfirmDialog() {
-  dialog.value.message = $message.customerMultipleDeleteConfirm(
-    selectedCusIds.value.length
-  );
-  dialog.value.isDisplay = true;
-  dialog.value.action = async () => {
-    dialog.value.isDisplay = false;
-    await deleteBatchCustomer();
-  };
-}
-
-/**
  * Quản lý lỗi trả về từ api
  * Author: Dũng (08/05/2023)
  */
@@ -288,13 +349,6 @@ async function deleteCustomer() {
     // Xóa KH đó trên table
     rowList.value.splice(cache.value.cusDeleteIndex, 1);
 
-    const index = selectedCusIds.value.indexOf(cache.value.cusDeleteId);
-    if (index > -1) {
-      // Nếu Customer đó đang được select thì xóa khỏi danh sách select
-      selectedCusIds.value.splice(index, 1);
-      selectedAmountInPage.value -= 1;
-    }
-
     isLoadingPage.value = false;
 
     // Update pagingData
@@ -304,51 +358,13 @@ async function deleteCustomer() {
     if (pagingData.value.curAmount == 0) {
       // Nếu trang hiện tại bị xóa hết thì load lại trang trước đó
       if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
-      await loadCustomerData();
+      await loadAccountData();
     }
 
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
       message: $message.customerDeleted,
-      timeToLive: 1500,
-    });
-  } catch (error) {
-    isLoadingPage.value = false;
-    handleApiErrorResponse(error);
-  }
-}
-
-/**
- * Gọi API xóa hàng loạt nhân viên
- * Author: Dũng (08/05/2023)
- */
-async function deleteBatchCustomer() {
-  try {
-    // Số lượng KH đã bị xóa thành công
-    let deletedSucess = 0;
-    let idList = [];
-    let batchAmount = 0;
-    isLoadingPage.value = true;
-
-    while (selectedCusIds.value.length) {
-      // Số lượng KH bị xóa tối đa trong một lượt
-      batchAmount = Math.min(20, selectedCusIds.value.length);
-      idList = [];
-      for (let i = 0; i < batchAmount; ++i)
-        idList.push(selectedCusIds.value[i]);
-      await $axios.post($api.customer.deleteMultiple, idList);
-      deletedSucess += batchAmount;
-      selectedCusIds.value.splice(0, batchAmount);
-    }
-    // Load lại dữ liệu cho table từ trang 1
-    pagingData.value.pageNumber = 1;
-    isLoadingPage.value = false;
-    await loadCustomerData();
-
-    pushToast({
-      type: "success",
-      message: $message.customerMultipeDeleted(deletedSucess),
       timeToLive: 1500,
     });
   } catch (error) {
@@ -429,63 +445,9 @@ function dupplicateEmpOnUpdate(emp) {
  *
  * Author: Dũng (10/05/2023)
  */
-function rowStatusOnUpdate(data) {
+async function rowStatusOnUpdate(data) {
   const { type, rowIndex } = data;
-  if (type == "toggleAllPage") {
-    // Nếu không có employee nào đang được chọn
-    if (selectedAmountInPage.value == 0) {
-      // Chọn tất cả
-      selectedAmountInPage.value = rowList.value.length;
-      for (const row of rowList.value) {
-        row.selected = true;
-        row.active = true;
-        selectedCusIds.value.push(row.cus.customerId);
-      }
-    } else {
-      // Nếu có ít nhất một employee đang được chọn
-      // Hủy chọn tất cả
-      selectedAmountInPage.value = 0;
-      for (const row of rowList.value) {
-        row.selected = false;
-        row.active = false;
-        const index = selectedCusIds.value.indexOf(row.cus.customerId);
-        if (index > -1) selectedCusIds.value.splice(index, 1);
-      }
-    }
-    return;
-  }
-
-  if (type == "selected") {
-    // Đổi trạng thái selected của row
-    rowList.value[rowIndex].selected = !rowList.value[rowIndex].selected;
-
-    // Nếu selected true thì thêm vào selectedCusIds và bật active
-    if (rowList.value[rowIndex].selected) {
-      ++selectedAmountInPage.value;
-      selectedCusIds.value.push(rowList.value[rowIndex].cus.customerId);
-      rowList.value[rowIndex].active = true;
-      // Tắt active của những ô khác mà không được selected
-      for (const row of rowList.value) {
-        if (
-          row.cus.customerId != rowList.value[rowIndex].cus.customerId &&
-          !row.selected
-        )
-          row.active = false;
-      }
-    } else {
-      --selectedAmountInPage.value;
-      // Nếu seleted của employee này false
-      // Xóa khỏi selectedCusIds và tắt active
-      selectedCusIds.value.splice(
-        selectedCusIds.value.indexOf(rowList.value[rowIndex].cus.customerId),
-        1
-      );
-      rowList.value[rowIndex].active = false;
-    }
-    return;
-  }
-
-  if (data.type == "active") {
+  if (type == "active") {
     // Nếu row này đang không được select thì cập nhật trạng thái active
     if (!rowList.value[rowIndex].selected) {
       rowList.value[rowIndex].active = !rowList.value[rowIndex].active;
@@ -496,26 +458,64 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         if (
           !row.selected &&
-          row.cus.customerId != rowList.value[rowIndex].cus.customerId
+          row.acc.accountId != rowList.value[rowIndex].acc.accountId
         )
           row.active = false;
       }
     }
   }
+  if (type == "expand") {
+    rowList.value[rowIndex].isExpand = !rowList.value[rowIndex].isExpand;
+    if (rowList.value[rowIndex].isExpand) {
+      let pAccount = rowList.value[rowIndex].acc;
+      const filterOption = {
+        grade: pAccount.grade + 1,
+        listParentId: [pAccount.accountId],
+      };
+      const filterResponse = await filterAccount(filterOption);
+      const childList = filterResponse.filteredList;
+      let insertIndex = rowIndex;
+      for (const acc of childList) {
+        ++insertIndex;
+        rowList.value.splice(insertIndex, 0, {
+          active: false,
+          selected: false,
+          acc: acc,
+          isExpand: false,
+        });
+      }
+    }
+  }
+  if (type == "collapse") {
+    let collIndex = rowIndex + 1;
+    let parentMCode = rowList.value[rowIndex].acc.mCode;
+    while (
+      collIndex < rowList.value.length &&
+      rowList.value[collIndex].acc.mCode.includes(parentMCode)
+    ) {
+      rowList.value.splice(collIndex, 1);
+    }
+    rowList.value[rowIndex].isExpand = false;
+  }
 }
 
-/**
- * Sự kiện click vào nút bỏ chọn
- *
- * Author: Dũng (25/05/2023)
- */
-function cancelSelectOnClick() {
-  for (const row of rowList.value) {
-    selectedAmountInPage.value = 0;
-    row.selected = false;
-    row.active = false;
-    selectedCusIds.value = [];
+async function filterAccount(filterOption) {
+  const dataList = [];
+  console.log(filterOption);
+  for (const acc of sampleData) {
+    console.log(acc);
+    if (acc.grade == filterOption.grade) {
+      if (filterOption.listParentId.length == 0) dataList.push(acc);
+      else {
+        if (filterOption.listParentId.includes(acc.parentId))
+          dataList.push(acc);
+      }
+    }
   }
+  return {
+    totalRecord: dataList.length,
+    filteredList: dataList,
+  };
 }
 
 /**
@@ -554,7 +554,7 @@ function deleteCustomerOnClick(cusId) {
  */
 async function pagingDataOnUpdate(newData) {
   pagingData.value = newData;
-  await loadCustomerData();
+  await loadAccountData();
 }
 
 /**
@@ -564,7 +564,7 @@ async function pagingDataOnUpdate(newData) {
  */
 async function pagingNextPage() {
   pagingData.value.pageNumber += 1;
-  await loadCustomerData();
+  await loadAccountData();
   // console.log("n next");
 }
 
@@ -575,7 +575,7 @@ async function pagingNextPage() {
  */
 async function pagingPrevPage() {
   pagingData.value.pageNumber -= 1;
-  await loadCustomerData();
+  await loadAccountData();
   // console.log("p prev");
 }
 
@@ -583,36 +583,40 @@ async function pagingPrevPage() {
  * Gọi API lấy dữ liệu nhân viên theo filter
  * Author: Dũng (08/05/2023)
  */
-async function loadCustomerData() {
+async function loadAccountData() {
   try {
     // Nếu dữ liệu đang được gọi thì return
     if (isLoadingData.value == true) return;
-    selectedAmountInPage.value = 0;
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Gọi API filter KH
-    const response = await $axios.get($api.customer.filter, {
-      params: {
-        skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
-        take: pagingData.value.pageSize,
-        keySearch: cache.value.cusSearchPattern,
-      },
-    });
+    // const response = await $axios.get($api.customer.filter, {
+    //   params: {
+    //     skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
+    //     take: pagingData.value.pageSize,
+    //     keySearch: cache.value.cusSearchPattern,
+    //   },
+    // });
     rowList.value = [];
-    // console.log(response.data);
+    let filterOption = {
+      grade: 0,
+      listParentId: [],
+    };
+    const filterData = await filterAccount(filterOption);
+    const response = {
+      data: filterData,
+    };
+    console.log(response.data);
     if (response.data.filteredList) {
-      for (const cus of response.data.filteredList) {
+      for (const acc of response.data.filteredList) {
         // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
-        const cusConverted = new Customer(cus);
-        const isSelected = selectedCusIds.value.includes(
-          cusConverted.customerId
-        );
-        if (isSelected) ++selectedAmountInPage.value;
+        const accConverted = new Account(acc);
         rowList.value.push({
-          active: isSelected,
-          selected: isSelected,
-          cus: cusConverted,
+          active: false,
+          selected: false,
+          acc: accConverted,
+          isExpand: false,
         });
       }
     }
@@ -651,7 +655,7 @@ async function customerOnUpdate(type, data) {
         cus: data,
       });
       if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
-        await loadCustomerData();
+        await loadAccountData();
       }
       pushToast({
         type: "success",
@@ -675,7 +679,7 @@ async function customerOnUpdate(type, data) {
     default:
       break;
   }
-  // await loadCustomerData();
+  // await loadAccountData();
 }
 
 /**
@@ -683,7 +687,7 @@ async function customerOnUpdate(type, data) {
  * Author: Dũng (08/05/2023)
  */
 function btnAddOnClick() {
-  router.replace("/DI/DICustomer/create");
+  router.replace("/DI/DIAccount/create");
 }
 
 // #endregion

@@ -99,7 +99,6 @@
           <div
             :class="[isLoadingExport ? 'disabled' : '']"
             class="minc mi-36 mi-excel"
-            @click="exportExcelOnClick"
           ></div>
           <div class="button__hoverbox--export">
             <div class="hover__arrow"></div>
@@ -128,7 +127,7 @@
         :row-list="rowList"
         :key="tableKey"
         :delete-customer-function="deleteCustomerOnClick"
-        :selected-emp-ids="selectedCusIds"
+        :selected-cus-ids="selectedCusIds"
         :selected-amount-in-page="selectedAmountInPage"
         :have-data-after-call-api="haveDataAfterCallApi"
         v-model:pagingData="pagingData"
@@ -154,7 +153,6 @@ import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
 import $error from "../../../../js/resources/error";
 import $message from "../../../../js/resources/message";
-import $enum from "@/js/common/enum";
 const lang = inject("$lang");
 // #endregion
 
@@ -416,48 +414,6 @@ function goToCategoryOnClick() {
 }
 
 /**
- * Sự kiện click Export Excel
- *
- * Author: Dũng (04/06/2023)
- */
-async function exportExcelOnClick() {
-  try {
-    if (isLoadingExport.value) return;
-    isLoadingExport.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Gọi api xuất file excel
-    const response = await $axios.get($api.employee.exportExcel, {
-      responseType: "blob",
-    });
-
-    // Tạo URL cho blob data
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-
-    // Tạo thẻ a và gắn url blob data vào
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", $enum.exportedFileName);
-
-    // Append link element vào DOM và tự click để download
-    document.body.appendChild(link);
-    link.click();
-
-    // Remove các element vừa mới tạo khỏi trang
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-    isLoadingExport.value = false;
-  } catch (error) {
-    isLoadingExport.value = false;
-    console.log(error);
-    pushToast({
-      type: "fail",
-      message: $error.exportFailed,
-    });
-  }
-}
-
-/**
  * Sự kiện Customer Table emit dupplicate lên Customer List
  * @param {Object} cus object customer được dupplicate
  *
@@ -478,7 +434,7 @@ function dupplicateCusOnUpdate(cus) {
 function rowStatusOnUpdate(data) {
   const { type, rowIndex } = data;
   if (type == "toggleAllPage") {
-    // Nếu không có employee nào đang được chọn
+    // Nếu không có customer nào đang được chọn
     if (selectedAmountInPage.value == 0) {
       // Chọn tất cả
       selectedAmountInPage.value = rowList.value.length;
@@ -488,7 +444,7 @@ function rowStatusOnUpdate(data) {
         selectedCusIds.value.push(row.cus.customerId);
       }
     } else {
-      // Nếu có ít nhất một employee đang được chọn
+      // Nếu có ít nhất một customer đang được chọn
       // Hủy chọn tất cả
       selectedAmountInPage.value = 0;
       for (const row of rowList.value) {
@@ -520,7 +476,7 @@ function rowStatusOnUpdate(data) {
       }
     } else {
       --selectedAmountInPage.value;
-      // Nếu seleted của employee này false
+      // Nếu seleted của customer này false
       // Xóa khỏi selectedCusIds và tắt active
       selectedCusIds.value.splice(
         selectedCusIds.value.indexOf(rowList.value[rowIndex].cus.customerId),
@@ -651,6 +607,7 @@ async function loadCustomerData() {
       for (const cus of response.data.filteredList) {
         // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
         const cusConverted = new Customer(cus);
+        console.log(cusConverted);
         const isSelected = selectedCusIds.value.includes(
           cusConverted.customerId
         );
@@ -680,7 +637,7 @@ async function loadCustomerData() {
 /**
  * Sự kiện cập nhật mảng rowList
  * @param {String} type kiểu update (thêm hay sửa)
- * @param {Object} data dữ liệu của employee mới
+ * @param {Object} data dữ liệu của customer mới
  * Author: Dũng (08/05/2023)
  */
 async function customerOnUpdate(type, data) {
@@ -701,7 +658,7 @@ async function customerOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.employeeCreated,
+        message: $message.customerCreated,
         timeToLive: 1500,
       });
       break;
@@ -714,7 +671,7 @@ async function customerOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.employeeUpdated,
+        message: $message.customerUpdated,
         timeToLive: 1500,
       });
       break;

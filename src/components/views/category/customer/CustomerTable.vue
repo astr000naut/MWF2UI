@@ -256,7 +256,7 @@ const props = defineProps({
   deleteCustomerFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
-  selectedEmpIds: Array,
+  selectedCusIds: Array,
   selectedAmountInPage: Number,
   haveDataAfterCallApi: Boolean,
 });

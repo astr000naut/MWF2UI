@@ -21,37 +21,16 @@
     <div class="form__loader" v-show="form.isLoading">
       <BaseLoader />
     </div>
-    <div class="form">
+    <div class="form" :class="[form.size == 0 ? 'form--small' : 'form--big']">
+      <div class="form__expand">
+        <div
+          class="expand__icon mi mi-16 mi-chevron-left"
+          @click="formExpandOnClick"
+        ></div>
+      </div>
       <div class="form__header">
         <div class="header__left">
-          {{
-            form.type == "create"
-              ? "Thêm mới khách hàng"
-              : "Thông tin khách hàng"
-          }}
-        </div>
-        <div class="header__mid">
-          <div class="hm__left">
-            <BaseRadiogroup
-              label=""
-              :options="[
-                { text: 'Tổ chức', value: 0 },
-                {
-                  text: 'Cá nhân',
-                  value: 1,
-                },
-              ]"
-              v-model:radioValue="customer.customerType"
-            />
-          </div>
-          <div class="hm__right">
-            <div
-              class="checkbox mi mi-18"
-              :class="[customer.isProvider ? 'mi-checkbox-checked' : '']"
-              @click="customer.isProvider = !customer.isProvider"
-            ></div>
-            <div class="checkbox__label">Là nhà cung cấp</div>
-          </div>
+          {{ form.type == "create" ? "Thêm Tài khoản" : "Sửa Tài khoản" }}
         </div>
         <div class="header__right">
           <BaseButton bname="" class="mi-36 btn--help" />
@@ -64,484 +43,194 @@
       </div>
       <div class="form__body">
         <div class="form__upper">
-          <div class="fu__left">
-            <div
-              class="fu__left__top"
-              :style="{
-                flexDirection: customer.customerType == 1 ? 'row-reverse' : '',
-              }"
-            >
-              <div class="fu__taxCode">
-                <BaseTextfield
-                  pholder=""
-                  label="Mã số thuế"
-                  :isrequired="false"
-                  v-model:text="customer.customerTIN"
-                  noti=""
-                  ref="customerTINRef"
-                />
-              </div>
-              <div class="fu__code">
-                <BaseTextfield
-                  pholder=""
-                  label="Mã khách hàng"
-                  :isrequired="true"
-                  v-model:text="customer.customerCode"
-                  v-model:noti="formNoti.customerCode"
-                  ref="customerCodeRef"
-                />
-              </div>
-            </div>
-            <div
-              class="fu__left__mid m-top-24"
-              v-show="customer.customerType == 0"
-            >
-              <div class="fu__name">
-                <BaseTextfield
-                  pholder=""
-                  label="Tên khách hàng"
-                  :isrequired="true"
-                  v-model:text="customer.customerFullName"
-                  v-model:noti="formNoti.customerFullName"
-                  ref="customerFullNameRef"
-                />
-              </div>
-            </div>
-            <div
-              class="fu__left__mid m-top-24"
-              v-show="customer.customerType == 1"
-            >
-              <div class="fu__name_xungho">
-                <BaseTextfield
-                  pholder=""
-                  label="Xưng hô"
-                  :isrequired="false"
-                  v-model:text="customer.contactNamePrefix"
-                  noti=""
-                />
-              </div>
-              <div class="fu__name_real">
-                <BaseTextfield
-                  pholder="Họ và tên"
-                  label="Tên khách hàng"
-                  :isrequired="true"
-                  v-model:text="customer.customerFullName"
-                  v-model:noti="formNoti.customerFullName"
-                />
-              </div>
-            </div>
-            <div class="fu__left__bot m-top-24">
-              <div class="fu__address">
-                <BaseTextfield
-                  pholder=""
-                  label="Địa chỉ"
-                  :isrequired="false"
-                  v-model:text="customer.address"
-                  noti=""
-                />
-              </div>
-            </div>
-          </div>
-          <div class="fu__right">
-            <div
-              class="fu__right__top m-bot-24"
-              v-show="customer.customerType == 0"
-            >
-              <div class="fu__phone">
-                <BaseTextfield
-                  pholder=""
-                  label="Điện thoại"
-                  :isrequired="false"
-                  v-model:text="customer.phoneNumber"
-                  noti=""
-                />
-              </div>
-              <div class="fu__website">
-                <BaseTextfield
-                  pholder=""
-                  label="Website"
-                  :isrequired="false"
-                  v-model:text="customer.website"
-                  noti=""
-                />
-              </div>
-            </div>
-            <div class="fu__right__mid m-bot-24">
-              <BaseComboboxMultiSelect
-                v-model:selectedElementCode="customer.groupCodeList"
+          <div class="upper__line w-1_2">
+            <div class="line__left flex-1">
+              <BaseTextfield
+                pholder=""
+                label="Số tài khoản"
+                :isrequired="true"
+                v-model:text="account.accountNumber"
+                noti=""
               />
             </div>
-            <div class="fu__right__bot"></div>
+          </div>
+          <div class="upper__line">
+            <div class="line__left flex-1">
+              <BaseTextfield
+                pholder=""
+                label="Tên tài khoản"
+                :isrequired="true"
+                v-model:text="account.accountNameVi"
+                noti=""
+              />
+            </div>
+            <div class="line__right flex-1">
+              <BaseTextfield
+                pholder=""
+                label="Tên tiếng Anh"
+                :isrequired="false"
+                v-model:text="account.accountNameEn"
+                noti=""
+              />
+            </div>
+          </div>
+          <div class="upper__line w-1_2">
+            <div class="line__left flex-1">
+              <BaseTextfield
+                pholder=""
+                label="Tài khoản tổng hợp"
+                :isrequired="false"
+                v-model:text="account.accountNameVi"
+                noti=""
+              />
+            </div>
+            <div class="line__right flex-1">
+              <BaseCombobox
+                label="Tính chất"
+                pholder=""
+                :isrequired="true"
+                :option-list="[]"
+                v-model:text="account.property"
+                noti=""
+                selectedItemId=""
+              />
+            </div>
+          </div>
+          <div class="upper__line">
+            <div class="flex-1">
+              <BaseTextfield
+                pholder=""
+                label="Diễn giải"
+                :isrequired="false"
+                v-model:text="account.description"
+                noti=""
+              />
+            </div>
+          </div>
+          <div class="upper__line">
+            <BaseCheckbox label="Có hạch toán ngoại tệ" :checked="false" />
           </div>
         </div>
-        <div class="form__lower m-top-24">
-          <div class="fl__tablist">
-            <div
-              class="tab__info"
-              :class="[tab.id == selectedTabId ? 'active' : '']"
-              v-for="tab in tabList"
-              :key="tab.id"
-              @click="tabInfoOnClick(tab.id)"
-            >
-              {{ tab.name }}
-            </div>
-          </div>
-          <div class="fl__main">
-            <div class="main__panel main__info" v-show="selectedTabId == 0">
-              <div class="main__info__left">
-                <div class="custype--org" v-show="customer.customerType == 0">
-                  <div class="mileft__top">
-                    <div class="mileft__call">
-                      <BaseTextfield
-                        pholder="Xưng hô"
-                        label="Người liên hệ"
-                        :isrequired="false"
-                        v-model:text="customer.contactNamePrefix"
-                        noti=""
-                      />
-                    </div>
-                    <div class="mileft__name">
-                      <BaseTextfield
-                        pholder="Họ và tên"
-                        label=""
-                        :isrequired="false"
-                        v-model:text="customer.contactName"
-                        noti=""
-                      />
-                    </div>
-                  </div>
-                  <div class="mileft__mid m-top-6">
-                    <BaseTextfield
-                      pholder="Email"
-                      label=""
-                      :isrequired="false"
-                      v-model:text="customer.contactEmail"
-                      noti=""
-                    />
-                  </div>
-                  <div class="mileft__bot m-top-6">
-                    <BaseTextfield
-                      pholder="Số điện thoại"
-                      label=""
-                      :isrequired="false"
-                      v-model:text="customer.contactMobile"
-                      noti=""
-                    />
-                  </div>
-                </div>
-                <div class="custype--per" v-show="customer.customerType == 1">
-                  <BaseTextfield
-                    pholder="Email"
-                    label="Thông tin liên hệ"
-                    :isrequired="false"
-                    v-model:text="customer.contactEmail"
-                    noti=""
-                  />
-                  <BaseTextfield
-                    class="m-top-6"
-                    pholder="Điện thoại di động"
-                    label=""
-                    :isrequired="false"
-                    v-model:text="customer.phoneNumber"
-                    noti=""
-                  />
-                  <BaseTextfield
-                    class="m-top-6"
-                    pholder="Điện thoại cố định"
-                    label=""
-                    :isrequired="false"
-                    v-model:text="customer.landLineNumber"
-                    noti=""
-                  />
-                </div>
-                <div class="mileft__last m-top-12">
-                  <BaseTextfield
-                    pholder="Đại diện theo PL"
-                    label="Đại diện theo PL"
-                    :isrequired="false"
-                    v-model:text="customer.legalRepresentative"
-                    noti=""
-                  />
-                </div>
-              </div>
-              <div class="main__info__right">
-                <div class="miright--org" v-show="customer.customerType == 0">
-                  <div class="miright__top">
-                    <BaseTextfield
-                      pholder="Họ và tên"
-                      label="Người nhận hóa đơn điện tử"
-                      :isrequired="false"
-                      v-model:text="customer.envoiceContactName"
-                      noti=""
-                    />
-                  </div>
-                  <div class="miright__mid m-top-6">
-                    <BaseTextfield
-                      pholder="Email (Ngăn cách nhiều email bởi dấu chấm phẩy ';')"
-                      label=""
-                      :isrequired="false"
-                      v-model:text="customer.envoiceContactEmail"
-                      noti=""
-                    />
-                  </div>
-                  <div class="miright__bot m-top-6">
-                    <BaseTextfield
-                      pholder="Số điện thoại"
-                      label=""
-                      :isrequired="false"
-                      v-model:text="customer.envoiceContactMobile"
-                      noti=""
-                    />
-                  </div>
-                </div>
-                <div class="miright--per" v-show="customer.customerType == 1">
-                  <BaseTextfield
-                    pholder="Số CMND/Thẻ căn cước"
-                    label="Thông tin CMND/Thẻ căn cước"
-                    :isrequired="false"
-                    v-model:text="customer.identityNumber"
-                    noti=""
-                  />
-                  <BaseDatepicker
-                    pholder="Ngày cấp"
-                    class="m-top-6"
-                    label=""
-                    v-model:inputText="customer.identityDate"
-                    noti=""
-                  />
-                  <BaseTextfield
-                    class="m-top-6"
-                    pholder="Nơi cấp"
-                    label=""
-                    :isrequired="false"
-                    v-model:text="customer.identityPlace"
-                    noti=""
-                  />
-                </div>
+        <div class="form__lower">
+          <div class="lower__collapse">
+            <div class="collapse__title">
+              <div class="title__icon mi mi-16 mi-arrow-right-black"></div>
+              <div class="title__text" @click="collapseOnClick">
+                Theo dõi chi tiết theo
               </div>
             </div>
-            <div class="main__panel main__purchase" v-show="selectedTabId == 1">
-              <div class="mp__top">
-                <div class="mp__top__left">
+            <div class="collapse__option" v-show="!form.collapse">
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox label="Đối tượng" :checked="false" />
                   <BaseCombobox
-                    label="Điều khoản thanh toán"
-                    pholder=""
+                    label=""
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.paymentTermName"
+                    text=""
                     noti=""
                     selectedItemId=""
                   />
                 </div>
-                <div class="mp__top__mid">
-                  <BaseTextfield
-                    pholder=""
-                    label="Số ngày được nợ"
-                    :isrequired="false"
-                    v-model:text="customer.dueTime"
-                    noti=""
-                  />
-                </div>
-                <div class="mp__top__right">
-                  <BaseTextfield
-                    pholder=""
-                    label="Số nợ tối đa"
-                    :isrequired="false"
-                    v-model:text="customer.maximizeDebtAmount"
-                    noti=""
-                  />
+                <div class="line__box">
+                  <BaseCheckbox label="Tài khoản ngân hàng" :checked="false" />
                 </div>
               </div>
-              <div class="mp__mid m-top-12">
-                <BaseCombobox
-                  label="Tài khoản công nợ phải thu"
-                  pholder=""
-                  :isrequired="false"
-                  :option-list="[]"
-                  v-model:text="customer.receiveAccount"
-                  noti=""
-                  selectedItemId=""
-                />
-                <BaseCombobox
-                  v-show="customer.isProvider"
-                  label="Tài khoản công nợ phải trả"
-                  pholder=""
-                  :isrequired="false"
-                  :option-list="[]"
-                  v-model:text="customer.payAccount"
-                  noti=""
-                  selectedItemId=""
-                />
-              </div>
-            </div>
-            <div class="main__panel main__bankacc" v-show="selectedTabId == 2">
-              <div class="ba__table__container">
-                <table class="bankacc__table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <div class="text-left">Số tài khoản</div>
-                      </th>
-                      <th>
-                        <div class="text-left">Tên ngân hàng</div>
-                      </th>
-                      <th>
-                        <div class="text-left">Chi nhánh</div>
-                      </th>
-                      <th>
-                        <div class="text-left">Tỉnh/TP của ngân hàng</div>
-                      </th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="(bankAcc, index) in customerBankAccList"
-                      :key="bankAcc.bankAccount"
-                      ref="bankAccRowRefs"
-                    >
-                      <td>
-                        <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankAccount" />
-                        </div>
-                      </td>
-                      <td>
-                        <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankName" />
-                        </div>
-                      </td>
-                      <td>
-                        <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankBranch" />
-                        </div>
-                      </td>
-                      <td>
-                        <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankProvince" />
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="delete__button"
-                          @click="customerBankAccDeleteOnClick(index)"
-                        >
-                          <div class="delete__icon mi mi-16 mi-delete"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="table__control">
-                <BaseButton
-                  bname="Thêm dòng"
-                  class="btn--secondary"
-                  @click="bankAccAddOnClick"
-                />
-                <BaseButton bname="Xóa hết dòng" class="btn--secondary" />
-              </div>
-            </div>
-            <div class="main__panel main__oaddress" v-show="selectedTabId == 3">
-              <div class="oad__left">
-                <div class="oad__left__top">
-                  <BaseCombobox
-                    label="Vị trí địa lý"
-                    pholder="Quốc gia"
-                    :isrequired="false"
-                    :option-list="[]"
-                    v-model:text="customer.country"
-                    noti=""
-                    selectedItemId=""
-                  />
-
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox label="Đối tượng THCP" :checked="false" />
                   <BaseCombobox
                     label=""
-                    pholder="Tỉnh/Thành phố"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.provinceOrCity"
+                    text=""
                     noti=""
                     selectedItemId=""
                   />
                 </div>
-                <div class="oad__left__bot m-top-6">
+                <div class="line__box">
+                  <BaseCheckbox label="Công trình" :checked="false" />
                   <BaseCombobox
                     label=""
-                    pholder="Quận/Huyện"
                     :isrequired="false"
                     :option-list="[]"
-                    v-model:text="customer.district"
-                    noti=""
-                    selectedItemId=""
-                  />
-
-                  <BaseCombobox
-                    label=""
-                    pholder="Xã/Phường"
-                    :isrequired="false"
-                    :option-list="[]"
-                    v-model:text="customer.wardOrCommune"
+                    text=""
                     noti=""
                     selectedItemId=""
                   />
                 </div>
               </div>
-              <div class="oad__right">
-                <div class="oad__right__title">
-                  <div class="title__text">Địa chỉ giao hàng</div>
-                  <div class="title__checkbox">
-                    <div
-                      class="checkbox mi mi-18"
-                      :class="[true ? 'mi-checkbox-checked' : '']"
-                    ></div>
-                    <div class="checkbox__label">Giống địa chỉ khách hàng</div>
-                  </div>
-                </div>
-                <div class="oad__right__table m-top-6">
-                  <table class="oad__table">
-                    <tbody>
-                      <tr
-                        v-for="(item, index) in customerShippingAddressList"
-                        :key="item.id"
-                        ref="osAddressRowRefs"
-                      >
-                        <td>
-                          <div class="address__input">
-                            <input type="text" :value="item.address" />
-                          </div>
-                        </td>
-                        <td>
-                          <div
-                            class="delete__button"
-                            @click="osAddressBtnDeleteOnClick(index)"
-                          >
-                            <div class="delete__icon mi mi-16 mi-delete"></div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="oad__right__control m-top-12">
-                  <BaseButton
-                    bname="Thêm dòng"
-                    class="btn--secondary"
-                    @click="osAddressBtnAddOnClick"
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox label="Đơn đặt hàng" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
                   />
-                  <BaseButton bname="Xóa hết dòng" class="btn--secondary" />
+                </div>
+                <div class="line__box">
+                  <BaseCheckbox label="Hợp đồng bán" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
                 </div>
               </div>
-            </div>
-            <div class="main__panel main__note" v-show="selectedTabId == 4">
-              <div class="text__area">
-                <div class="text__area__label">Ghi chú</div>
-                <textarea
-                  name=""
-                  id=""
-                  cols="100"
-                  rows="10"
-                  v-model="customer.description"
-                ></textarea>
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox label="Hợp đồng mua" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
+                <div class="line__box">
+                  <BaseCheckbox label="Khoản mục CP" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
+              </div>
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox label="Đơn vị" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
+                <div class="line__box">
+                  <BaseCheckbox label="Mã thống kê" :checked="false" />
+                  <BaseCombobox
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -567,27 +256,25 @@
 
 <script setup>
 //#region import
-import BaseRadiogroup from "../../../../components/base/BaseRadiogroup";
 import BaseTextfield from "../../../../components/base/BaseTextfield";
 import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
 import BaseNotibox from "@/components/base/BaseNotibox.vue";
+import BaseCheckbox from "../../../base/BaseCheckbox.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
-import BaseComboboxMultiSelect from "@/components/base/BaseComboboxMultiSelect.vue";
-import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import { nextTick, ref, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
 import $api from "@/js/api";
-import { Customer } from "@/js/model/customer";
+import { Account } from "@/js/model/account";
 //#endregion
 
 //#region init
 const $axios = inject("$axios");
 const router = useRouter();
 const route = useRoute();
-const customer = ref({});
+const account = ref({});
 const lang = inject("$lang");
 
 const formDialog = ref({
@@ -598,80 +285,23 @@ const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
   notiboxMessage: "",
-
-  customerCode: "",
-  customerFullName: "",
 });
-const customerBankAccList = ref([
-  {
-    bankAccount: "123",
-    bankName: "BIDV",
-    bankBranch: "Cau giay",
-    bankProvince: "Hanoi",
-  },
-  {
-    bankAccount: "1234",
-    bankName: "BIDV",
-    bankBranch: "Cau giay",
-    bankProvince: "Hanoi",
-  },
-]);
 
 let firstErrorRef = null;
-const customerShippingAddressList = ref([
-  {
-    id: 0,
-    address: "144 Xuan Thuy",
-  },
-  {
-    id: 1,
-    address: "10 Ho Tung Mau",
-  },
-]);
-const selectedTabId = ref(0);
-const tabList = ref([
-  {
-    id: 0,
-    name: "Thông tin liên hệ",
-  },
-  {
-    id: 1,
-    name: "Điều khoản thanh toán",
-  },
-  {
-    id: 2,
-    name: "Tài khoản ngân hàng",
-  },
-  {
-    id: 3,
-    name: "Địa chỉ khác",
-  },
-  {
-    id: 4,
-    name: "Ghi chú",
-  },
-]);
-
-const bankAccRowRefs = ref([]);
-const osAddressRowRefs = ref([]);
 const notiRef = ref(null);
 
 const form = ref({
+  size: 0,
+  collapse: true,
   type: "",
-  cusId: "",
+  accId: "",
   isLoading: false,
 });
-
-// var oldCustomer = null;
-
-const customerCodeRef = ref(null);
-const customerTINRef = ref(null);
-const customerFullNameRef = ref(null);
 
 const props = defineProps({
   metadata: Object,
 });
-const emits = defineEmits(["updateCuslist", "update:metadata"]);
+const emits = defineEmits(["updateAccList", "update:metadata"]);
 resetFormState();
 //#endregion
 
@@ -699,11 +329,7 @@ onMounted(async () => {
 //#region function
 
 function focusOnFirstInput() {
-  if (customer.value.customerType == $enum.customer.type.org) {
-    customerTINRef.value.refInput.focus();
-  } else {
-    customerCodeRef.value.refInput.focus();
-  }
+  // need
 }
 
 /**
@@ -713,6 +339,8 @@ function focusOnFirstInput() {
  */
 function resetFormState() {
   form.value = {
+    size: 0,
+    collapse: true,
     type: route.params.id
       ? $enum.form.infoType
       : props.metadata.isDupplicate
@@ -728,7 +356,7 @@ function resetFormState() {
   //     customerDupplicate: props.metadata.customerDupplicate,
   //   });
   // }
-  customer.value = new Customer({});
+  account.value = new Account({});
 }
 
 /**
@@ -753,15 +381,17 @@ async function handleResponseStatusCode(code, error) {
 }
 
 /**
- * Gọi API lấy thông tin khách hàng và gán vào customer object
- * @param {String} cusId Id khách hàng
+ * Gọi API lấy thông tin account và gán vào account object
+ * @param {String} accId Id account
  *
  * Author: Dũng (28/06/2023)
  */
-async function fetchCustomerInfoToCustomerObject(cusId) {
-  const response = await $axios.get($api.customer.one(cusId));
-  const cusFromApi = response.data;
-  customer.value = new Customer(cusFromApi);
+async function fetchCustomerInfoToCustomerObject(accId) {
+  // need
+  console.log(accId);
+  // const response = await $axios.get($api.account.one(accId));
+  // const accFromApi = response.data;
+  // account.value = new Account(accFromApi);
 }
 
 /**
@@ -770,12 +400,6 @@ async function fetchCustomerInfoToCustomerObject(cusId) {
  * Author: Dũng (08/05/2023)
  */
 async function getDataFromApi() {
-  if (form.value.type == $enum.form.createType) {
-    // Fetch new customer code
-    await fetchNewCustomerCode();
-    return;
-  }
-
   if (form.value.type == $enum.form.infoType) {
     // Fetch customer information
     await fetchCustomerInfoToCustomerObject(form.value.cusId, form.value.type);
@@ -802,16 +426,6 @@ async function getDataFromApi() {
 }
 
 /**
- * Gọi API lấy mã nhân viên mới
- *
- * Author: Dũng (08/05/2023)
- */
-async function fetchNewCustomerCode() {
-  const response = await $axios.get($api.customer.newCode);
-  customer.value.customerCode = response.data;
-}
-
-/**
  * Kiểm tra một string có phải UUID không
  *
  * Author: Dũng (11/06/2023)
@@ -824,44 +438,18 @@ function isUUID(str) {
 //#endregion
 
 //#region handle event
+
+function collapseOnClick() {
+  form.value.collapse = !form.value.collapse;
+}
+
+function formExpandOnClick() {
+  console.log(form.value.size);
+  form.value.size = 1 - form.value.size;
+}
+
 function closeBtnOnClick() {
-  router.replace("/DI/DICustomer");
-}
-
-function tabInfoOnClick(tabId) {
-  selectedTabId.value = tabId;
-}
-
-async function bankAccAddOnClick() {
-  customerBankAccList.value.push({
-    bankAccount: "",
-    bankName: "",
-    bankBranch: "",
-    bankProvince: "",
-  });
-  await nextTick();
-  bankAccRowRefs.value[
-    customerBankAccList.value.length - 1
-  ].firstChild.firstChild.firstChild.focus();
-}
-
-function customerBankAccDeleteOnClick(index) {
-  customerBankAccList.value.splice(index, 1);
-}
-
-async function osAddressBtnAddOnClick() {
-  customerShippingAddressList.value.push({
-    id: customerShippingAddressList.value.length + 1,
-    address: "",
-  });
-  await nextTick();
-  osAddressRowRefs.value[
-    customerShippingAddressList.value.length - 1
-  ].firstChild.firstChild.firstChild.focus();
-}
-
-function osAddressBtnDeleteOnClick(index) {
-  customerShippingAddressList.value.splice(index, 1);
+  router.replace("/DI/DIAccount");
 }
 
 /**
@@ -871,44 +459,7 @@ function osAddressBtnDeleteOnClick(index) {
  */
 async function validateData() {
   firstErrorRef = null;
-  // Validate mã khách hàng
-  // Mã trống
-  if (customer.value.customerCode.trim() == "") {
-    customer.value.employeeCode = "";
-    formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã khách hàng");
-    firstErrorRef = firstErrorRef ?? customerCodeRef;
-  } else {
-    // Mã quá dài
-    if (customer.value.customerCode.length > 50) {
-      formNoti.value.customerCode = $error.fieldTooLong("Mã khách hàng", 50);
-      firstErrorRef = firstErrorRef ?? customerCodeRef;
-    } else {
-      // Kiểm tra trùng mã
-      const isCodeExist = await isCusCodeExist(
-        customer.value.customerCode,
-        form.value.cusId
-      );
-      if (isCodeExist) {
-        formNoti.value.customerCode = "Mã khách hàng đã tồn tại";
-        firstErrorRef = firstErrorRef ?? customerCodeRef;
-      }
-    }
-  }
-  // Kiểm tra tên KH
-  // Tên bị trống
-  if (customer.value.customerFullName.trim() == "") {
-    formNoti.value.customerFullName = $error.fieldCannotEmpty("Tên khách hàng");
-    firstErrorRef = firstErrorRef ?? customerFullNameRef;
-  } else {
-    // Tên quá dài
-    if (customer.value.customerFullName.length > 100) {
-      formNoti.value.customerFullName = $error.fieldTooLong(
-        "Tên khách hàng",
-        100
-      );
-      firstErrorRef = firstErrorRef ?? customerFullNameRef;
-    }
-  }
+  // need
 
   if (firstErrorRef != null) {
     // Update notibox value
@@ -917,22 +468,6 @@ async function validateData() {
   } else {
     formNoti.value.notiboxMessage = "";
   }
-}
-
-/**
- * Kiểm tra mã customerCode đã tồn tại chưa
- * @param {String} cusCode mã cần check
- * @param {String} cusId id cua cus (chỉ cần nếu form là form sửa)
- * Author: Dux(28/06/2023)
- */
-async function isCusCodeExist(cusCode, cusId) {
-  const response = await $axios.get($api.customer.checkCodeExist, {
-    params: {
-      id: cusId,
-      code: cusCode,
-    },
-  });
-  return response.data;
 }
 
 /**
@@ -950,9 +485,9 @@ async function displayNotiBox() {
  *
  * Author: Dũng (08/05/2023)
  */
-async function callCreateCustomerApi() {
-  const requestBody = customer.value.convertToApiFormat();
-  const response = await $axios.post($api.customer.index, requestBody);
+async function callCreateAccountApi() {
+  const requestBody = account.value.convertToApiFormat();
+  const response = await $axios.post($api.account.index, requestBody);
   return response.data;
 }
 
@@ -980,16 +515,16 @@ async function btnSaveOnClick() {
       // Nếu form là form cập nhật thông tin
       if (form.value.type == $enum.form.infoType) {
         // Gọi API sửa nhân viên
-        await callEditCustomerApi();
+        await callEditAccountApi();
         // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
-        emits("updateCuslist", "edit", customer.value);
+        emits("updateAccList", "edit", account.value);
       } else {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới nhân viên
-        const newCustomerId = await callCreateCustomerApi();
-        customer.value.customerId = newCustomerId;
+        const newAccountId = await callCreateAccountApi();
+        account.value.accountId = newAccountId;
         // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
-        emits("updateCuslist", "create", customer.value);
+        emits("updateAccList", "create", account.value);
       }
 
       form.value.isLoading = false;
@@ -1003,14 +538,14 @@ async function btnSaveOnClick() {
 }
 
 /**
- * Gọi API sửa khách hàng
+ * Gọi API sửa account
  *
  * Author: Dũng (29/06/2023)
  */
-async function callEditCustomerApi() {
-  const requestBody = customer.value.convertToApiFormat();
+async function callEditAccountApi() {
+  const requestBody = account.value.convertToApiFormat();
   // console.log(requestBody);
-  await $axios.put($api.customer.one(form.value.cusId), requestBody);
+  await $axios.put($api.account.one(form.value.cusId), requestBody);
 }
 
 /**
@@ -1042,7 +577,8 @@ async function formDialogCloseBtnOnClick() {
   if (firstErrorRef != null) {
     focusOnFirstErrorInput();
   } else {
-    customerCodeRef.value.refInput.focus();
+    //customerCodeRef.value.refInput.focus();
+    // need
   }
 }
 
