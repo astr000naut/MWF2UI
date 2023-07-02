@@ -3,7 +3,10 @@
     <table class="m-table">
       <thead>
         <tr>
-          <th class="th1--sticky w-50">
+          <th
+            class="th1--sticky"
+            :style="{ width: tableStructure.checkboxWidth + 'px' }"
+          >
             <div class="align-center">
               <div
                 class="t__checkbox mi-24"
@@ -20,30 +23,13 @@
               </div>
             </div>
           </th>
-          <th class="w-180">
-            <div class="text-left">Mã khách hàng</div>
-          </th>
-          <th class="w-400">
-            <div class="text-left">Tên khách hàng</div>
-          </th>
-          <th>
-            <div class="text-left">Địa chỉ</div>
-          </th>
-          <th class="w-180">
-            <div class="text-left">Số điện thoại</div>
-          </th>
-          <th class="zindex--8 w-200">
-            <div class="text-left">
-              <span
-                class="text"
-                @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
-                @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
-              >
-                Số CMND
-              </span>
-              <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
-                {{ lang.cat_customer.tooltip.cusIdentity }}
-              </div>
+          <th
+            v-for="header in tableStructure.headerList"
+            :key="header.name"
+            :style="{ width: header.width != 0 ? header.width + 'px' : 'auto' }"
+          >
+            <div :class="header.align">
+              {{ header.name }}
             </div>
           </th>
           <th class="thn--sticky w-120">
@@ -86,20 +72,11 @@
                 </div>
               </div>
             </td>
-            <td>
-              <div class="text-left">{{ cus.customerCode }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ cus.customerFullName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ cus.address }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ cus.phoneNumber }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ cus.identityNumber }}</div>
+            <td
+              v-for="header in tableStructure.headerList"
+              :key="header.name + cus.customerId"
+            >
+              <div :class="header.align">{{ cus[header.prop] }}</div>
             </td>
             <td
               :class="[table.expandCusId == cus.customerId ? 'above' : '']"
@@ -273,10 +250,42 @@ const table = ref({
   expandCusId: "",
 });
 
-const tooltip = ref({
-  isShowIdentityNumber: false,
-  isShowBankPlace: false,
-});
+const tableStructure = {
+  allowMultipeOperation: true,
+  checkboxWidth: 50,
+  headerList: [
+    {
+      name: "MÃ KHÁCH HÀNG",
+      prop: "customerCode",
+      align: "text-left",
+      width: 200,
+    },
+    {
+      name: "TÊN KHÁCH HÀNG",
+      prop: "customerFullName",
+      align: "text-left",
+      width: 300,
+    },
+    {
+      name: "ĐỊA CHỈ",
+      prop: "address",
+      align: "text-left",
+      width: 0,
+    },
+    {
+      name: "SỐ ĐIỆN THOẠI",
+      prop: "phoneNumber",
+      align: "text-left",
+      width: 180,
+    },
+    {
+      name: "SỐ CMND",
+      prop: "identityNumber",
+      align: "text-left",
+      width: 180,
+    },
+  ],
+};
 
 // #endregion
 
@@ -312,24 +321,6 @@ function thCheckboxOnClick() {
     type: "toggleAllPage",
     rowIndex: "",
   });
-}
-
-/**
- * Mouse leave khỏi ô th có tooltip
- * @param {String} name tên tooltip của ô th
- * Author: Dũng (08/05/2023)
- */
-function thOnMouseLeave(name) {
-  tooltip.value[name] = false;
-}
-
-/**
- * Mouse enter vào ô th có tooltip
- * @param {String} name tên tooltip của ô th
- * Author: Dũng (08/05/2023)
- */
-function thOnMouseEnter(name) {
-  tooltip.value[name] = true;
 }
 
 /**

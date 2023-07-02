@@ -303,18 +303,6 @@
     }
   }
   
-  .th__tooltip {
-    position: absolute;
-    bottom: -32px;
-    left: 0px;
-    padding: 4px;
-    border-radius: 4px;
-    width: max-content;
-    color: #fff;
-    background-color: #393a3d;
-    font-weight: 400;
-  }
-  
   .zindex--8 {
     z-index: 8;
   }

@@ -12,5 +12,8 @@ const cat_customer = {
   tooltip: {
     cusIdentity: "Số chứng minh nhân dân",
   },
+  dialog: {
+    deleteConfirmation: "Xác nhận xóa khách hàng",
+  },
 };
 export default cat_customer;
