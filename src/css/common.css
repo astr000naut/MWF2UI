@@ -108,6 +108,16 @@
     max-width: 120px;
   }
 
+  .w-150 {
+    width: 150px;
+    max-width: 150px;
+  }
+
+  .w-180 {
+    width: 180px;
+    max-width: 180px;
+  }
+
   .w-200 {
     width: 200px;
     max-width: 200px;
@@ -117,6 +127,12 @@
     width: 250px;
     max-width: 250px;
   }
+
+  .w-400 {
+    width: 400px;
+    max-width: 400px;
+  }
+
   
   .wrapper {
     position: fixed;

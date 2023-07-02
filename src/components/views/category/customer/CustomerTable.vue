@@ -3,7 +3,7 @@
     <table class="m-table">
       <thead>
         <tr>
-          <th class="th1--sticky">
+          <th class="th1--sticky w-50">
             <div class="align-center">
               <div
                 class="t__checkbox mi-24"
@@ -20,20 +20,20 @@
               </div>
             </div>
           </th>
-          <th>
-            <div class="text-left w-120">Mã khách hàng</div>
+          <th class="w-180">
+            <div class="text-left">Mã khách hàng</div>
+          </th>
+          <th class="w-400">
+            <div class="text-left">Tên khách hàng</div>
           </th>
           <th>
-            <div class="text-left w-200">Tên khách hàng</div>
+            <div class="text-left">Địa chỉ</div>
           </th>
-          <th>
-            <div class="text-left w-250">Địa chỉ</div>
+          <th class="w-180">
+            <div class="text-left">Số điện thoại</div>
           </th>
-          <th>
-            <div class="text-left w-120">Số điện thoại</div>
-          </th>
-          <th class="zindex--8">
-            <div class="text-left mw-150">
+          <th class="zindex--8 w-200">
+            <div class="text-left">
               <span
                 class="text"
                 @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
@@ -42,18 +42,18 @@
                 Số CMND
               </span>
               <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
-                {{ lang.tableHeader.empIdentityTooltip }}
+                {{ lang.cat_customer.tooltip.cusIdentity }}
               </div>
             </div>
           </th>
-          <th class="thn--sticky">
-            <div class="text-left mw-90">{{ lang.tableHeader.tool }}</div>
+          <th class="thn--sticky w-120">
+            <div class="align-center">{{ lang.tableHeader.tool }}</div>
           </th>
         </tr>
       </thead>
       <tbody>
         <template v-if="isLoadingData">
-          <tr v-for="i in Math.min(12, pagingData.pageSize)" :key="i">
+          <tr v-for="i in 10" :key="i">
             <td class="td1--sticky"><div class="loading-item"></div></td>
             <td v-for="j in 5" :key="j">
               <div class="loading-item"></div>
@@ -102,7 +102,7 @@
               <div class="text-left">{{ cus.identityNumber }}</div>
             </td>
             <td
-              :class="[table.expandEmpId == cus.customerId ? 'above' : '']"
+              :class="[table.expandCusId == cus.customerId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
             >
@@ -128,13 +128,13 @@
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandEmpId == cus.customerId"
-                  @mouseleave="table.expandEmpId = ''"
+                  v-show="table.expandCusId == cus.customerId"
+                  @mouseleave="table.expandCusId = ''"
                 >
                   <li>
                     <div
                       class="li-data"
-                      @click="dupplicateEmployeeOnClick(emp)"
+                      @click="dupplicateCustomerOnClick(cus)"
                     >
                       {{ lang.table_items.dupplicate }}
                     </div>
@@ -264,13 +264,13 @@ const props = defineProps({
 const emits = defineEmits([
   "updatePagingData",
   "updateRowStatus",
-  "updateDupplicateEmp",
+  "updateDupplicateCus",
 ]);
 
 const table = ref({
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
-  expandEmpId: "",
+  expandCusId: "",
 });
 
 const tooltip = ref({
@@ -299,9 +299,8 @@ const isLastPage = computed(() => {
  * Sự kiện click vào nhân bản
  * Author: Dũng (03/06/2023)
  */
-function dupplicateEmployeeOnClick(emp) {
-  emits("updateDupplicateEmp", emp);
-  // router.push(`/employee/dupplicate/${empId}`);
+function dupplicateCustomerOnClick(cus) {
+  emits("updateDupplicateCus", cus);
 }
 
 /**
@@ -349,28 +348,27 @@ async function nextPageOnClick() {
 async function prevPageOnClick() {
   if (props.pagingData.pageNumber <= 1 || props.isLoadingData) return;
   await props.pagingPrevPage();
-  console.log("Prev");
 }
 
 /**
- * Click vào btn sửa nhân viên
- * @param {String} empId Id nhân viên
+ * Click vào btn sửa KH
+ * @param {String} cusId Id KH
  * Author: Dũng (08/05/2023)
  */
-function btnEditOnClick(empId) {
-  router.push(`/DI/DIEmployee/${empId}`);
+function btnEditOnClick(cusId) {
+  router.push(`/DI/DICustomer/${cusId}`);
 }
 
 /**
- * Click vào nút mở rộng của một nhân viên
- * @param {String} empId Id nhân viên
+ * Click vào nút mở rộng của một KH
+ * @param {String} cusId Id KH
  * Author: Dũng (08/05/2023)
  */
-function btnExpandOnClick(empId) {
-  if (table.value.expandEmpId == empId) {
-    table.value.expandEmpId = "";
+function btnExpandOnClick(cusId) {
+  if (table.value.expandCusId == cusId) {
+    table.value.expandCusId = "";
   } else {
-    table.value.expandEmpId = empId;
+    table.value.expandCusId = cusId;
   }
 }
 
@@ -399,7 +397,6 @@ function pagArrowdownOnClick() {
 
 /**
  * Click vào checkbox
- * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
 function checkBoxOnClick(rowIndex) {
@@ -411,7 +408,6 @@ function checkBoxOnClick(rowIndex) {
 
 /**
  * Click vào tr
- * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
 function trOnClick(rowIndex) {
@@ -423,11 +419,9 @@ function trOnClick(rowIndex) {
 
 /**
  * DblClick vào checkbox
- * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
 function trOnDblclick(cusId) {
-  console.log(cusId);
   router.push(`/DI/DICustomer/${cusId}`);
 }
 

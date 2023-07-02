@@ -31,7 +31,6 @@
 import { ref, inject } from "vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
-console.log(route.path);
 const lang = inject("$lang");
 
 const rows = ref([
@@ -88,7 +87,7 @@ const rows = ref([
         links: [
           {
             name: lang.category.link.accountSystem,
-            to: "",
+            to: "/DI/DIAccount",
           },
           {
             name: lang.category.link.transferAccount,

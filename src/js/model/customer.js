@@ -37,7 +37,6 @@ export class Customer {
   groupCodeList;
 
   constructor(e) {
-    console.log(e);
     this.customerId = e.customerId ?? "";
     this.customerType = e.customerType ?? 0;
     this.isProvider = e.isProvider ?? false;
@@ -118,7 +117,45 @@ export class Customer {
       identityPlace: this.identityPlace,
       groupCodeList: this.groupCodeList.join(","),
     };
-    console.log(obj);
     return obj;
+  }
+
+  cloneFromOtherCustomer(e) {
+    this.customerId = e.customerId;
+    this.customerType = e.customerType;
+    this.isProvider = e.isProvider;
+    this.customerTIN = e.customerTIN;
+    this.customerCode = e.customerCode;
+    this.customerFullName = e.customerFullName;
+    this.employeeId = e.employeeId;
+    this.employeeFullName = e.employeeFullName;
+    this.address = e.address;
+    this.phoneNumber = e.phoneNumber;
+    this.website = e.website;
+    this.contactNamePrefix = e.contactNamePrefix;
+    this.contactName = e.contactName;
+    this.contactMobile = e.contactMobile;
+    this.contactEmail = e.contactEmail;
+    this.landLineNumber = e.landLineNumber;
+    this.legalRepresentative = e.legalRepresentative;
+    this.envoiceContactName = e.envoiceContactName;
+    this.envoiceContactEmail = e.envoiceContactEmail;
+    this.envoiceContactMobile = e.envoiceContactMobile;
+    this.paymentTermName = e.paymentTermName;
+    this.dueTime = e.dueTime;
+    this.maximizeDebtAmount = e.maximizeDebtAmount;
+    this.receiveAccount = e.receiveAccount;
+    this.payAccount = e.payAccount;
+    this.bankAccountList = e.bankAccountList;
+    this.country = e.country;
+    this.provinceOrCity = e.provinceOrCity;
+    this.district = e.district;
+    this.wardOrCommune = e.wardOrCommune;
+    this.shippingAddressList = e.shippingAddressList;
+    this.description = e.description;
+    this.identityNumber = e.identityNumber;
+    this.identityDate = e.identityDate;
+    this.identityPlace = e.identityPlace;
+    this.groupCodeList = e.groupCodeList;
   }
 }

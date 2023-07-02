@@ -4,6 +4,8 @@ import EmployeeList from "../components/views/category/employee/EmployeeList";
 import EmployeeForm from "../components/views/category/employee/EmployeeForm";
 import CustomerList from "../components/views/category/customer/CustomerList";
 import CustomerForm from "../components/views/category/customer/CustomerForm";
+import AccountForm from "../components/views/category/account/AccountForm";
+import AccountList from "../components/views/category/account/AccountList";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -47,6 +49,26 @@ const routes = [
             components: {
               default: CustomerList,
               CustomerForm: CustomerForm,
+            },
+          },
+        ],
+      },
+      {
+        path: "DIAccount",
+        component: AccountList,
+        children: [
+          {
+            path: "create",
+            components: {
+              default: AccountList,
+              CustomerForm: AccountForm,
+            },
+          },
+          {
+            path: ":id",
+            components: {
+              default: AccountList,
+              CustomerForm: AccountForm,
             },
           },
         ],

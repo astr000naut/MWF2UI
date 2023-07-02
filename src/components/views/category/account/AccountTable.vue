@@ -3,78 +3,23 @@
     <table class="m-table">
       <thead>
         <tr>
-          <th class="th1--sticky">
-            <div class="align-center mw-40">
-              <div
-                class="t__checkbox mi-24"
-                :class="[selectedAmountInPage > 0 ? 'selected' : '']"
-                @click="thCheckboxOnClick"
-              >
-                <i
-                  :class="[
-                    selectedAmountInPage == rowList.length
-                      ? 'fas fa-check'
-                      : 'fas fa-minus',
-                  ]"
-                ></i>
-              </div>
-            </div>
+          <th>
+            <div class="text-left w-120">Số tài khoản</div>
           </th>
           <th>
-            <div class="text-left mw-120">{{ lang.tableHeader.empCode }}</div>
+            <div class="text-left w-200">Tên tài khoản</div>
           </th>
           <th>
-            <div class="text-left mw-200">{{ lang.tableHeader.empName }}</div>
+            <div class="text-left w-250">Tính chất</div>
           </th>
           <th>
-            <div class="text-left mw-90">{{ lang.tableHeader.empGender }}</div>
+            <div class="text-left w-120">Tên tiếng Anh</div>
           </th>
           <th>
-            <div class="text-center mw-120">{{ lang.tableHeader.empDob }}</div>
-          </th>
-          <th class="zindex--8">
-            <div class="text-left mw-150">
-              <span
-                class="text"
-                @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
-                @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
-              >
-                {{ lang.tableHeader.empIdentity }}
-              </span>
-              <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
-                {{ lang.tableHeader.empIdentityTooltip }}
-              </div>
-            </div>
+            <div class="text-left w-120">Diễn giải</div>
           </th>
           <th>
-            <div class="text-left mw-180">{{ lang.tableHeader.empPos }}</div>
-          </th>
-          <th>
-            <div class="text-left mw-240">{{ lang.tableHeader.empDepart }}</div>
-          </th>
-          <th>
-            <div class="text-left mw-150">
-              {{ lang.tableHeader.empBankAcc }}
-            </div>
-          </th>
-          <th>
-            <div class="text-left mw-150">
-              {{ lang.tableHeader.empBankName }}
-            </div>
-          </th>
-          <th class="zindex--8">
-            <div class="text-left mw-200">
-              <span
-                class="text"
-                @mouseenter="thOnMouseEnter('isShowBankPlace')"
-                @mouseleave="thOnMouseLeave('isShowBankPlace')"
-              >
-                {{ lang.tableHeader.empBankBranch }}
-              </span>
-              <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
-                {{ lang.tableHeader.empBankBranchTooltip }}
-              </div>
-            </div>
+            <div class="text-left w-120">Trạng thái</div>
           </th>
           <th class="thn--sticky">
             <div class="align-center mw-90">{{ lang.tableHeader.tool }}</div>
@@ -83,9 +28,9 @@
       </thead>
       <tbody>
         <template v-if="isLoadingData">
-          <tr v-for="i in Math.min(15, pagingData.pageSize)" :key="i">
+          <tr v-for="i in Math.min(12, pagingData.pageSize)" :key="i">
             <td class="td1--sticky"><div class="loading-item"></div></td>
-            <td v-for="j in 10" :key="j">
+            <td v-for="j in 5" :key="j">
               <div class="loading-item"></div>
             </td>
             <td class="tdn--sticky">
@@ -95,97 +40,60 @@
         </template>
         <template v-else>
           <tr
-            v-for="({ active, selected, emp } = row, index) in rowList"
-            :key="emp.employeeId"
+            v-for="({ active, cus } = row, index) in rowList"
+            :key="cus.customerId"
             :class="{
               active: active,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(emp.employeeId)"
+            @dblclick="trOnDblclick(cus.customerId)"
           >
-            <td class="td1--sticky" @dblclick.stop>
-              <div class="align-center">
-                <div
-                  class="t__checkbox mi-24"
-                  :class="{
-                    selected: selected,
-                  }"
-                  @click.stop="checkBoxOnClick(index)"
-                >
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
+            <td>
+              <div class="text-left">{{ cus.customerCode }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.employeeCode }}</div>
+              <div class="text-left">{{ cus.customerFullName }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.employeeFullName }}</div>
+              <div class="text-left">{{ cus.address }}</div>
             </td>
             <td>
-              <div class="text-left">
-                {{
-                  emp.gender == 0
-                    ? lang.gender.male
-                    : emp.gender == 1
-                    ? lang.gender.female
-                    : emp.gender == 2
-                    ? lang.gender.other
-                    : ""
-                }}
-              </div>
+              <div class="text-left">{{ cus.phoneNumber }}</div>
             </td>
             <td>
-              <div class="text-center">
-                {{ emp.dateOfBirth }}
-              </div>
+              <div class="text-left">{{ cus.identityNumber }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.identityNumber }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.positionName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.departmentName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankAccount }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankName }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.bankBranch }}</div>
+              <div class="text-left">Đang sử dụng</div>
             </td>
             <td
-              :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
+              :class="[table.expandEmpId == cus.customerId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
             >
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(emp.employeeId)"
+                  @click="btnEditOnClick(cus.customerId)"
                 >
                   {{ lang.table_items.edit }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
-                  @click="btnExpandOnClick(emp.employeeId)"
+                  @click="btnExpandOnClick(cus.customerId)"
                 ></button>
                 <ul
                   class="actions-list btn__expand"
                   :class="
-                    (emp.employeeId ==
-                      rowList[rowList.length - 1].emp.employeeId ||
-                      emp.employeeId ==
-                        rowList[rowList.length - 2].emp.employeeId) &&
+                    (cus.customerId ==
+                      rowList[rowList.length - 1].cus.customerId ||
+                      cus.customerId ==
+                        rowList[rowList.length - 2].cus.customerId) &&
                     rowList.length > 6
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandEmpId == emp.employeeId"
+                  v-show="table.expandEmpId == cus.customerId"
                   @mouseleave="table.expandEmpId = ''"
                 >
                   <li>
@@ -199,7 +107,7 @@
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteEmployeeFunction(emp.employeeId)"
+                      @click="deleteCustomerFunction(cus.customerId)"
                     >
                       {{ lang.table_items.delete }}
                     </div>
@@ -310,11 +218,9 @@ const props = defineProps({
   pagingData: Object,
   isLoadingData: Boolean,
   rowList: Array,
-  deleteEmployeeFunction: Function,
+  deleteCustomerFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
-  selectedEmpIds: Array,
-  selectedAmountInPage: Number,
   haveDataAfterCallApi: Boolean,
 });
 
@@ -328,11 +234,6 @@ const table = ref({
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
   expandEmpId: "",
-});
-
-const tooltip = ref({
-  isShowIdentityNumber: false,
-  isShowBankPlace: false,
 });
 
 // #endregion
@@ -359,35 +260,6 @@ const isLastPage = computed(() => {
 function dupplicateEmployeeOnClick(emp) {
   emits("updateDupplicateEmp", emp);
   // router.push(`/employee/dupplicate/${empId}`);
-}
-
-/**
- * Sự kiện click vào ô check all
- * Author: Dũng (08/05/2023)
- */
-function thCheckboxOnClick() {
-  emits("updateRowStatus", {
-    type: "toggleAllPage",
-    rowIndex: "",
-  });
-}
-
-/**
- * Mouse leave khỏi ô th có tooltip
- * @param {String} name tên tooltip của ô th
- * Author: Dũng (08/05/2023)
- */
-function thOnMouseLeave(name) {
-  tooltip.value[name] = false;
-}
-
-/**
- * Mouse enter vào ô th có tooltip
- * @param {String} name tên tooltip của ô th
- * Author: Dũng (08/05/2023)
- */
-function thOnMouseEnter(name) {
-  tooltip.value[name] = true;
 }
 
 /**
@@ -455,18 +327,6 @@ function pagArrowdownOnClick() {
 }
 
 /**
- * Click vào checkbox
- * @param {String} empId Id nhân viên
- * Author: Dũng (08/05/2023)
- */
-function checkBoxOnClick(rowIndex) {
-  emits("updateRowStatus", {
-    type: "selected",
-    rowIndex: rowIndex,
-  });
-}
-
-/**
  * Click vào tr
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
@@ -483,15 +343,16 @@ function trOnClick(rowIndex) {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function trOnDblclick(empId) {
-  router.push(`/DI/DIEmployee/${empId}`);
+function trOnDblclick(cusId) {
+  console.log(cusId);
+  router.push(`/DI/DICustomer/${cusId}`);
 }
 
 // #endregion
 </script>
 
 <style
-  lang="css"
   scoped
-  src="../../../../css/components/views/category/employee/employee-table.css"
+  lang="css"
+  src="../../../../css/components/views/category/account/account-table.css"
 ></style>

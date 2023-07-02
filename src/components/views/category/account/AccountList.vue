@@ -23,9 +23,9 @@
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
-      <div class="pcontent__title">{{ lang.cat_customer.pageTitle }}</div>
+      <div class="pcontent__title">{{ lang.cat_account.pageTitle }}</div>
       <BaseButton
-        :bname="lang.cat_customer.button.addCustomer"
+        :bname="lang.cat_account.button.addAccount"
         class="btn--primary"
         @click="btnAddOnClick"
       />
@@ -34,54 +34,9 @@
       <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
       <div class="goback__text">Tất cả danh mục</div>
     </div>
-    <div class="pcontent__overview">
-      <div class="overview__container" v-show="displayOverview">
-        <div class="o_item item--dued-debit">
-          <div class="item__top">
-            <div class="top__number">0</div>
-            <div class="top__filter mi funnel-icon"></div>
-          </div>
-          <div class="item__bottom">Nợ quá hạn</div>
-        </div>
-        <div class="o_item item--total-debt">
-          <div class="item__top">
-            <div class="top__number">0</div>
-            <div class="top__filter mi funnel-icon"></div>
-          </div>
-          <div class="item__bottom">Tổng nợ phải thu</div>
-        </div>
-        <div class="o_item item--paid">
-          <div class="item__top">
-            <div class="top__number">0</div>
-          </div>
-          <div class="item__bottom">
-            <div class="left__text">Đã thanh toán (30 ngày gần đây)</div>
-            <div class="right__text">Số liệu tính đến: 13h48</div>
-          </div>
-        </div>
-      </div>
-      <div class="overview__expand">
-        <div class="expand__button" @click="overviewExpandBtnOnClick">
-          <div
-            class="expand__icon minc mi-8 mi-arrow-dropdown-8px rotate-180"
-          ></div>
-        </div>
-      </div>
-    </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
-          <div class="filter">
-            <div class="filter__btn">
-              <div class="btn__text">Lọc</div>
-              <div class="btn__icon mi mi-16 mi-arrowup--black"></div>
-            </div>
-            <div class="filter__panel">
-              <div class="panel__top"></div>
-              <div class="panel__mid"></div>
-              <div class="panel__bot"></div>
-            </div>
-          </div>
           <BaseTextfield
             :pholder="lang.textfield.searchBar.pholder"
             :hideLabel="true"
@@ -123,7 +78,7 @@
           />
         </div>
       </div>
-      <CustomerTable
+      <AccountTable
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
@@ -136,7 +91,7 @@
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
         @update-row-status="rowStatusOnUpdate"
-        @update-dupplicate-cus="dupplicateCusOnUpdate"
+        @update-dupplicate-emp="dupplicateEmpOnUpdate"
       />
     </div>
   </div>
@@ -144,7 +99,7 @@
 
 <script setup>
 // #region import
-import CustomerTable from "@/components/views/category/customer/CustomerTable.vue";
+import AccountTable from "@/components/views/category/account/AccountTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
@@ -192,7 +147,6 @@ const formMetadata = ref({
   isDupplicate: false,
   customerDupplicate: null,
 });
-const displayOverview = ref(true);
 // #endregion
 
 // #region hook
@@ -458,14 +412,14 @@ async function exportExcelOnClick() {
 }
 
 /**
- * Sự kiện Customer Table emit dupplicate lên Customer List
- * @param {Object} cus object customer được dupplicate
+ * Sự kiện Employee Table emit dupplicate lên Employee List
+ * @param {Object} emp object employee được dupplicate
  *
- * Author: Dũng (2/07/2023)
+ * Author: Dũng (10/05/2023)
  */
-function dupplicateCusOnUpdate(cus) {
+function dupplicateEmpOnUpdate(emp) {
   formMetadata.value.isDupplicate = true;
-  formMetadata.value.customerDupplicate = cus;
+  formMetadata.value.employeeDupplicate = emp;
   router.push("/DI/DICustomer/create");
 }
 
@@ -732,15 +686,11 @@ function btnAddOnClick() {
   router.replace("/DI/DICustomer/create");
 }
 
-function overviewExpandBtnOnClick() {
-  displayOverview.value = !displayOverview.value;
-}
-
 // #endregion
 </script>
 
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/customer/customer-list.css"
+  src="../../../../css/components/views/category/account/account-list.css"
 ></style>

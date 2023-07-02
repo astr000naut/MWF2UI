@@ -9,5 +9,8 @@ const cat_customer = {
       add: "Thêm mới khách hàng",
     },
   },
+  tooltip: {
+    cusIdentity: "Số chứng minh nhân dân",
+  },
 };
 export default cat_customer;

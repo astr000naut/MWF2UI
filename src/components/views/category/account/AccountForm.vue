@@ -25,9 +25,9 @@
       <div class="form__header">
         <div class="header__left">
           {{
-            form.type == "info"
-              ? "Sửa thông tin khách hàng"
-              : "Thêm mới khách hàng"
+            form.type == "create"
+              ? "Thêm mới khách hàng"
+              : "Thông tin khách hàng"
           }}
         </div>
         <div class="header__mid">
@@ -171,12 +171,7 @@
                 v-model:selectedElementCode="customer.groupCodeList"
               />
             </div>
-            <div class="fu__right__bot">
-              <EmployeeCombobox
-                v-model:selectedEmployeeId="customer.employeeId"
-                v-model:selectedEmployeeName="customer.employeeFullName"
-              />
-            </div>
+            <div class="fu__right__bot"></div>
           </div>
         </div>
         <div class="form__lower m-top-24">
@@ -579,7 +574,6 @@ import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseComboboxMultiSelect from "@/components/base/BaseComboboxMultiSelect.vue";
-import EmployeeCombobox from "./EmployeeCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import { nextTick, ref, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -587,7 +581,6 @@ import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
 import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
-const _ = require("lodash");
 //#endregion
 
 //#region init
@@ -600,8 +593,6 @@ const lang = inject("$lang");
 const formDialog = ref({
   isShow: false,
 });
-
-const dialogRef = ref(null);
 
 const formNoti = ref({
   showNotibox: false,
@@ -671,7 +662,7 @@ const form = ref({
   isLoading: false,
 });
 
-var oldCustomer = null;
+// var oldCustomer = null;
 
 const customerCodeRef = ref(null);
 const customerTINRef = ref(null);
@@ -731,12 +722,12 @@ function resetFormState() {
     isLoading: false,
   };
   // Nếu form là dupplicate thì tắt bỏ cờ báo isDupplicate để lần sau mở lại form không bị vào trường hợp dupplicate nữa
-  if (form.value.type == $enum.form.dupplicateType) {
-    emits("update:metadata", {
-      isDupplicate: false,
-      customerDupplicate: props.metadata.customerDupplicate,
-    });
-  }
+  // if (form.value.type == $enum.form.dupplicateType) {
+  //   emits("update:metadata", {
+  //     isDupplicate: false,
+  //     customerDupplicate: props.metadata.customerDupplicate,
+  //   });
+  // }
   customer.value = new Customer({});
 }
 
@@ -788,21 +779,26 @@ async function getDataFromApi() {
   if (form.value.type == $enum.form.infoType) {
     // Fetch customer information
     await fetchCustomerInfoToCustomerObject(form.value.cusId, form.value.type);
-    const oldCus = new Customer({});
-    oldCus.cloneFromOtherCustomer(customer.value);
-    oldCustomer = oldCus;
+    // const getEmployeeResponse = await $axios.get(
+    //   $api.employee.one(customer.value.employeeId)
+    // );
+    // selectedEmployeeName.value = getEmployeeResponse.data.employeeFullName;
+    // const oldCus = new Customer({});
+    // oldCus.cloneFromOtherCustomer(customer.value);
+    // oldCustomer = oldCus;
     return;
   }
 
-  if (form.value.type == $enum.form.dupplicateType) {
-    const cus = new Customer({});
-    cus.cloneFromOtherCustomer(props.metadata.customerDupplicate);
-    customer.value = cus;
-    customer.value.customerCode = "";
-    customer.value.customerId = "";
-    await fetchNewCustomerCode();
-    return;
-  }
+  // if (form.value.type == $enum.form.dupplicateType) {
+  //   // Fetch employee information
+  //   const emp = new Employee({});
+  //   emp.cloneFromOtherEmployee(props.metadata.employeeDupplicate);
+  //   employee.value = emp;
+  //   employee.value.employeeCode = "";
+  //   employee.value.employeeId = "";
+  //   await fetchNewEmployeeCode();
+  //   return;
+  // }
 }
 
 /**
@@ -828,13 +824,8 @@ function isUUID(str) {
 //#endregion
 
 //#region handle event
-async function closeBtnOnClick() {
-  if (_.isEqual(oldCustomer, customer.value)) {
-    router.replace("/DI/DICustomer");
-  }
-  formDialog.value.isShow = true;
-  await nextTick();
-  await dialogRef.value.yesBtn.refBtn.focus();
+function closeBtnOnClick() {
+  router.replace("/DI/DICustomer");
 }
 
 function tabInfoOnClick(tabId) {
@@ -883,8 +874,8 @@ async function validateData() {
   // Validate mã khách hàng
   // Mã trống
   if (customer.value.customerCode.trim() == "") {
-    customer.value.customerCode = "";
-    formNoti.value.customerCode = $error.fieldCannotEmpty("Mã khách hàng");
+    customer.value.employeeCode = "";
+    formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã khách hàng");
     firstErrorRef = firstErrorRef ?? customerCodeRef;
   } else {
     // Mã quá dài
@@ -1018,6 +1009,7 @@ async function btnSaveOnClick() {
  */
 async function callEditCustomerApi() {
   const requestBody = customer.value.convertToApiFormat();
+  // console.log(requestBody);
   await $axios.put($api.customer.one(form.value.cusId), requestBody);
 }
 
@@ -1079,5 +1071,5 @@ async function formDialogYesBtnOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/customer/customer-form.css"
+  src="../../../../css/components/views/category/account/account-form.css"
 ></style>
