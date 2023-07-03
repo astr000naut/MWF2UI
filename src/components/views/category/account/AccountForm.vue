@@ -122,8 +122,13 @@
             <div class="collapse__option" v-show="!form.collapse">
               <div class="option__line">
                 <div class="line__box">
-                  <BaseCheckbox label="Đối tượng" :checked="false" />
+                  <BaseCheckbox
+                    label="Đối tượng"
+                    :checked="false"
+                    class="flex-1"
+                  />
                   <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -138,8 +143,13 @@
               </div>
               <div class="option__line">
                 <div class="line__box">
-                  <BaseCheckbox label="Đối tượng THCP" :checked="false" />
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Đối tượng THCP"
+                    :checked="false"
+                  />
                   <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -149,32 +159,13 @@
                   />
                 </div>
                 <div class="line__box">
-                  <BaseCheckbox label="Công trình" :checked="false" />
-                  <BaseCombobox
-                    label=""
-                    :isrequired="false"
-                    :option-list="[]"
-                    text=""
-                    noti=""
-                    selectedItemId=""
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Công trình"
+                    :checked="false"
                   />
-                </div>
-              </div>
-              <div class="option__line">
-                <div class="line__box">
-                  <BaseCheckbox label="Đơn đặt hàng" :checked="false" />
                   <BaseCombobox
-                    label=""
-                    :isrequired="false"
-                    :option-list="[]"
-                    text=""
-                    noti=""
-                    selectedItemId=""
-                  />
-                </div>
-                <div class="line__box">
-                  <BaseCheckbox label="Hợp đồng bán" :checked="false" />
-                  <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -186,8 +177,13 @@
               </div>
               <div class="option__line">
                 <div class="line__box">
-                  <BaseCheckbox label="Hợp đồng mua" :checked="false" />
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Đơn đặt hàng"
+                    :checked="false"
+                  />
                   <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -197,8 +193,13 @@
                   />
                 </div>
                 <div class="line__box">
-                  <BaseCheckbox label="Khoản mục CP" :checked="false" />
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Hợp đồng bán"
+                    :checked="false"
+                  />
                   <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -210,8 +211,13 @@
               </div>
               <div class="option__line">
                 <div class="line__box">
-                  <BaseCheckbox label="Đơn vị" :checked="false" />
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Hợp đồng mua"
+                    :checked="false"
+                  />
                   <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
@@ -221,8 +227,47 @@
                   />
                 </div>
                 <div class="line__box">
-                  <BaseCheckbox label="Mã thống kê" :checked="false" />
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Khoản mục CP"
+                    :checked="false"
+                  />
                   <BaseCombobox
+                    class="flex-1"
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
+              </div>
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Đơn vị"
+                    :checked="false"
+                  />
+                  <BaseCombobox
+                    class="flex-1"
+                    label=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    text=""
+                    noti=""
+                    selectedItemId=""
+                  />
+                </div>
+                <div class="line__box">
+                  <BaseCheckbox
+                    class="flex-1"
+                    label="Mã thống kê"
+                    :checked="false"
+                  />
+                  <BaseCombobox
+                    class="flex-1"
                     label=""
                     :isrequired="false"
                     :option-list="[]"
