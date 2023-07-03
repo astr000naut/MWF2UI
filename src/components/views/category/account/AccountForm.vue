@@ -89,7 +89,7 @@
                 label="Tính chất"
                 pholder=""
                 :isrequired="true"
-                :option-list="[]"
+                :option-list="propertyList"
                 v-model:text="account.property"
                 noti=""
                 selectedItemId=""

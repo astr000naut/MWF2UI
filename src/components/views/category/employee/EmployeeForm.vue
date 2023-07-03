@@ -113,7 +113,7 @@
                 <BaseCombobox
                   :label="lang.combobox.empDepart.label"
                   :isrequired="true"
-                  :option-list="departmentList"
+                  :option-list="comboboxDepartmentList"
                   v-model:text="employee.departmentName"
                   v-model:noti="formNoti.departmentName"
                   v-model:selectedItemId="employee.departmentId"
@@ -409,7 +409,7 @@ const notiRef = ref(null);
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const saveAndAddBtnRef = ref(null);
-const departmentList = ref([]);
+const comboboxDepartmentList = ref([]);
 
 resetFormState();
 // #endregion
@@ -562,10 +562,15 @@ async function getDepartmentList() {
   const departmentApiResponse = await $axios.get($api.department.filter, {
     skip: 0,
   });
-  departmentList.value = [];
+  comboboxDepartmentList.value = [];
   // console.log(departmentApiResponse);
   for (const department of departmentApiResponse.data.filteredList) {
-    departmentList.value.push(new Department(department));
+    const dep = new Department(department);
+    comboboxDepartmentList.value.push({
+      optionId: dep.departmentId,
+      optionCode: dep.departmentCode,
+      optionName: dep.departmentName,
+    });
   }
 }
 
@@ -678,8 +683,10 @@ async function validateData() {
   } else {
     // Đơn vị không có trong danh mục
     let isDepartmentInDepartmentList = false;
-    for (let i = 0; i < departmentList.value.length; ++i) {
-      if (departmentList.value[i].departmentId == employee.value.departmentId) {
+    for (let i = 0; i < comboboxDepartmentList.value.length; ++i) {
+      if (
+        comboboxDepartmentList.value[i].optionId == employee.value.departmentId
+      ) {
         isDepartmentInDepartmentList = true;
         break;
       }
@@ -885,10 +892,10 @@ async function fetchEmployeeInfoToEmployeeObject(empId) {
   employee.value = new Employee(empFromApi);
 
   // Gắn thông tin đơn vị vào Employee
-  for (const department of departmentList.value) {
-    if (department.departmentId == employee.value.departmentId) {
-      employee.value.departmentName = department.departmentName;
-      employee.value.departmentCode = department.departmentCode;
+  for (const option of comboboxDepartmentList.value) {
+    if (option.optionId == employee.value.departmentId) {
+      employee.value.departmentName = option.optionName;
+      employee.value.departmentCode = option.optionCode;
     }
   }
 }
