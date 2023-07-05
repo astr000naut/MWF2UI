@@ -16,7 +16,7 @@ export class Account {
     this.accountNameVi = a.accountNameVi ?? "";
     this.accountNameEn = a.accountNameEn ?? "";
     this.parentId = a.parentId ?? "";
-    this.categoryKind = a.categoryKind ?? "Dư nợ";
+    this.categoryKind = a.categoryKind ? a.categoryKind.toString() : "";
     this.description = a.description ?? "";
     this.status = a.status ?? "";
     this.isParent = a.isParent ?? false;
@@ -24,7 +24,19 @@ export class Account {
     this.mCodeId = a.mCodeId ?? "";
   }
 
-  cloneFromOtherEmployee() {}
+  cloneFromOtherAccount(a) {
+    this.accountId = a.accountId;
+    this.accountNumber = a.accountNumber;
+    this.accountNameVi = a.accountNameVi;
+    this.accountNameEn = a.accountNameEn;
+    this.parentId = a.parentId;
+    this.categoryKind = a.categoryKind;
+    this.description = a.description;
+    this.status = a.status;
+    this.isParent = a.isParent;
+    this.grade = a.grade;
+    this.mCodeId = a.mCodeId;
+  }
 
   convertToApiFormat() {}
 }

@@ -322,6 +322,7 @@ const route = useRoute();
 const account = ref({});
 const lang = inject("$lang");
 
+var oldAccount = null;
 const formDialog = ref({
   isShow: false,
 });
@@ -370,9 +371,9 @@ resetFormState();
 //#region hook
 onMounted(async () => {
   try {
-    // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /DI/DICustomer
-    if (form.value.type == $enum.form.infoType && !isUUID(form.value.cusId)) {
-      await router.replace("/DI/DICustomer");
+    // Nếu form là kiểu thông tin account mà id của router không hợp lệ thì quay lại
+    if (form.value.type == $enum.form.infoType && !isUUID(form.value.accId)) {
+      await router.replace("/DI/DIAccount");
       return;
     }
     form.value.isLoading = true;
@@ -383,6 +384,7 @@ onMounted(async () => {
     focusOnFirstInput();
   } catch (error) {
     form.value.isLoading = false;
+    console.log(error);
     await handleResponseStatusCode(error.response.status, error);
   }
 });
@@ -404,7 +406,7 @@ function resetFormState() {
     size: 0,
     collapse: true,
     type: route.params.id ? $enum.form.infoType : $enum.form.createType,
-    cusId: route.params.id ?? "",
+    accId: route.params.id ?? "",
     isLoading: false,
   };
   account.value = new Account({});
@@ -437,12 +439,10 @@ async function handleResponseStatusCode(code, error) {
  *
  * Author: Dũng (28/06/2023)
  */
-async function fetchCustomerInfoToCustomerObject(accId) {
-  // need
-  console.log(accId);
-  // const response = await $axios.get($api.account.one(accId));
-  // const accFromApi = response.data;
-  // account.value = new Account(accFromApi);
+async function fetchAccountInfoToCustomerObject(accId) {
+  const response = await $axios.get($api.account.one(accId));
+  const accFromApi = response.data;
+  account.value = new Account(accFromApi);
 }
 
 /**
@@ -452,15 +452,11 @@ async function fetchCustomerInfoToCustomerObject(accId) {
  */
 async function getDataFromApi() {
   if (form.value.type == $enum.form.infoType) {
-    // Fetch customer information
-    await fetchCustomerInfoToCustomerObject(form.value.cusId, form.value.type);
-    // const getEmployeeResponse = await $axios.get(
-    //   $api.employee.one(customer.value.employeeId)
-    // );
-    // selectedEmployeeName.value = getEmployeeResponse.data.employeeFullName;
-    // const oldCus = new Customer({});
-    // oldCus.cloneFromOtherCustomer(customer.value);
-    // oldCustomer = oldCus;
+    await fetchAccountInfoToCustomerObject(form.value.accId, form.value.type);
+    const oldAcc = new Account({});
+    oldAcc.cloneFromOtherAccount(account.value);
+    oldAccount = oldAcc;
+    console.log(oldAccount);
     return;
   }
 }
@@ -573,7 +569,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     form.value.isLoading = false;
     console.log(error);
-    // await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
