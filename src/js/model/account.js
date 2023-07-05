@@ -4,24 +4,24 @@ export class Account {
   accountNameVi;
   accountNameEn;
   parentId;
-  property;
+  categoryKind;
   description;
   status;
   isParent;
   grade;
-  mCode;
+  mCodeId;
   constructor(a) {
     this.accountId = a.accountId ?? "";
     this.accountNumber = a.accountNumber ?? "";
     this.accountNameVi = a.accountNameVi ?? "";
     this.accountNameEn = a.accountNameEn ?? "";
     this.parentId = a.parentId ?? "";
-    this.property = a.property ?? "";
+    this.categoryKind = a.categoryKind ?? "Dư nợ";
     this.description = a.description ?? "";
     this.status = a.status ?? "";
     this.isParent = a.isParent ?? false;
     this.grade = a.grade ?? 0;
-    this.mCode = a.mCode ?? "";
+    this.mCodeId = a.mCodeId ?? "";
   }
 
   cloneFromOtherEmployee() {}

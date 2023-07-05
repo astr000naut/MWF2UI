@@ -18,7 +18,6 @@
   />
   <router-view
     name="CustomerForm"
-    v-model:metadata="formMetadata"
     @update-cuslist="customerOnUpdate"
   ></router-view>
   <div class="pcontent">
@@ -76,7 +75,6 @@
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
         @update-row-status="rowStatusOnUpdate"
-        @update-dupplicate-emp="dupplicateEmpOnUpdate"
       />
     </div>
   </div>
@@ -127,103 +125,6 @@ const cache = ref({
 
 const toastList = ref([]);
 var toastId = 0;
-const formMetadata = ref({
-  isDupplicate: false,
-  customerDupplicate: null,
-});
-var sampleData = [
-  {
-    accountId: "49203211-0b8a-48ec-bb3e-2e138ef40912",
-    accountNumber: "112",
-    accountNameVi: "Ten tai khoan",
-    accountNameEn: "Account name",
-    parentId: "",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: true,
-    grade: 0,
-    mCode: "001",
-  },
-  {
-    accountId: "f016b6e4-62e3-46a0-8f08-abb158ccffd4",
-    accountNumber: "1121",
-    accountNameVi: "Ten tai khoan 1",
-    accountNameEn: "Account name 1",
-    parentId: "49203211-0b8a-48ec-bb3e-2e138ef40912",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: true,
-    grade: 1,
-    mCode: "001/002",
-  },
-  {
-    accountId: "f29efa99-8a42-434a-8dee-a6a13f76b93f",
-    accountNumber: "11211",
-    accountNameVi: "Ten tai khoan 2",
-    accountNameEn: "Account name 2",
-    parentId: "f016b6e4-62e3-46a0-8f08-abb158ccffd4",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: false,
-    grade: 2,
-    mCode: "001/002/003",
-  },
-  {
-    accountId: "97c096fa-ee8c-4ad8-b473-662315448511",
-    accountNumber: "323",
-    accountNameVi: "Ten tai khoan 5",
-    accountNameEn: "Account name 5",
-    parentId: "",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: false,
-    grade: 0,
-    mCode: "004",
-  },
-  {
-    accountId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
-    accountNumber: "11201",
-    accountNameVi: "Tai khoan no",
-    accountNameEn: "Account name 7",
-    parentId: "",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: true,
-    grade: 0,
-    mCode: "005",
-  },
-  {
-    accountId: "3b734659-7bff-4320-8b12-63aae9590e33",
-    accountNumber: "112012",
-    accountNameVi: "Tai khoan thu",
-    accountNameEn: "Account name 8",
-    parentId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: false,
-    grade: 1,
-    mCode: "005/006",
-  },
-  {
-    accountId: "1fd07ec7-c14e-440b-95c4-22017340231a",
-    accountNumber: "112014",
-    accountNameVi: "Tai khoan so 123",
-    accountNameEn: "Account name 123",
-    parentId: "761641e2-c8f5-4177-bb6f-9417c03b7e28",
-    property: "",
-    description: "",
-    status: "Đang sử dụng",
-    isParent: false,
-    grade: 1,
-    mCode: "005/007",
-  },
-];
 // #endregion
 
 // #region hook
@@ -397,7 +298,7 @@ async function exportExcelOnClick() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Gọi api xuất file excel
-    const response = await $axios.get($api.employee.exportExcel, {
+    const response = await $axios.get("", {
       responseType: "blob",
     });
 
@@ -428,25 +329,20 @@ async function exportExcelOnClick() {
 }
 
 /**
- * Sự kiện Employee Table emit dupplicate lên Employee List
- * @param {Object} emp object employee được dupplicate
- *
- * Author: Dũng (10/05/2023)
- */
-function dupplicateEmpOnUpdate(emp) {
-  formMetadata.value.isDupplicate = true;
-  formMetadata.value.employeeDupplicate = emp;
-  router.push("/DI/DICustomer/create");
-}
-
-/**
  * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
  * @param {Object} data object thông báo
  *
  * Author: Dũng (10/05/2023)
  */
 async function rowStatusOnUpdate(data) {
-  const { type, rowIndex } = data;
+  const { type, itemId } = data;
+  let rowIndex = 0;
+  for (let i = 0; i < rowList.value.length; ++i) {
+    if (rowList.value[i].acc.accountId == itemId) {
+      rowIndex = i;
+      break;
+    }
+  }
   if (type == "active") {
     // Nếu row này đang không được select thì cập nhật trạng thái active
     if (!rowList.value[rowIndex].selected) {
@@ -464,58 +360,76 @@ async function rowStatusOnUpdate(data) {
       }
     }
   }
-  if (type == "expand") {
+  if (type == "ExpandCollapse") {
     rowList.value[rowIndex].isExpand = !rowList.value[rowIndex].isExpand;
     if (rowList.value[rowIndex].isExpand) {
-      let pAccount = rowList.value[rowIndex].acc;
-      const filterOption = {
-        grade: pAccount.grade + 1,
-        listParentId: [pAccount.accountId],
-      };
-      const filterResponse = await filterAccount(filterOption);
-      const childList = filterResponse.filteredList;
-      let insertIndex = rowIndex;
-      for (const acc of childList) {
-        ++insertIndex;
-        rowList.value.splice(insertIndex, 0, {
-          active: false,
-          selected: false,
-          acc: acc,
-          isExpand: false,
-        });
+      let expandedAmount = 0;
+      // Nếu có con từ dữ liệu cũ rồi thì không gọi api lấy con nữa
+      if (
+        rowIndex + 1 < rowList.value.length &&
+        rowList.value[rowIndex + 1].acc.parentId ==
+          rowList.value[rowIndex].acc.accountId
+      ) {
+        // Expand những thằng con cháu của nó
+        for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
+          if (rowList.value[i].acc.parentId == itemId) {
+            rowList.value[i].active = false;
+            rowList.value[i].display = true;
+            rowList.value[i].isExpand = false;
+            ++expandedAmount;
+          }
+        }
+      } else {
+        let pAccount = rowList.value[rowIndex].acc;
+        const filterOption = {
+          grade: pAccount.grade + 1,
+          listParentId: pAccount.accountId,
+        };
+        const filterData = await filterAccount(filterOption);
+        const childList = filterData.filteredList;
+        expandedAmount = childList.length;
+        let insertIndex = rowIndex;
+        for (const acc of childList) {
+          ++insertIndex;
+          rowList.value.splice(insertIndex, 0, {
+            active: false,
+            display: true,
+            acc: acc,
+            isExpand: false,
+          });
+        }
       }
+      pagingData.value.curAmount += expandedAmount;
+    } else {
+      let collapsedAmount = 0;
+      // Collapse những thằng con cháu của nó
+      for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
+        if (
+          rowList.value[i].display &&
+          rowList.value[i].acc.mCodeId.includes(
+            rowList.value[rowIndex].acc.mCodeId
+          )
+        ) {
+          rowList.value[i].active = false;
+          rowList.value[i].display = false;
+          rowList.value[i].isExpand = false;
+          ++collapsedAmount;
+        }
+      }
+      pagingData.value.curAmount -= collapsedAmount;
     }
-  }
-  if (type == "collapse") {
-    let collIndex = rowIndex + 1;
-    let parentMCode = rowList.value[rowIndex].acc.mCode;
-    while (
-      collIndex < rowList.value.length &&
-      rowList.value[collIndex].acc.mCode.includes(parentMCode)
-    ) {
-      rowList.value.splice(collIndex, 1);
-    }
-    rowList.value[rowIndex].isExpand = false;
   }
 }
 
 async function filterAccount(filterOption) {
-  const dataList = [];
-  console.log(filterOption);
-  for (const acc of sampleData) {
-    console.log(acc);
-    if (acc.grade == filterOption.grade) {
-      if (filterOption.listParentId.length == 0) dataList.push(acc);
-      else {
-        if (filterOption.listParentId.includes(acc.parentId))
-          dataList.push(acc);
-      }
-    }
+  try {
+    const response = await $axios.get($api.account.filter, {
+      params: filterOption,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiErrorResponse(error);
   }
-  return {
-    totalRecord: dataList.length,
-    filteredList: dataList,
-  };
 }
 
 /**
@@ -589,43 +503,28 @@ async function loadAccountData() {
     if (isLoadingData.value == true) return;
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Gọi API filter KH
-    // const response = await $axios.get($api.customer.filter, {
-    //   params: {
-    //     skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
-    //     take: pagingData.value.pageSize,
-    //     keySearch: cache.value.cusSearchPattern,
-    //   },
-    // });
     rowList.value = [];
     let filterOption = {
       grade: 0,
-      listParentId: [],
+      listParentId: "",
     };
     const filterData = await filterAccount(filterOption);
-    const response = {
-      data: filterData,
-    };
-    console.log(response.data);
-    if (response.data.filteredList) {
-      for (const acc of response.data.filteredList) {
+    if (filterData.filteredList) {
+      for (const acc of filterData.filteredList) {
         // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
         const accConverted = new Account(acc);
         rowList.value.push({
           active: false,
-          selected: false,
+          display: true,
           acc: accConverted,
           isExpand: false,
         });
       }
     }
-    // console.log(1);
-    // console.log(rowList.value);
     // Số bản ghi ở trang hiện tại
-    pagingData.value.curAmount = response.data.filteredList.length ?? 0;
+    pagingData.value.curAmount = filterData.filteredList.length ?? 0;
     // Tổng số bản ghi
-    pagingData.value.totalRecord = response.data.totalRecord ?? 0;
+    pagingData.value.totalRecord = filterData.totalRecord ?? 0;
     // Số bản ghi ở trang hiện tại có trống hay không
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
     isLoadingData.value = false;
@@ -635,12 +534,6 @@ async function loadAccountData() {
   }
 }
 
-/**
- * Sự kiện cập nhật mảng rowList
- * @param {String} type kiểu update (thêm hay sửa)
- * @param {Object} data dữ liệu của employee mới
- * Author: Dũng (08/05/2023)
- */
 async function customerOnUpdate(type, data) {
   // console.log("Customer list updated");
   // console.log(type);
@@ -651,6 +544,7 @@ async function customerOnUpdate(type, data) {
       pagingData.value.curAmount += 1;
       rowList.value.unshift({
         active: false,
+        display: true,
         selected: false,
         cus: data,
       });
@@ -659,7 +553,7 @@ async function customerOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.employeeCreated,
+        message: "Tạo mới tài khoản thành công (fixed)",
         timeToLive: 1500,
       });
       break;
@@ -672,7 +566,7 @@ async function customerOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.employeeUpdated,
+        message: "Cập nhật tài khoản thành công (fixed)",
         timeToLive: 1500,
       });
       break;

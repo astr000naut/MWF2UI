@@ -27,13 +27,13 @@
         </template>
         <template v-else>
           <tr
-            v-for="({ active, acc, isExpand } = row, index) in rowList"
+            v-for="{ active, acc, isExpand } = row in rowListDisplay"
             :key="acc.accountId"
             :class="{
               active: active,
               'text--bold': acc.isParent,
             }"
-            @click="trOnClick(index)"
+            @click="trOnClick(acc.accountId)"
             @dblclick="trOnDblclick(acc.accountId)"
           >
             <td>
@@ -54,7 +54,7 @@
                       : 'mi-tree-collapse--small',
                   ]"
                   v-show="acc.isParent"
-                  @click="accNumberExpandOnClick(acc, index)"
+                  @click="accNumberExpandOnClick(acc.accountId)"
                   @dblclick.stop
                 ></div>
                 <div class="an__text">
@@ -66,7 +66,7 @@
               <div class="text-left">{{ acc.accountNameVi }}</div>
             </td>
             <td>
-              <div class="text-left">{{ acc.property }}</div>
+              <div class="text-left">{{ acc.categoryKind }}</div>
             </td>
             <td>
               <div class="text-left">{{ acc.accountNameEn }}</div>
@@ -97,10 +97,11 @@
                   class="actions-list btn__expand"
                   :class="
                     (acc.accountId ==
-                      rowList[rowList.length - 1].acc.accountId ||
+                      rowListDisplay[rowListDisplay.length - 1].acc.accountId ||
                       acc.accountId ==
-                        rowList[rowList.length - 2].acc.accountId) &&
-                    rowList.length > 6
+                        rowListDisplay[rowListDisplay.length - 2].acc
+                          .accountId) &&
+                    rowListDisplay.length > 6
                       ? 'action-list--top'
                       : ''
                   "
@@ -179,7 +180,7 @@
         <div class="info__left">
           {{
             pagingData.pageSize * (pagingData.pageNumber - 1) +
-            (rowList.length > 0 ? 1 : 0)
+            (rowListDisplay.length > 0 ? 1 : 0)
           }}
         </div>
         <div class="info__minus">-</div>
@@ -267,11 +268,7 @@ const props = defineProps({
   haveDataAfterCallApi: Boolean,
 });
 
-const emits = defineEmits([
-  "updatePagingData",
-  "updateRowStatus",
-  "updateDupplicateEmp",
-]);
+const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
 
 const table = ref({
   recordAmountOpen: false,
@@ -292,6 +289,10 @@ const isLastPage = computed(() => {
       props.pagingData.curAmount >=
     props.pagingData.totalRecord
   );
+});
+
+const rowListDisplay = computed(() => {
+  return props.rowList.filter((row) => row.display);
 });
 // #endregion
 
@@ -316,12 +317,11 @@ async function prevPageOnClick() {
   console.log("Prev");
 }
 
-function accNumberExpandOnClick(acc, index) {
-  if (props.rowList[index].isExpand == false) {
-    emits("updateRowStatus", { type: "expand", rowIndex: index });
-  } else {
-    emits("updateRowStatus", { type: "collapse", rowIndex: index });
-  }
+function accNumberExpandOnClick(accountId) {
+  emits("updateRowStatus", {
+    type: "ExpandCollapse",
+    itemId: accountId,
+  });
 }
 
 /**
@@ -374,10 +374,10 @@ function pagArrowdownOnClick() {
  * @param {String} rowIndex index của dòng
  * Author: Dũng (08/05/2023)
  */
-function trOnClick(rowIndex) {
+function trOnClick(accountId) {
   emits("updateRowStatus", {
     type: "active",
-    rowIndex: rowIndex,
+    itemId: accountId,
   });
 }
 

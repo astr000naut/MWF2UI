@@ -223,7 +223,7 @@ function focusOnARow() {
       break;
     }
   }
-  if (cbox.value.cusorItemId == null) cbox.value.cusorItemId = 0;
+  // if (cbox.value.cusorItemId == null) cbox.value.cusorItemId = 0;
 }
 
 /**
@@ -239,6 +239,7 @@ function inputArrowDownHandler() {
     optionListDisplay.value = props.optionList;
     focusOnARow();
   } else {
+    if (cbox.value.cusorItemId == null) cbox.value.cusorItemId = 0;
     if (cbox.value.cusorItemId < optionListDisplay.value.length - 1)
       ++cbox.value.cusorItemId;
   }
@@ -280,7 +281,7 @@ function selectButtonOnClick() {
   } else {
     cbox.value.isOptionboxOpen = true;
     cbox.value.isLoading = false;
-    cbox.value.cusorItemId = 0;
+    cbox.value.cusorItemId = null;
     optionListDisplay.value = props.optionList;
     refInput.value.focus();
     focusOnARow();

@@ -89,10 +89,10 @@
                 label="Tính chất"
                 pholder=""
                 :isrequired="true"
-                :option-list="propertyList"
-                v-model:text="account.property"
+                :option-list="categoryKindList"
+                v-model:text="categoryKindName"
                 noti=""
-                selectedItemId=""
+                v-model:selectedItemId="account.categoryKind"
               />
             </div>
           </div>
@@ -343,10 +343,27 @@ const form = ref({
   isLoading: false,
 });
 
-const props = defineProps({
-  metadata: Object,
-});
-const emits = defineEmits(["updateAccList", "update:metadata"]);
+const categoryKindList = [
+  {
+    optionId: 0,
+    optionName: "Dư nợ",
+  },
+  {
+    optionId: 1,
+    optionName: "Dư có",
+  },
+  {
+    optionId: 2,
+    optionName: "Lưỡng tính",
+  },
+  {
+    optionId: 3,
+    optionName: "Không có số dư",
+  },
+];
+const categoryKindName = ref("");
+
+const emits = defineEmits(["updateAccList"]);
 resetFormState();
 //#endregion
 
@@ -386,21 +403,10 @@ function resetFormState() {
   form.value = {
     size: 0,
     collapse: true,
-    type: route.params.id
-      ? $enum.form.infoType
-      : props.metadata.isDupplicate
-      ? $enum.form.dupplicateType
-      : $enum.form.createType,
+    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
     cusId: route.params.id ?? "",
     isLoading: false,
   };
-  // Nếu form là dupplicate thì tắt bỏ cờ báo isDupplicate để lần sau mở lại form không bị vào trường hợp dupplicate nữa
-  // if (form.value.type == $enum.form.dupplicateType) {
-  //   emits("update:metadata", {
-  //     isDupplicate: false,
-  //     customerDupplicate: props.metadata.customerDupplicate,
-  //   });
-  // }
   account.value = new Account({});
 }
 
@@ -457,17 +463,6 @@ async function getDataFromApi() {
     // oldCustomer = oldCus;
     return;
   }
-
-  // if (form.value.type == $enum.form.dupplicateType) {
-  //   // Fetch employee information
-  //   const emp = new Employee({});
-  //   emp.cloneFromOtherEmployee(props.metadata.employeeDupplicate);
-  //   employee.value = emp;
-  //   employee.value.employeeCode = "";
-  //   employee.value.employeeId = "";
-  //   await fetchNewEmployeeCode();
-  //   return;
-  // }
 }
 
 /**
