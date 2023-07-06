@@ -4,7 +4,7 @@ export class Account {
   accountNameVi;
   accountNameEn;
   parentId;
-  parentAccountName;
+  parentNumber;
   categoryKind;
   categoryKindName;
   description;
@@ -18,7 +18,7 @@ export class Account {
     this.accountNameVi = a.accountNameVi ?? "";
     this.accountNameEn = a.accountNameEn ?? "";
     this.parentId = a.parentId ?? "";
-    this.parentAccountName = a.parentAccountName ?? "";
+    this.parentNumber = a.parentNumber ?? "";
     this.categoryKind = a.categoryKind != null ? a.categoryKind.toString() : "";
     switch (this.categoryKind) {
       case "0":
@@ -50,7 +50,7 @@ export class Account {
     this.accountNameVi = a.accountNameVi;
     this.accountNameEn = a.accountNameEn;
     this.parentId = a.parentId;
-    this.parentAccountName = a.parentAccountName;
+    this.parentNumber = a.parentNumber;
     this.categoryKind = a.categoryKind;
     this.categoryKindName = a.categoryKindName;
     this.description = a.description;
@@ -66,7 +66,7 @@ export class Account {
       accountNameVi: this.accountNameVi,
       accountNameEn: this.accountNameEn,
       parentId: this.parentId != "" ? this.parentId : null,
-      parentAccountName: this.parentAccountName,
+      parentNumber: this.parentNumber,
       categoryKind: this.categoryKind,
       description: this.description,
       detailByBankAccount: this.detailByBankAccount,

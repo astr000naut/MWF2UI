@@ -79,7 +79,7 @@
               <AccountCombobox
                 label="Tài khoản tổng hợp"
                 v-model:selectedItemId="account.parentId"
-                v-model:selectedItemName="account.parentAccountName"
+                v-model:selectedItemName="account.parentNumber"
               />
             </div>
             <div class="line__right flex-1">
@@ -494,6 +494,10 @@ function closeBtnOnClick() {
 async function validateData() {
   firstErrorRef = null;
   // need
+
+  // if (!account.value.accountNumber.startsWith(account.value.parentNumber)) {
+
+  // }
 
   if (firstErrorRef != null) {
     // Update notibox value
