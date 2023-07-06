@@ -307,7 +307,7 @@ const rowListDisplay = computed(() => {
  */
 async function nextPageOnClick() {
   if (isLastPage.value || props.isLoadingData) return;
-  await props.pagingNextPage();
+  //await props.pagingNextPage();
 }
 
 /**
@@ -316,7 +316,7 @@ async function nextPageOnClick() {
  */
 async function prevPageOnClick() {
   if (props.pagingData.pageNumber <= 1 || props.isLoadingData) return;
-  await props.pagingPrevPage();
+  //await props.pagingPrevPage();
   console.log("Prev");
 }
 
