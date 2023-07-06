@@ -37,13 +37,13 @@
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
           <BaseTextfield
-            :pholder="lang.textfield.searchBar.pholder"
+            pholder="Tìm kiếm tài khoản"
             :hideLabel="true"
             class="txtfield--search mw-300"
             noti=""
-            v-model:text="cache.cusSearchPattern"
+            v-model:text="cache.accSearchPattern"
             :realTimeSearch="true"
-            :doSearch="doSearchEmployee"
+            :doSearch="doSearchAccount"
           />
           <BaseButton class="mi mi-36 mi-refresh" @click="loadAccountData" />
           <div class="button__hoverbox--refresh">
@@ -120,7 +120,7 @@ const cache = ref({
   accDeleteId: "",
   accDeleteIndex: null,
   accDeleteNameVi: "",
-  cusSearchPattern: "",
+  accSearchPattern: "",
 });
 
 const toastList = ref([]);
@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
  * Tìm kiếm nhân viên khi nhập vào ô tìm kiếm
  * Author: Dũng (26/05/2023)
  */
-async function doSearchEmployee() {
+async function doSearchAccount() {
   pagingData.value.pageNumber = 1;
   await loadAccountData();
 }
@@ -445,12 +445,6 @@ function dialogCloseOnClick() {
   dialog.value.isDisplay = false;
 }
 
-/**
- * Sự kiện click vào nút xóa nhân viên
- * @param {String} cusId Id nhân viên
- *
- * Author: Dũng (08/05/2023)
- */
 function deleteAccountOnClick(accId) {
   let accNameVi = "";
   cache.value.accDeleteId = accId;
@@ -509,13 +503,13 @@ async function loadAccountData() {
     await new Promise((resolve) => setTimeout(resolve, 800));
     rowList.value = [];
     let filterOption = {
-      grade: 0,
+      grade: cache.value.accSearchPattern.length > 0 ? null : 0,
       parentIdList: "",
+      keySearch: cache.value.accSearchPattern,
     };
     const filterData = await filterAccount(filterOption);
     if (filterData.filteredList) {
       for (const acc of filterData.filteredList) {
-        // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
         const accConverted = new Account(acc);
         rowList.value.push({
           active: false,
