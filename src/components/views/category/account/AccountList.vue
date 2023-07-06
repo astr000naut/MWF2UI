@@ -45,6 +45,11 @@
             :realTimeSearch="true"
             :doSearch="doSearchAccount"
           />
+          <div class="button__expanall">
+            <div class="expandall__text" @click="expandAllBtnOnClick">
+              {{ expandBtnStatus == 0 ? "Mở rộng" : "Thu gọn" }}
+            </div>
+          </div>
           <BaseButton class="mi mi-36 mi-refresh" @click="loadAccountData" />
           <div class="button__hoverbox--refresh">
             <div class="hover__arrow"></div>
@@ -122,6 +127,8 @@ const cache = ref({
   accDeleteNameVi: "",
   accSearchPattern: "",
 });
+
+const expandBtnStatus = ref(0);
 
 const toastList = ref([]);
 var toastId = 0;
@@ -319,6 +326,90 @@ async function exportExcelOnClick() {
   }
 }
 
+async function expandRow(rowIndex, itemId) {
+  rowList.value[rowIndex].isExpand = true;
+  let expandedAmount = 0;
+  // Nếu có con từ dữ liệu cũ rồi thì không gọi api lấy con nữa
+  if (
+    rowIndex + 1 < rowList.value.length &&
+    rowList.value[rowIndex + 1].acc.parentId ==
+      rowList.value[rowIndex].acc.accountId
+  ) {
+    // Expand những thằng con cháu của nó
+    for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
+      if (rowList.value[i].acc.parentId == itemId) {
+        rowList.value[i].active = false;
+        rowList.value[i].display = true;
+        rowList.value[i].isExpand = false;
+        ++expandedAmount;
+      }
+    }
+  } else {
+    // Nếu chưa có dữ liệu
+    let pAccount = rowList.value[rowIndex].acc;
+    const filterOption = {
+      grade: pAccount.grade + 1,
+      parentIdList: pAccount.accountId,
+    };
+    const filterData = await filterAccount(filterOption);
+    const childList = filterData.filteredList;
+    expandedAmount = childList.length;
+    let insertIndex = rowIndex;
+    for (const acc of childList) {
+      ++insertIndex;
+      const accConverted = new Account(acc);
+      rowList.value.splice(insertIndex, 0, {
+        active: false,
+        display: true,
+        acc: accConverted,
+        isExpand: false,
+        isTemporary: false,
+      });
+    }
+  }
+  pagingData.value.curAmount += expandedAmount;
+
+  // Xóa những thằng temporary
+  // let i = 0;
+  // while (i < rowList.value.length) {
+  //   if (rowList.value[i].isTemporary) {
+  //     rowList.value.splice(i, 1);
+  //     pagingData.value.curAmount -= 1;
+  //   }
+  //   ++i;
+  // }
+}
+
+function collapseRow(rowIndex) {
+  rowList.value[rowIndex].isExpand = false;
+  let collapsedAmount = 0;
+  // Collapse những thằng con cháu của nó
+  for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
+    if (
+      rowList.value[i].display &&
+      rowList.value[i].acc.mCodeId.startsWith(
+        rowList.value[rowIndex].acc.mCodeId
+      )
+    ) {
+      rowList.value[i].active = false;
+      rowList.value[i].display = false;
+      rowList.value[i].isExpand = false;
+      ++collapsedAmount;
+    }
+  }
+  pagingData.value.curAmount -= collapsedAmount;
+}
+
+function collapseAllRow() {
+  let rowIndex = 0;
+  while (rowIndex < rowList.value.length) {
+    if (rowList.value[rowIndex].isExpand) {
+      collapseRow(rowIndex);
+    }
+    ++rowIndex;
+  }
+}
+
 /**
  * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
  * @param {Object} data object thông báo
@@ -352,75 +443,10 @@ async function rowStatusOnUpdate(data) {
     }
   }
   if (type == "ExpandCollapse") {
-    rowList.value[rowIndex].isExpand = !rowList.value[rowIndex].isExpand;
-    if (rowList.value[rowIndex].isExpand) {
-      let expandedAmount = 0;
-      // Nếu có con từ dữ liệu cũ rồi thì không gọi api lấy con nữa
-      if (
-        rowIndex + 1 < rowList.value.length &&
-        rowList.value[rowIndex + 1].acc.parentId ==
-          rowList.value[rowIndex].acc.accountId
-      ) {
-        // Expand những thằng con cháu của nó
-        for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
-          if (rowList.value[i].acc.parentId == itemId) {
-            rowList.value[i].active = false;
-            rowList.value[i].display = true;
-            rowList.value[i].isExpand = false;
-            ++expandedAmount;
-          }
-        }
-      } else {
-        // Nếu chưa có dữ liệu
-        let pAccount = rowList.value[rowIndex].acc;
-        const filterOption = {
-          grade: pAccount.grade + 1,
-          parentIdList: pAccount.accountId,
-        };
-        const filterData = await filterAccount(filterOption);
-        const childList = filterData.filteredList;
-        expandedAmount = childList.length;
-        let insertIndex = rowIndex;
-        for (const acc of childList) {
-          ++insertIndex;
-          const accConverted = new Account(acc);
-          rowList.value.splice(insertIndex, 0, {
-            active: false,
-            display: true,
-            acc: accConverted,
-            isExpand: false,
-            isTemporary: false,
-          });
-        }
-      }
-      pagingData.value.curAmount += expandedAmount;
-
-      // Xóa những thằng temporary
-      // let i = 0;
-      // while (i < rowList.value.length) {
-      //   if (rowList.value[i].isTemporary) {
-      //     rowList.value.splice(i, 1);
-      //     pagingData.value.curAmount -= 1;
-      //   }
-      //   ++i;
-      // }
+    if (!rowList.value[rowIndex].isExpand) {
+      await expandRow(rowIndex, itemId);
     } else {
-      let collapsedAmount = 0;
-      // Collapse những thằng con cháu của nó
-      for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
-        if (
-          rowList.value[i].display &&
-          rowList.value[i].acc.mCodeId.startsWith(
-            rowList.value[rowIndex].acc.mCodeId
-          )
-        ) {
-          rowList.value[i].active = false;
-          rowList.value[i].display = false;
-          rowList.value[i].isExpand = false;
-          ++collapsedAmount;
-        }
-      }
-      pagingData.value.curAmount -= collapsedAmount;
+      collapseRow(rowIndex);
     }
   }
 }
@@ -430,7 +456,6 @@ async function filterAccount(filterOption) {
     const response = await $axios.get($api.account.filter, {
       params: filterOption,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     handleApiErrorResponse(error);
@@ -492,6 +517,34 @@ async function pagingPrevPage() {
   // console.log("p prev");
 }
 
+async function expandAllRow() {
+  let layerHaveChild;
+  let grade = 0;
+  do {
+    layerHaveChild = false;
+    for (let i = 0; i < rowList.value.length; ++i) {
+      if (
+        rowList.value[i].acc.isParent &&
+        rowList.value[i].acc.grade == grade
+      ) {
+        layerHaveChild = true;
+      }
+    }
+    if (!layerHaveChild) break;
+    let i = 0;
+    while (i < rowList.value.length) {
+      if (
+        rowList.value[i].acc.isParent &&
+        rowList.value[i].acc.grade == grade
+      ) {
+        await expandRow(i, rowList.value[i].acc.accountId);
+      }
+      ++i;
+    }
+    ++grade;
+  } while (layerHaveChild);
+}
+
 /**
  * Gọi API lấy dữ liệu nhân viên theo filter
  * Author: Dũng (08/05/2023)
@@ -521,12 +574,29 @@ async function loadAccountData() {
         });
       }
     }
+    // Nếu tìm kiếm tài khoản cập nhật lại expand của các dòng tìm được
+    if (cache.value.accSearchPattern.length > 0) {
+      let rowIsParent;
+      for (const row of rowList.value) {
+        rowIsParent = false;
+        for (const r of rowList.value) {
+          if (r.acc.accountNumber.startsWith(row.acc.accountNumber)) {
+            rowIsParent = true;
+            break;
+          }
+        }
+        if (rowIsParent) {
+          row.isExpand = true;
+        }
+      }
+    }
     // Số bản ghi ở trang hiện tại
     pagingData.value.curAmount = filterData.filteredList.length ?? 0;
     // Tổng số bản ghi
     pagingData.value.totalRecord = filterData.totalRecord ?? 0;
     // Số bản ghi ở trang hiện tại có trống hay không
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
+
     isLoadingData.value = false;
   } catch (error) {
     isLoadingData.value = false;
@@ -588,6 +658,16 @@ async function accountOnUpdate(type, data) {
  */
 function btnAddOnClick() {
   router.replace("/DI/DIAccount/create");
+}
+
+async function expandAllBtnOnClick() {
+  if (expandBtnStatus.value == 0) {
+    await expandAllRow();
+    expandBtnStatus.value = 1;
+  } else {
+    collapseAllRow();
+    expandBtnStatus.value = 0;
+  }
 }
 
 // #endregion

@@ -97,6 +97,16 @@
     display: flex;
     column-gap: 12px;
   }
+
+  .button__expanall {
+    display: flex;
+    align-items: center;
+  }
+  .expandall__text {
+    color: rgb(55, 127, 223);
+    font-weight: 500;
+    cursor: pointer;
+  }
   .button__hoverbox--refresh {
     display: none;
     z-index: 20;
