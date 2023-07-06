@@ -74,14 +74,12 @@
               />
             </div>
           </div>
-          <div class="upper__line w-1_2">
+          <div class="upper__line">
             <div class="line__left flex-1">
-              <BaseTextfield
-                pholder=""
+              <AccountCombobox
                 label="Tài khoản tổng hợp"
-                :isrequired="false"
-                v-model:text="account.accountNameVi"
-                noti=""
+                v-model:selectedItemId="account.parentId"
+                v-model:selectedItemName="account.parentAccountName"
               />
             </div>
             <div class="line__right flex-1">
@@ -90,7 +88,7 @@
                 pholder=""
                 :isrequired="true"
                 :option-list="categoryKindList"
-                v-model:text="categoryKindName"
+                v-model:text="account.categoryKindName"
                 noti=""
                 v-model:selectedItemId="account.categoryKind"
               />
@@ -313,6 +311,7 @@ import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
 import $api from "@/js/api";
 import { Account } from "@/js/model/account";
+import AccountCombobox from "../account/AccountCombobox.vue";
 //#endregion
 
 //#region init
@@ -321,6 +320,7 @@ const router = useRouter();
 const route = useRoute();
 const account = ref({});
 const lang = inject("$lang");
+// const _ = require("lodash");
 
 var oldAccount = null;
 const formDialog = ref({
@@ -346,23 +346,22 @@ const form = ref({
 
 const categoryKindList = [
   {
-    optionId: 0,
+    optionId: "0",
     optionName: "Dư nợ",
   },
   {
-    optionId: 1,
+    optionId: "1",
     optionName: "Dư có",
   },
   {
-    optionId: 2,
+    optionId: "2",
     optionName: "Lưỡng tính",
   },
   {
-    optionId: 3,
+    optionId: "3",
     optionName: "Không có số dư",
   },
 ];
-const categoryKindName = ref("");
 
 const emits = defineEmits(["updateAccList"]);
 resetFormState();
@@ -456,7 +455,6 @@ async function getDataFromApi() {
     const oldAcc = new Account({});
     oldAcc.cloneFromOtherAccount(account.value);
     oldAccount = oldAcc;
-    console.log(oldAccount);
     return;
   }
 }
@@ -523,6 +521,7 @@ async function displayNotiBox() {
  */
 async function callCreateAccountApi() {
   const requestBody = account.value.convertToApiFormat();
+  console.log(requestBody);
   const response = await $axios.post($api.account.index, requestBody);
   return response.data;
 }
@@ -553,18 +552,32 @@ async function btnSaveOnClick() {
         // Gọi API sửa nhân viên
         await callEditAccountApi();
         // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
-        emits("updateAccList", "edit", account.value);
+        if (oldAccount.parentId != account.value.parentId) {
+          // reload lại cây account
+          emits("updateAcclist", "edit", {
+            account: account.value,
+            reload: true,
+          });
+        } else {
+          // không cần reload cây account
+          emits("updateAcclist", "edit", {
+            account: account.value,
+            reload: false,
+          });
+        }
       } else {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới nhân viên
         const newAccountId = await callCreateAccountApi();
         account.value.accountId = newAccountId;
         // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
-        emits("updateAccList", "create", account.value);
+        emits("updateAcclist", "create", {
+          account: account.value,
+        });
       }
 
       form.value.isLoading = false;
-      router.replace("/DI/DICustomer");
+      router.replace("/DI/DIAccount");
     }
   } catch (error) {
     form.value.isLoading = false;
@@ -580,8 +593,8 @@ async function btnSaveOnClick() {
  */
 async function callEditAccountApi() {
   const requestBody = account.value.convertToApiFormat();
-  // console.log(requestBody);
-  await $axios.put($api.account.one(form.value.cusId), requestBody);
+  console.log(requestBody);
+  await $axios.put($api.account.one(form.value.accId), requestBody);
 }
 
 /**

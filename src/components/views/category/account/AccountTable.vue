@@ -27,7 +27,12 @@
         </template>
         <template v-else>
           <tr
-            v-for="{ active, acc, isExpand } = row in rowListDisplay"
+            v-for="{
+              active,
+              acc,
+              isExpand,
+              isTemporary,
+            } = row in rowListDisplay"
             :key="acc.accountId"
             :class="{
               active: active,
@@ -43,6 +48,7 @@
                   paddingLeft:
                     24 * (acc.grade % 9) +
                     (!acc.isParent && acc.parentId == '' ? 24 : 0) +
+                    (acc.parentId != '' && isTemporary ? 24 : 0) +
                     'px',
                 }"
               >
@@ -66,7 +72,7 @@
               <div class="text-left">{{ acc.accountNameVi }}</div>
             </td>
             <td>
-              <div class="text-left">{{ acc.categoryKind }}</div>
+              <div class="text-left">{{ acc.categoryKindName }}</div>
             </td>
             <td>
               <div class="text-left">{{ acc.accountNameEn }}</div>
@@ -114,10 +120,7 @@
                     </div>
                   </li>
                   <li>
-                    <div
-                      class="li-data"
-                      @click="deleteCustomerFunction(acc.accountId)"
-                    >
+                    <div class="li-data" @click="deleteFunction(acc.accountId)">
                       {{ lang.table_items.delete }}
                     </div>
                   </li>
@@ -262,7 +265,7 @@ const props = defineProps({
   pagingData: Object,
   isLoadingData: Boolean,
   rowList: Array,
-  deleteCustomerFunction: Function,
+  deleteFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
   haveDataAfterCallApi: Boolean,
@@ -324,13 +327,8 @@ function accNumberExpandOnClick(accountId) {
   });
 }
 
-/**
- * Click vào btn sửa nhân viên
- * @param {String} empId Id nhân viên
- * Author: Dũng (08/05/2023)
- */
-function btnEditOnClick(empId) {
-  router.push(`/DI/DIEmployee/${empId}`);
+function btnEditOnClick(accId) {
+  router.push(`/DI/DIAccount/${accId}`);
 }
 
 /**

@@ -4,7 +4,7 @@
   </div>
   <div class="page__wrapper" v-show="dialog.isDisplay">
     <BaseDialog
-      :title="lang.dialog.deleteConfirmation.title"
+      title="Xác nhận xóa tài khoản"
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
@@ -18,7 +18,7 @@
   />
   <router-view
     name="CustomerForm"
-    @update-cuslist="customerOnUpdate"
+    @update-acclist="accountOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
@@ -68,7 +68,7 @@
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
-        :delete-customer-function="deleteCustomerOnClick"
+        :delete-function="deleteAccountOnClick"
         :have-data-after-call-api="haveDataAfterCallApi"
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
@@ -90,7 +90,6 @@ import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Account } from "@/js/model/account";
 import $error from "../../../../js/resources/error";
-import $message from "../../../../js/resources/message";
 import $enum from "@/js/common/enum";
 import AccountTable from "./AccountTable.vue";
 const lang = inject("$lang");
@@ -118,8 +117,9 @@ const dialog = ref({
   action: null,
 });
 const cache = ref({
-  cusDeleteId: "",
-  cusDeleteIndex: "",
+  accDeleteId: "",
+  accDeleteIndex: null,
+  accDeleteNameVi: "",
   cusSearchPattern: "",
 });
 
@@ -204,17 +204,11 @@ function setToastTimeToLive(id, timeToLive) {
   }, timeToLive);
 }
 
-/**
- * Hiển thị cảnh báo xóa nhân viên
- * @param {String} cusCode mã nhân viên
- *
- * Author: Dũng (08/05/2023)
- */
-function showDeleteOneConfirmDialog(cusCode) {
-  dialog.value.message = $message.customerDeleteConfirm(cusCode);
+function showDeleteOneConfirmDialog(accNameVi) {
+  dialog.value.message = `Bạn có muốn xóa tài khoản ${accNameVi}?`;
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
-    await deleteCustomer();
+    await deleteAccount();
   };
   dialog.value.isDisplay = true;
 }
@@ -238,17 +232,14 @@ function handleApiErrorResponse(error) {
   }
 }
 
-/**
- * Gọi API xóa KH
- * Author: Dũng (08/05/2023)
- */
-async function deleteCustomer() {
+async function deleteAccount() {
   try {
     isLoadingPage.value = true;
-    // Gọi API xóa KH theo ID
-    await $axios.delete($api.customer.one(cache.value.cusDeleteId));
+
+    await $axios.delete($api.account.one(cache.value.accDeleteId));
+
     // Xóa KH đó trên table
-    rowList.value.splice(cache.value.cusDeleteIndex, 1);
+    rowList.value.splice(cache.value.accDeleteIndex, 1);
 
     isLoadingPage.value = false;
 
@@ -265,7 +256,7 @@ async function deleteCustomer() {
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
-      message: $message.customerDeleted,
+      message: "Tài khoản đã bị xóa",
       timeToLive: 1500,
     });
   } catch (error) {
@@ -380,10 +371,11 @@ async function rowStatusOnUpdate(data) {
           }
         }
       } else {
+        // Nếu chưa có dữ liệu
         let pAccount = rowList.value[rowIndex].acc;
         const filterOption = {
           grade: pAccount.grade + 1,
-          listParentId: pAccount.accountId,
+          parentIdList: pAccount.accountId,
         };
         const filterData = await filterAccount(filterOption);
         const childList = filterData.filteredList;
@@ -391,22 +383,34 @@ async function rowStatusOnUpdate(data) {
         let insertIndex = rowIndex;
         for (const acc of childList) {
           ++insertIndex;
+          const accConverted = new Account(acc);
           rowList.value.splice(insertIndex, 0, {
             active: false,
             display: true,
-            acc: acc,
+            acc: accConverted,
             isExpand: false,
+            isTemporary: false,
           });
         }
       }
       pagingData.value.curAmount += expandedAmount;
+
+      // Xóa những thằng temporary
+      // let i = 0;
+      // while (i < rowList.value.length) {
+      //   if (rowList.value[i].isTemporary) {
+      //     rowList.value.splice(i, 1);
+      //     pagingData.value.curAmount -= 1;
+      //   }
+      //   ++i;
+      // }
     } else {
       let collapsedAmount = 0;
       // Collapse những thằng con cháu của nó
       for (let i = rowIndex + 1; i < rowList.value.length; ++i) {
         if (
           rowList.value[i].display &&
-          rowList.value[i].acc.mCodeId.includes(
+          rowList.value[i].acc.mCodeId.startsWith(
             rowList.value[rowIndex].acc.mCodeId
           )
         ) {
@@ -447,17 +451,17 @@ function dialogCloseOnClick() {
  *
  * Author: Dũng (08/05/2023)
  */
-function deleteCustomerOnClick(cusId) {
-  let cusCode = "";
-  cache.value.cusDeleteId = cusId;
+function deleteAccountOnClick(accId) {
+  let accNameVi = "";
+  cache.value.accDeleteId = accId;
   for (let index in rowList.value) {
-    if (rowList.value[index].cus.customerId == cusId) {
-      cache.value.cusDeleteIndex = index;
-      cusCode = rowList.value[index].cus.customerCode;
+    if (rowList.value[index].acc.accountId == accId) {
+      cache.value.accDeleteIndex = index;
+      accNameVi = rowList.value[index].acc.accountNameVi;
       break;
     }
   }
-  showDeleteOneConfirmDialog(cusCode);
+  showDeleteOneConfirmDialog(accNameVi);
 }
 
 /**
@@ -506,7 +510,7 @@ async function loadAccountData() {
     rowList.value = [];
     let filterOption = {
       grade: 0,
-      listParentId: "",
+      parentIdList: "",
     };
     const filterData = await filterAccount(filterOption);
     if (filterData.filteredList) {
@@ -518,6 +522,7 @@ async function loadAccountData() {
           display: true,
           acc: accConverted,
           isExpand: false,
+          isTemporary: false,
         });
       }
     }
@@ -534,10 +539,11 @@ async function loadAccountData() {
   }
 }
 
-async function customerOnUpdate(type, data) {
+async function accountOnUpdate(type, data) {
   // console.log("Customer list updated");
   // console.log(type);
   // console.log(data);
+  const { account, reload } = data;
   switch (type) {
     case "create":
       pagingData.value.totalRecord += 1;
@@ -545,8 +551,9 @@ async function customerOnUpdate(type, data) {
       rowList.value.unshift({
         active: false,
         display: true,
-        selected: false,
-        cus: data,
+        acc: account,
+        isExpand: false,
+        isTemporary: true,
       });
       if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
         await loadAccountData();
@@ -558,10 +565,14 @@ async function customerOnUpdate(type, data) {
       });
       break;
     case "edit":
-      for (const row of rowList.value) {
-        if (row.cus.customerId == data.customerId) {
-          row.cus = data;
-          break;
+      if (reload) {
+        await loadAccountData();
+      } else {
+        for (const row of rowList.value) {
+          if (row.acc.accountId == account.accountId) {
+            row.acc = account;
+            break;
+          }
         }
       }
       pushToast({

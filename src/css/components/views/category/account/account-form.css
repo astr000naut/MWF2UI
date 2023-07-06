@@ -87,6 +87,7 @@
 }
 
 .upper__line {
+    width: 100%;
     margin-top: 24px;
     display: flex;
     column-gap: 24px;
