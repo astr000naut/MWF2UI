@@ -222,7 +222,7 @@ function isNormalCharacterKey(key) {
 
 function trOnClick(index) {
   emits("update:selectedItemId", itemList.value[index].accountId);
-  emits("update:selectedItemName", itemList.value[index].accountNameVi);
+  emits("update:selectedItemName", itemList.value[index].accountNumber);
   selectedItemIndex.value = index;
   isTableOpen.value = false;
 }
