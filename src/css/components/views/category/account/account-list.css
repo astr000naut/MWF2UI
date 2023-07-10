@@ -105,6 +105,8 @@
   .expandall__text {
     color: rgb(55, 127, 223);
     font-weight: 500;
+    white-space: nowrap;
+    width: 60px;
     cursor: pointer;
   }
   .button__hoverbox--refresh {
