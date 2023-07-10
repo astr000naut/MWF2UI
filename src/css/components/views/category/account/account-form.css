@@ -115,6 +115,7 @@
     display: flex;
     align-items: center;
     column-gap: 100px;
+    margin-bottom: 8px;
 }
 
 .line__box {

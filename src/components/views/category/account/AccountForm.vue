@@ -138,7 +138,11 @@
                   />
                 </div>
                 <div class="line__box">
-                  <BaseCheckbox label="Tài khoản ngân hàng" :checked="false" />
+                  <BaseCheckbox
+                    label="Tài khoản ngân hàng"
+                    :checked="detail.byBankAccount"
+                    @click="detail.byBankAccount = !detail.byBankAccount"
+                  />
                 </div>
               </div>
               <div class="option__line">
@@ -148,14 +152,15 @@
                     label="Đối tượng THCP"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
                 <div class="line__box">
@@ -164,14 +169,15 @@
                     label="Công trình"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
               </div>
@@ -182,14 +188,15 @@
                     label="Đơn đặt hàng"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
                 <div class="line__box">
@@ -198,14 +205,15 @@
                     label="Hợp đồng bán"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
               </div>
@@ -216,14 +224,15 @@
                     label="Hợp đồng mua"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
                 <div class="line__box">
@@ -232,14 +241,15 @@
                     label="Khoản mục CP"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
               </div>
@@ -250,14 +260,15 @@
                     label="Đơn vị"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
                 <div class="line__box">
@@ -266,14 +277,15 @@
                     label="Mã thống kê"
                     :checked="false"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="false"
                     label=""
+                    pholder=""
                     :isrequired="false"
                     :option-list="[]"
-                    text=""
                     noti=""
-                    selectedItemId=""
+                    :selectedItemId="-1"
                   />
                 </div>
               </div>

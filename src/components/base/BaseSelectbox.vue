@@ -76,7 +76,7 @@ const props = defineProps({
   isActive: Boolean,
   label: String,
   isrequired: Boolean,
-  selectedItemId: String,
+  selectedItemId: Number,
   optionList: Array,
   noti: String,
   pholder: String,
