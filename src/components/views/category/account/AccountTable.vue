@@ -81,7 +81,7 @@
               <div class="text-left">{{ acc.description }}</div>
             </td>
             <td>
-              <div class="text-left">{{ acc.status }}</div>
+              <div class="text-left">Đang sử dụng</div>
             </td>
             <td
               :class="[table.expandAccId == acc.accountId ? 'above' : '']"

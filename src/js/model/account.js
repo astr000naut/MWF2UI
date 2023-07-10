@@ -8,7 +8,6 @@ export class Account {
   categoryKind;
   categoryKindName;
   description;
-  status;
   isParent;
   grade;
   mCodeId;
@@ -38,7 +37,6 @@ export class Account {
         break;
     }
     this.description = a.description ?? "";
-    this.status = a.status ?? "";
     this.isParent = a.isParent ?? false;
     this.grade = a.grade ?? 0;
     this.mCodeId = a.mCodeId ?? "";
@@ -54,7 +52,6 @@ export class Account {
     this.categoryKind = a.categoryKind;
     this.categoryKindName = a.categoryKindName;
     this.description = a.description;
-    this.status = a.status;
     this.isParent = a.isParent;
     this.grade = a.grade;
     this.mCodeId = a.mCodeId;
