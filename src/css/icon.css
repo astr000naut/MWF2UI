@@ -55,8 +55,23 @@ height: 36px;
 min-width: 36px;
 min-height: 36px;
 }
+/* caprocess icon */
 
+.mi-process-customer {
+    background-position: -872px -200px;
+}
 
+.mi-process-provider {
+    background-position: -928px -200px;
+}
+
+.mi-process-employee {
+    background-position: -984px -200px;
+}
+
+.mi-setting--active {
+    background-position: -648px -200px;
+}
 /* Header icon */
 
 .mi-header-nav {
@@ -125,6 +140,10 @@ background-position: -29px -356px;
 
 .mi-chevron-left--primary {
 background-position: -224px -360px;
+}
+
+.mi-arrow-up--white {
+background-position: -848px -359px;
 }
 
 .mi-arrowleft:not(.disabled):active {

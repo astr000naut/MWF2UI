@@ -1,5 +1,6 @@
 .txtfield {
   position: relative;
+  width: 100%;
 }
 
 .txtfield__textbox {

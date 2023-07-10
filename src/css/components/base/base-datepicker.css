@@ -1,6 +1,6 @@
 .dpicker {
   position: relative;
-  width: fit-content;
+  width: 100%;
 }
 
 .dpicker__label {
@@ -11,7 +11,7 @@
 .dpicker__input {
   position: relative;
   /* background-color: green; */
-  width: fit-content;
+  width: 100%;
 }
 
 .dpicker.error-noti input {
@@ -21,7 +21,7 @@
 
 .dpicker__input > input {
   height: 36px;
-  width: 150px;
+  width: 100%;
   padding: 0 30px 0 12px;
   border: 1px solid var(--clr-t-border);
 }

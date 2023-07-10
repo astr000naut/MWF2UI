@@ -122,17 +122,19 @@
                 <div class="line__box">
                   <BaseCheckbox
                     label="Đối tượng"
-                    :checked="false"
+                    :checked="detail.byAccountObject"
                     class="flex-1"
+                    @click="detailByAccountObjectOnClick"
                   />
-                  <BaseCombobox
+                  <BaseSelectbox
                     class="flex-1"
+                    :isActive="detail.byAccountObject"
                     label=""
+                    pholder=""
                     :isrequired="false"
-                    :option-list="[]"
-                    text=""
+                    :option-list="accountObjectOptionList"
                     noti=""
-                    selectedItemId=""
+                    v-model:selectedItemId="detail.byAccountObjectKind"
                   />
                 </div>
                 <div class="line__box">
@@ -301,6 +303,7 @@
 //#region import
 import BaseTextfield from "../../../../components/base/BaseTextfield";
 import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
+import BaseSelectbox from "@/components/base/BaseSelectbox.vue";
 import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import BaseCheckbox from "../../../base/BaseCheckbox.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
@@ -343,6 +346,14 @@ const form = ref({
   accId: "",
   isLoading: false,
 });
+
+const detail = ref({
+  byBankAccount: false,
+  byAccountObject: false,
+  byAccountObjectKind: -1,
+});
+
+const accountObjectOptionList = ["Nhà cung cấp", "Khách hàng", "Nhân viên"];
 
 const categoryKindList = [
   {
@@ -652,6 +663,10 @@ function formDialogNoBtnOnClick() {
 async function formDialogYesBtnOnClick() {
   formDialog.value.isShow = false;
   await btnSaveOnClick();
+}
+
+function detailByAccountObjectOnClick() {
+  detail.value.byAccountObject = !detail.value.byAccountObject;
 }
 
 //#endregion

@@ -45,7 +45,7 @@ button {
     border: 1px solid var(--clr-t-border);
     background-color: #fff;
   }
-  
+
   .btn--secondary:hover:not([disabled]) {
     cursor: pointer;
     color: var(--clr-lg500);
@@ -103,4 +103,10 @@ button {
   .btn--close {
     width: var(--h-default);
     background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat -138px -138px;
+  }
+
+    
+  .btn--setting {
+    width: var(--h-default);
+    background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat -25px -138px;
   }

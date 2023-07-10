@@ -1,6 +1,6 @@
 <template>
   <div class="scb">
-    <div class="scb__label">Nhân viên bán hàng</div>
+    <div class="scb__label">Mã khách hàng</div>
     <div class="scb__main" :class="[isTableOpen ? 'active' : '']">
       <div class="main__selected">
         <div class="selected__input">
@@ -107,31 +107,37 @@ const emits = defineEmits([
 ]);
 
 const entityStructure = {
-  id: "employeeId",
-  code: "employeeCode",
+  id: "customerId",
+  code: "customerCode",
 };
 
 const tableStructure = [
   {
-    name: "Mã nhân viên",
-    prop: "employeeCode",
+    name: "Đối tượng",
+    prop: "customerCode",
     align: "text-left",
-    width: 120,
+    width: 100,
   },
   {
-    name: "Tên nhân viên",
-    prop: "employeeFullName",
+    name: "Tên đối tượng",
+    prop: "customerFullName",
+    align: "text-left",
+    width: 300,
+  },
+  {
+    name: "Mã số thuế",
+    prop: "customerTIN",
     align: "text-left",
     width: 200,
   },
   {
-    name: "Đơn vị",
-    prop: "departmentName",
+    name: "Địa chỉ",
+    prop: "address",
     align: "text-left",
-    width: 280,
+    width: 180,
   },
   {
-    name: "ĐT di động",
+    name: "Điện thoại",
     prop: "phoneNumber",
     align: "text-left",
     width: 180,
@@ -140,7 +146,7 @@ const tableStructure = [
 
 async function fetchNewEmployee(skip, take, keySearch, reload) {
   console.log(keySearch);
-  const response = await $axios.get($api.employee.filter, {
+  const response = await $axios.get($api.customer.filter, {
     params: {
       skip: skip,
       take: take,
@@ -252,5 +258,5 @@ function trOnClick(index) {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/customer/employee-combobox.css"
+  src="../../../../css/components/views/cash/receipt/customer-combobox.css"
 ></style>

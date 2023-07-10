@@ -17,54 +17,24 @@
     :remove-toast="removeToast"
   />
   <router-view
-    name="CustomerForm"
+    name="ReceiptForm"
     v-model:metadata="formMetadata"
     @update-cuslist="customerOnUpdate"
   ></router-view>
   <div class="pcontent">
-    <div class="pcontent__heading">
-      <div class="pcontent__title">{{ lang.cat_customer.pageTitle }}</div>
-      <BaseButton
-        :bname="lang.cat_customer.button.addCustomer"
-        class="btn--primary"
-        @click="btnAddOnClick"
-      />
-    </div>
-    <div class="pcontent__goback" @click="goToCategoryOnClick">
-      <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
-      <div class="goback__text">Tất cả danh mục</div>
-    </div>
     <div class="pcontent__overview">
-      <div class="overview__container" v-show="displayOverview">
-        <div class="o_item item--dued-debit">
-          <div class="item__top">
-            <div class="top__number">0</div>
-            <div class="top__filter mi funnel-icon"></div>
-          </div>
-          <div class="item__bottom">Nợ quá hạn</div>
+      <div class="overview__container">
+        <div class="o_item item--total-receive">
+          <div class="o_item__left">Tổng thu đầu năm đến hiện tại</div>
+          <div class="o_item__right">456.617.444</div>
         </div>
-        <div class="o_item item--total-debt">
-          <div class="item__top">
-            <div class="top__number">0</div>
-            <div class="top__filter mi funnel-icon"></div>
-          </div>
-          <div class="item__bottom">Tổng nợ phải thu</div>
+        <div class="o_item item--total-paid">
+          <div class="o_item__left">Tổng chi đầu năm đến hiện tại</div>
+          <div class="o_item__right">200.456.546</div>
         </div>
-        <div class="o_item item--paid">
-          <div class="item__top">
-            <div class="top__number">0</div>
-          </div>
-          <div class="item__bottom">
-            <div class="left__text">Đã thanh toán (30 ngày gần đây)</div>
-            <div class="right__text">Số liệu tính đến: 13h48</div>
-          </div>
-        </div>
-      </div>
-      <div class="overview__expand">
-        <div class="expand__button" @click="overviewExpandBtnOnClick">
-          <div
-            class="expand__icon minc mi-8 mi-arrow-dropdown-8px rotate-180"
-          ></div>
+        <div class="o_item item--total-left">
+          <div class="o_item__left">Tổng quỹ hiện tại</div>
+          <div class="o_item__right">600.617.444</div>
         </div>
       </div>
     </div>
@@ -83,13 +53,13 @@
             </div>
           </div>
           <BaseTextfield
-            pholder="Tìm kiếm khách hàng"
+            pholder="Tìm kiếm"
             :hideLabel="true"
             class="txtfield--search mw-300"
             noti=""
             v-model:text="cache.cusSearchPattern"
             :realTimeSearch="true"
-            :doSearch="doSearchCustomer"
+            :doSearch="doSearchReceipt"
           />
           <BaseButton class="mi mi-36 mi-refresh" @click="loadCustomerData" />
           <div class="button__hoverbox--refresh">
@@ -107,6 +77,12 @@
           <div class="export__loader" v-show="isLoadingExport">
             <BaseLoader></BaseLoader>
           </div>
+          <div class="btn__add-receipt">
+            <div class="add__text" @click="btnAddOnClick">Thu tiền</div>
+            <div class="add__select">
+              <div class="select__icon mi mi-16 mi-arrow-up--white"></div>
+            </div>
+          </div>
         </div>
         <div class="searchbar__left" v-show="selectedCusIds.length > 1">
           <div class="left__info">
@@ -122,7 +98,7 @@
           />
         </div>
       </div>
-      <CustomerTable
+      <ReceiptTable
         :is-loading-data="isLoadingData"
         :row-list="rowList"
         :key="tableKey"
@@ -143,7 +119,7 @@
 
 <script setup>
 // #region import
-import CustomerTable from "@/components/views/category/customer/CustomerTable.vue";
+import ReceiptTable from "./ReceiptTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
@@ -190,7 +166,6 @@ const formMetadata = ref({
   isDupplicate: false,
   customerDupplicate: null,
 });
-const displayOverview = ref(true);
 // #endregion
 
 // #region hook
@@ -216,7 +191,7 @@ onBeforeUnmount(() => {
  * Tìm kiếm nhân viên khi nhập vào ô tìm kiếm
  * Author: Dũng (26/05/2023)
  */
-async function doSearchCustomer() {
+async function doSearchReceipt() {
   pagingData.value.pageNumber = 1;
   await loadCustomerData();
 }
@@ -404,14 +379,6 @@ async function deleteBatchCustomer() {
 // #endregion
 
 // #region handle event
-/**
- * Sự kiện click Tất cả danh mục
- *
- * Author: Dũng (21/06/2023)
- */
-function goToCategoryOnClick() {
-  router.push("/DI");
-}
 
 /**
  * Sự kiện Customer Table emit dupplicate lên Customer List
@@ -681,16 +648,8 @@ async function customerOnUpdate(type, data) {
   // await loadCustomerData();
 }
 
-/**
- * Sự kiện click vào nút thêm
- * Author: Dũng (08/05/2023)
- */
 function btnAddOnClick() {
-  router.replace("/DI/DICustomer/create");
-}
-
-function overviewExpandBtnOnClick() {
-  displayOverview.value = !displayOverview.value;
+  router.push("/CA/CAReceipt/create");
 }
 
 // #endregion
@@ -699,5 +658,5 @@ function overviewExpandBtnOnClick() {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/customer/customer-list.css"
+  src="../../../../css/components/views/cash/receipt/receipt-list.css"
 ></style>

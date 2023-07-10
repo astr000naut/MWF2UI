@@ -15,7 +15,7 @@
   .sidebar__main {
     max-height: calc(100vh - 56px - 44px);
     row-gap: 4px;
-    padding: 20px 12px 12px 12px;
+    padding: 12px;
     overflow-y: scroll;
   }
   

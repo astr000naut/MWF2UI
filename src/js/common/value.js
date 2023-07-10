@@ -13,7 +13,7 @@ const commonVal = {
     },
     {
       name: "Tiền mặt",
-      link: "/under-development/2",
+      link: "/CA",
       icon: "mi-sidebar-cash",
     },
     {

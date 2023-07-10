@@ -1,30 +1,12 @@
 .pcontent {
     flex: 1;
-    height: calc(100vh - 56px);
+    height: 100%;
     min-width: 800px;
-    padding: 24px;
     display: flex;
     flex-direction: column;
-    row-gap: 12px;
     position: relative;
-}
-  
-  /* Heading */
-  
-  .pcontent__heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    user-select: none;
   }
-  
-  .pcontent__title {
-    flex-shrink: 0;
-    font-size: var(--fs-head1);
-    font-weight: 700;
-    line-height: var(--lh-head1);
-  }
-  
+    
   /* Container */
   
   .pcontent__container {
@@ -103,7 +85,7 @@
     z-index: 20;
     position: absolute;
     top: -24px;
-    right: 28px;
+    right: 154px;
   }
   
   .hover__text {
@@ -131,7 +113,7 @@
     z-index: 20;
     position: absolute;
     top: -24px;
-    right: -20px;
+    right: 108px;
   }
 
   .mi-excel:hover + .button__hoverbox--export {
@@ -163,13 +145,129 @@
     top: -5px;
   }
 
-.pcontent__goback {
+.overview__container {
     display: flex;
-    cursor: pointer;
+    column-gap: 8px;
+    padding: 24px;
+    background-color: #fff;
+    border-bottom: 1px solid var(--clr-t-border);
+}
+
+.o_item__right {
     color: #0075c0;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.item--total-receive {
+    border-left: 8px solid #00a9f2;
+}
+
+.item--total-paid {
+    border-left: 8px solid #ff7f2c;
+}
+
+.item--total-left {
+    border-left: 8px solid #74cb2f;
+}
+
+.overview__expand {
+    height: 14px;
+    display: flex;
+    justify-content: center;
+}
+
+.expand__button {   
+    background-color: #fff;
+    height: 100%;
+    width: 48px; 
+    background-color: #d4d7dc;
+    cursor: pointer; 
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
-.goback__text {
-    font-size: 13px;
-    user-select: none;
+
+.o_item {
+    height: 100%;
+    flex: 1;
+    padding: 8px 12px;
+    background-color: #e5e8ec;
+    display: flex;
+    column-gap: 12px;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.o_item__left {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.item__bottom {
+    display: flex;
+    font-size: 12px;
+    justify-content: space-between;
+    column-gap: 8px;
+}
+
+.left__text, .right__text {
+    font-size: inherit;
+    white-space: nowrap;
+}
+
+.filter {
+    position: relative;
+}
+
+.filter__btn {
+    display: flex;
+    cursor: pointer;
+    border: 1px solid var(--clr-t-border);
+    height: 36px;
+    padding: 0px 12px 0px 18px;
+    display: flex;
+    align-items: center;
+    column-gap: 4px;
+    border-radius: 4px;   
+}
+
+.filter__btn:hover {
+    background-color: #eaeaeb;
+}
+
+.filter__panel {
+    width: 200px;
+    height: 150px;
+    background-color: yellowgreen;
+    position: absolute;
+    display: none;
+    top: 40px;
+    left: 0px;
+    z-index: 1;
+}
+
+.btn__add-receipt {
+    background-color: #2ca01c;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    border-radius: 30px;
+    column-gap: 4px;
+    cursor: pointer;
+}
+
+.btn__add-receipt:hover {
+    background-color: #73C663;
+}
+
+.add__text {
+    color: white;
+    font-weight: 500;
+    padding: 0px 6px;
+    border-right: 1px solid #fff;
+    white-space: nowrap;
+}
+
