@@ -80,6 +80,8 @@
                 label="Tài khoản tổng hợp"
                 v-model:selectedItemId="account.parentId"
                 v-model:selectedItemName="account.parentNumber"
+                :ranking="true"
+                :have-add-btn="true"
               />
             </div>
             <div class="line__right flex-1">

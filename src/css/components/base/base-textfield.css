@@ -28,6 +28,10 @@
   padding: 0 12px 0 12px;
 }
 
+.txtfield__input.input-text-right {
+    text-align: right;
+}
+
 .txtfield__input:hover {
   background-color: var(--clr-t-bg);
 }
@@ -36,6 +40,8 @@
   outline: none;
   border: 1px solid var(--clr-lg500);
 }
+
+
 
 .txtfield:not(.error-noti) .txtfield__noti {
   display: none;

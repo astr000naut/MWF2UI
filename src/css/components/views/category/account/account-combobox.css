@@ -1,7 +1,6 @@
 .ecb {
     position: relative;
     min-width: 400px;
-    z-index: 1;
 }
 
 .ecb__label {

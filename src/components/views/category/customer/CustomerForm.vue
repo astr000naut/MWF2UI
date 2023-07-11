@@ -175,6 +175,7 @@
               <EmployeeCombobox
                 v-model:selectedEmployeeId="customer.employeeId"
                 v-model:selectedEmployeeName="customer.employeeFullName"
+                :table-structure="employeeComboboxTableStructure"
               />
             </div>
           </div>
@@ -676,6 +677,21 @@ var oldCustomer = null;
 const customerCodeRef = ref(null);
 const customerTINRef = ref(null);
 const customerFullNameRef = ref(null);
+
+const employeeComboboxTableStructure = [
+  {
+    name: "Mã nhân viên",
+    prop: "employeeCode",
+    align: "text-left",
+    width: 200,
+  },
+  {
+    name: "Tên nhân viên",
+    prop: "employeeFullName",
+    align: "text-left",
+    width: 248,
+  },
+];
 
 const props = defineProps({
   metadata: Object,

@@ -1,6 +1,6 @@
 <template>
   <div class="ecb">
-    <div class="ecb__label">{{ label }}</div>
+    <div class="ecb__label" v-if="label.length > 0">{{ label }}</div>
     <div class="ecb__main" :class="[isTableOpen ? 'active' : '']">
       <div class="main__selected">
         <div class="selected__input">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="main__action">
-        <div class="btn__add">
+        <div class="btn__add" v-if="haveAddBtn">
           <div class="btn__add__icon mi mi-12 mi-add--green"></div>
         </div>
         <button class="btn__dropdown" @click="btnDropDownOnClick">
@@ -62,9 +62,11 @@
               <td>
                 <div
                   class="td__text align--left"
-                  :class="[item.isParent ? 'text--bold' : '']"
+                  :class="[item.isParent && ranking ? 'text--bold' : '']"
                   :style="{
-                    paddingLeft: 10 + 10 * (item.grade % 9) + 'px',
+                    paddingLeft: ranking
+                      ? 10 + 10 * (item.grade % 9) + 'px'
+                      : 10 + 'px',
                   }"
                 >
                   {{ item.accountNumber }}
@@ -98,11 +100,14 @@ const timeoutVal = 500;
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
 const selectedItemIndex = ref(0);
+var totalRecord = 0;
 
 const props = defineProps({
   label: String,
   selectedItemId: String,
   selectedItemName: String,
+  ranking: Boolean,
+  haveAddBtn: Boolean,
 });
 
 const tableSchema = [
@@ -133,7 +138,7 @@ async function fetchNewItem(skip, take, keySearch, reload) {
   for (const item of response.data.filteredList) {
     itemList.value.push(item);
   }
-  console.log(props.selectedItemId);
+  totalRecord = response.data.totalRecord;
 }
 
 async function tableContentOnScroll(e) {
@@ -141,12 +146,14 @@ async function tableContentOnScroll(e) {
     target: { scrollTop, clientHeight, scrollHeight },
   } = e;
   if (scrollTop + clientHeight >= scrollHeight) {
-    await fetchNewItem(
-      itemList.value.length,
-      10,
-      props.selectedItemName,
-      false
-    );
+    if (itemList.value.length < totalRecord) {
+      await fetchNewItem(
+        itemList.value.length,
+        10,
+        props.selectedItemName,
+        false
+      );
+    }
   }
 }
 

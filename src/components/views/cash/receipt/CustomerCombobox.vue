@@ -7,8 +7,8 @@
           <input
             type="text"
             ref="refInput"
-            :value="selectedEmployeeName"
-            @input="$emit('update:selectedEmployeeName', $event.target.value)"
+            :value="selectedEntityCode"
+            @input="$emit('update:selectedEntityCode', $event.target.value)"
             @keyup="inputKeyupHandler"
             @keypress="inputKeyPressHandler"
           />
@@ -58,7 +58,7 @@
               :key="index"
               @click="trOnClick(index)"
               :class="[
-                entity[entityStructure.id] == selectedEmployeeId
+                entity[entityStructure.id] == selectedEntityId
                   ? 'selected'
                   : '',
               ]"
@@ -95,20 +95,30 @@ const typingTimers = [];
 const timeoutVal = 500;
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
-const selectedEmployeeIndex = ref(0);
+const selectedEntityIndex = ref(0);
+var totalRecord = 0;
 
 const props = defineProps({
-  selectedEmployeeId: String,
-  selectedEmployeeName: String,
+  selectedEntityId: String,
+  selectedEntityCode: String,
+  selectedEntityName: String,
+  selectedEntityContact: String,
+  selectedEntityAddress: String,
 });
 const emits = defineEmits([
-  "update:selectedEmployeeId",
-  "update:selectedEmployeeName",
+  "update:selectedEntityId",
+  "update:selectedEntityCode",
+  "update:selectedEntityName",
+  "update:selectedEntityContact",
+  "update:selectedEntityAddress",
 ]);
 
 const entityStructure = {
   id: "customerId",
   code: "customerCode",
+  name: "customerFullName",
+  address: "address",
+  contact: "contactName",
 };
 
 const tableStructure = [
@@ -144,8 +154,7 @@ const tableStructure = [
   },
 ];
 
-async function fetchNewEmployee(skip, take, keySearch, reload) {
-  console.log(keySearch);
+async function fetchNewEntity(skip, take, keySearch, reload) {
   const response = await $axios.get($api.customer.filter, {
     params: {
       skip: skip,
@@ -157,7 +166,7 @@ async function fetchNewEmployee(skip, take, keySearch, reload) {
   for (const entity of response.data.filteredList) {
     entityList.value.push(entity);
   }
-  console.log(response);
+  totalRecord = response.data.totalRecord;
 }
 
 async function tableContentOnScroll(e) {
@@ -165,29 +174,31 @@ async function tableContentOnScroll(e) {
     target: { scrollTop, clientHeight, scrollHeight },
   } = e;
   if (scrollTop + clientHeight >= scrollHeight) {
-    await fetchNewEmployee(
-      entityList.value.length,
-      10,
-      props.selectedEmployeeName,
-      false
-    );
+    if (entityList.value.length < totalRecord) {
+      await fetchNewEntity(
+        entityList.value.length,
+        10,
+        props.selectedEntityCode,
+        false
+      );
+    }
   }
 }
 
 async function btnDropDownOnClick() {
   if (!isTableOpen.value && entityList.value.length == 0) {
-    await fetchNewEmployee(
+    await fetchNewEntity(
       entityList.value.length,
       10,
-      props.selectedEmployeeName,
+      props.selectedEntityCode,
       false
     );
   }
   isTableOpen.value = !isTableOpen.value;
-  if (isTableOpen.value && props.selectedEmployeeId != "") {
+  if (isTableOpen.value && props.selectedEntityId != "") {
     await nextTick();
     talbeContentRef.value.scrollTo({
-      top: 38 * selectedEmployeeIndex.value,
+      top: 38 * selectedEntityIndex.value,
       behavior: "smooth",
     });
   }
@@ -212,8 +223,8 @@ function inputKeyupHandler($event) {
     setTimeout(() => {
       // Display loading
       isLoadingData.value = true;
-      emits("update:selectedEmployeeId", "");
-      fetchNewEmployee(0, 20, props.selectedEmployeeName, true);
+      emits("update:selectedEntityId", "");
+      fetchNewEntity(0, 20, props.selectedEntityCode, true);
       isLoadingData.value = false;
     }, timeoutVal)
   );
@@ -246,11 +257,24 @@ function isNormalCharacterKey(key) {
 
 function trOnClick(index) {
   emits(
-    "update:selectedValueOne",
+    "update:selectedEntityCode",
     entityList.value[index][entityStructure.code]
   );
+  emits(
+    "update:selectedEntityName",
+    entityList.value[index][entityStructure.name]
+  );
+  emits(
+    "update:selectedEntityAddress",
+    entityList.value[index][entityStructure.address]
+  );
+  console.log(entityList.value[index][entityStructure.address]);
+  emits(
+    "update:selectedEntityContact",
+    entityList.value[index][entityStructure.contact]
+  );
   emits("update:selectedEntityId", entityList.value[index][entityStructure.id]);
-  selectedEmployeeIndex.value = index;
+  selectedEntityIndex.value = index;
   isTableOpen.value = false;
 }
 </script>

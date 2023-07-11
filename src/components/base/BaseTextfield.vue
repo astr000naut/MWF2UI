@@ -20,6 +20,7 @@
     <div class="txtfield__textbox">
       <input
         class="txtfield__input"
+        :class="[textRight ? 'input-text-right' : '']"
         type="text"
         :placeholder="pholder"
         @focus="inputOnFocus"
@@ -55,6 +56,7 @@ const props = defineProps({
   doSearch: Function,
   autoFill: Function,
   autoFillMessage: String,
+  textRight: Boolean,
 });
 const typingTimers = [];
 const timeoutVal = 500;

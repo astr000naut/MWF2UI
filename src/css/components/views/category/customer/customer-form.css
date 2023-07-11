@@ -88,6 +88,8 @@
     display: flex;
     justify-content: space-between;
     column-gap: 24px;
+    position: relative;
+    z-index: 1;
 }
 
 .fu__left {
@@ -97,7 +99,6 @@
 .fu__right {
     flex: 1;
 }
-
 .fu__left__top {
     display: flex;
     column-gap: 12px;

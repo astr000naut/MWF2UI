@@ -1,43 +1,31 @@
 <template>
-  <div class="scb">
-    <div class="scb__label">Nhân viên bán hàng</div>
-    <div class="scb__main" :class="[isTableOpen ? 'active' : '']">
+  <div class="facb">
+    <div class="facb__main" :class="[isTableOpen ? 'active' : '']">
       <div class="main__selected">
         <div class="selected__input">
           <input
             type="text"
             ref="refInput"
-            :value="selectedEmployeeName"
-            @input="$emit('update:selectedEmployeeName', $event.target.value)"
+            :value="selectedItemName"
+            @input="$emit('update:selectedItemName', $event.target.value)"
             @keyup="inputKeyupHandler"
             @keypress="inputKeyPressHandler"
           />
         </div>
       </div>
       <div class="main__action">
-        <div class="btn__add">
-          <div class="btn__add__icon mi mi-12 mi-add--green"></div>
-        </div>
         <button class="btn__dropdown" @click="btnDropDownOnClick">
           <i class="fas fa-chevron-down"></i>
         </button>
       </div>
     </div>
-    <div class="scb__table" v-show="isTableOpen">
+    <div class="facb__table" v-show="isTableOpen">
       <div class="table__header">
         <table class="t__header">
           <thead>
             <tr>
-              <th
-                v-for="header in tableStructure"
-                :key="header.name"
-                :style="{
-                  width: header.width != 0 ? header.width + 'px' : 'auto',
-                }"
-              >
-                <div :class="header.align">
-                  {{ header.name }}
-                </div>
+              <th v-for="tSchema in tableSchema" :key="tSchema.prop">
+                <div class="th__text align--left">{{ tSchema.name }}</div>
               </th>
             </tr>
           </thead>
@@ -52,28 +40,33 @@
           <BaseLoader />
         </div>
         <table class="t__content" v-show="!isLoadingData">
+          <colgroup>
+            <col
+              v-for="tSchema in tableSchema"
+              :key="tSchema.prop"
+              span="1"
+              :style="{ width: tSchema.width + '%' }"
+            />
+          </colgroup>
           <tbody>
             <tr
-              v-for="(entity, index) in entityList"
-              :key="index"
+              v-for="(item, index) in itemList"
+              :key="item.accountId"
               @click="trOnClick(index)"
-              :class="[
-                entity[entityStructure.id] == selectedEmployeeId
-                  ? 'selected'
-                  : '',
-              ]"
+              :class="[item.accountId == selectedItemId ? 'selected' : '']"
             >
-              <td
-                v-for="header in tableStructure"
-                :key="header.prop"
-                :style="{
-                  width: header.width != 0 ? header.width + 'px' : 'auto',
-                }"
-              >
-                <div class="td__text">{{ entity[header.prop] }}</div>
+              <td>
+                <div class="td__text align--left">
+                  {{ item.accountNumber }}
+                </div>
+              </td>
+              <td>
+                <div class="td__text align--left">
+                  {{ item.accountNameVi }}
+                </div>
               </td>
             </tr>
-            <tr v-show="entityList.length == 0">
+            <tr v-show="itemList.length == 0">
               <div class="no__data">Không có dữ liệu</div>
             </tr>
           </tbody>
@@ -85,47 +78,50 @@
 
 <script setup>
 import { ref, inject, nextTick } from "vue";
-import $api from "@/js/api";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
-const entityList = ref([]);
+const itemList = ref([]);
 const typingTimers = [];
 const timeoutVal = 500;
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
-const selectedEmployeeIndex = ref(0);
-
-const props = defineProps({
-  selectedEmployeeId: String,
-  selectedEmployeeName: String,
-  tableStructure: Array,
-});
-const emits = defineEmits([
-  "update:selectedEmployeeId",
-  "update:selectedEmployeeName",
-]);
-
+const selectedItemIndex = ref(0);
 var totalRecord = 0;
 
-const entityStructure = {
-  id: "employeeId",
-  code: "employeeCode",
-  name: "employeeFullName",
-};
+const props = defineProps({
+  selectedItemId: String,
+  selectedItemName: String,
+});
 
-async function fetchNewEmployee(skip, take, keySearch, reload) {
-  const response = await $axios.get($api.employee.filter, {
+const tableSchema = [
+  {
+    name: "Số tài khoản",
+    prop: "accountNumber",
+    width: 40,
+  },
+  {
+    name: "Tên tài khoản",
+    prop: "accountNameVi",
+    width: 60,
+  },
+];
+const fetchApi = "https://localhost:44381/api/v1/Accounts/FilterAccount";
+
+const emits = defineEmits(["update:selectedItemId", "update:selectedItemName"]);
+
+async function fetchNewItem(skip, take, keySearch, reload) {
+  const response = await $axios.get(fetchApi, {
     params: {
       skip: skip,
       take: take,
       keySearch: keySearch,
     },
   });
-  if (reload) entityList.value = [];
-  for (const entity of response.data.filteredList) {
-    entityList.value.push(entity);
+  if (reload) itemList.value = [];
+  for (const item of response.data.filteredList) {
+    itemList.value.push(item);
   }
   totalRecord = response.data.totalRecord;
 }
@@ -135,11 +131,11 @@ async function tableContentOnScroll(e) {
     target: { scrollTop, clientHeight, scrollHeight },
   } = e;
   if (scrollTop + clientHeight >= scrollHeight) {
-    if (entityList.value.length < totalRecord) {
-      await fetchNewEmployee(
-        entityList.value.length,
+    if (itemList.value.length < totalRecord) {
+      await fetchNewItem(
+        itemList.value.length,
         10,
-        props.selectedEmployeeName,
+        props.selectedItemName,
         false
       );
     }
@@ -147,11 +143,11 @@ async function tableContentOnScroll(e) {
 }
 
 async function btnDropDownOnClick() {
-  if (!isTableOpen.value && entityList.value.length == 0) {
-    await fetchNewEmployee(
-      entityList.value.length,
+  if (!isTableOpen.value && itemList.value.length == 0) {
+    await fetchNewItem(
+      itemList.value.length,
       10,
-      props.selectedEmployeeName,
+      props.selectedItemName,
       false
     );
   }
@@ -159,7 +155,7 @@ async function btnDropDownOnClick() {
   if (isTableOpen.value && props.selectedEmployeeId != "") {
     await nextTick();
     talbeContentRef.value.scrollTo({
-      top: 38 * selectedEmployeeIndex.value,
+      top: 38 * selectedItemIndex.value,
       behavior: "smooth",
     });
   }
@@ -184,8 +180,8 @@ function inputKeyupHandler($event) {
     setTimeout(() => {
       // Display loading
       isLoadingData.value = true;
-      emits("update:selectedEmployeeId", "");
-      fetchNewEmployee(0, 20, props.selectedEmployeeName, true);
+      emits("update:selectedItemId", "");
+      fetchNewItem(0, 20, props.selectedItemName, true);
       isLoadingData.value = false;
     }, timeoutVal)
   );
@@ -217,15 +213,9 @@ function isNormalCharacterKey(key) {
 }
 
 function trOnClick(index) {
-  emits(
-    "update:selectedEmployeeName",
-    entityList.value[index][entityStructure.name]
-  );
-  emits(
-    "update:selectedEmployeeId",
-    entityList.value[index][entityStructure.id]
-  );
-  selectedEmployeeIndex.value = index;
+  emits("update:selectedItemId", itemList.value[index].accountId);
+  emits("update:selectedItemName", itemList.value[index].accountNumber);
+  selectedItemIndex.value = index;
   isTableOpen.value = false;
 }
 </script>
@@ -233,5 +223,5 @@ function trOnClick(index) {
 <style
   scoped
   lang="css"
-  src="../../../../css/components/views/category/customer/employee-combobox.css"
+  src="../../../../css/components/views/cash/receipt/form-account-combobox.css"
 ></style>

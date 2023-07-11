@@ -574,7 +574,6 @@ async function loadCustomerData() {
       for (const cus of response.data.filteredList) {
         // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
         const cusConverted = new Customer(cus);
-        console.log(cusConverted);
         const isSelected = selectedCusIds.value.includes(
           cusConverted.customerId
         );
