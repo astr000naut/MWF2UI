@@ -11,6 +11,9 @@ export class Account {
   isParent;
   grade;
   mCodeId;
+  detailByBankAccount;
+  detailByAccountObject;
+  detailByAccountObjectKind;
   constructor(a) {
     this.accountId = a.accountId ?? "";
     this.accountNumber = a.accountNumber ?? "";
@@ -40,6 +43,9 @@ export class Account {
     this.isParent = a.isParent ?? false;
     this.grade = a.grade ?? 0;
     this.mCodeId = a.mCodeId ?? "";
+    this.detailByBankAccount = a.detailByBankAccount;
+    this.detailByAccountObject = a.detailByAccountObject;
+    this.detailByAccountObjectKind = a.detailByAccountObjectKind;
   }
 
   cloneFromOtherAccount(a) {
@@ -55,6 +61,9 @@ export class Account {
     this.isParent = a.isParent;
     this.grade = a.grade;
     this.mCodeId = a.mCodeId;
+    this.detailByBankAccount = a.detailByBankAccount;
+    this.detailByAccountObject = a.detailByAccountObject;
+    this.detailByAccountObjectKind = a.detailByAccountObjectKind;
   }
 
   convertToApiFormat() {
@@ -68,7 +77,7 @@ export class Account {
       description: this.description,
       detailByBankAccount: this.detailByBankAccount,
       detailByAccountObject: this.detailByAccountObject,
-      detailByAccountObjectId: this.detailByAccountObjectId,
+      detailByAccountObjectKind: this.detailByAccountObjectKind,
     };
     return obj;
   }

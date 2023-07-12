@@ -1,6 +1,6 @@
 .pcontent {
-    flex: 1;
     height: calc(100vh - 56px);
+    width: 100%;
     background-color: #f7f7f7;
     min-width: 800px;
     padding: 18px;
@@ -40,5 +40,8 @@
 
 .pcontent__main {
     flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 

@@ -141,7 +141,7 @@
                 <BaseDatepicker
                   pholder=""
                   label="Ngày hạch toán"
-                  inputText=""
+                  v-model:inputText="receipt.postedDate"
                   noti=""
                 />
               </div>
@@ -149,7 +149,7 @@
                 <BaseDatepicker
                   pholder=""
                   label="Ngày phiếu thu"
-                  inputText=""
+                  v-model:inputText="receipt.receiptDate"
                   noti=""
                 />
               </div>
@@ -287,9 +287,12 @@ import CustomerCombobox from "./CustomerCombobox.vue";
 import BaseTextfield from "@/components/base/BaseTextfield.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import FormAccountCombobox from "./FormAccountCombobox.vue";
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, inject } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Receipt } from "@/js/model/receipt";
+import $enum from "@/js/common/enum";
+const $axios = inject("$axios");
+import $api from "@/js/api";
 const formTypeList = [
   "1. Thu tiền khách hàng (không theo hóa đơn)",
   "2. Thu hoàn ứng nhân viên",
@@ -358,22 +361,55 @@ const employeeComboboxTableStructure = [
 
 resetFormState();
 
-onMounted(() => {
+onMounted(async () => {
   watch(
     () => receipt.value.customerId,
     () => {
       receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
     }
   );
+  try {
+    // Nếu form là kiểu thông tin account mà id của router không hợp lệ thì quay lại
+    if (
+      form.value.type == $enum.form.infoType &&
+      !isUUID(form.value.entityId)
+    ) {
+      await router.replace("/CA/CAReceipt");
+      return;
+    }
+    form.value.isLoading = true;
+    // Lấy dữ liệu từ Server
+    await getDataFromApi();
+    form.value.isLoading = false;
+  } catch (error) {
+    form.value.isLoading = false;
+    console.log(error);
+  }
 });
 
 function resetFormState() {
   form.value = {
     type: route.params.id ? "info" : "create",
-    accId: route.params.id ?? "",
+    entityId: route.params.id ?? "",
     isLoading: false,
   };
   receipt.value = new Receipt({});
+}
+
+async function fetchEntityToEntityObject(entityId) {
+  const response = await $axios.get($api.receipt.one(entityId));
+  const entityFromApi = response.data;
+  receipt.value = new Receipt(entityFromApi);
+}
+
+async function getDataFromApi() {
+  if (form.value.type == $enum.form.infoType) {
+    await fetchEntityToEntityObject(form.value.entityId);
+    // const oldAcc = new Account({});
+    // oldAcc.cloneFromOtherAccount(account.value);
+    // oldAccount = oldAcc;
+    return;
+  }
 }
 
 function btnCloseOnClick() {
@@ -382,6 +418,17 @@ function btnCloseOnClick() {
 
 function bankAccAddOnClick() {
   receiptDetails.value += 1;
+}
+
+/**
+ * Kiểm tra một string có phải UUID không
+ *
+ * Author: Dũng (11/06/2023)
+ */
+function isUUID(str) {
+  const uuidRegex =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  return uuidRegex.test(str);
 }
 </script>
 

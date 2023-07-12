@@ -93,6 +93,10 @@
     column-gap: 24px;
 }
 
+.upper__line .line__left {
+    z-index: 1;
+}
+
 .collapse__option {
     margin-top: 12px;
 }

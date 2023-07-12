@@ -124,26 +124,28 @@
                 <div class="line__box">
                   <BaseCheckbox
                     label="Đối tượng"
-                    :checked="detail.byAccountObject"
+                    :checked="account.detailByAccountObject"
                     class="flex-1"
                     @click="detailByAccountObjectOnClick"
                   />
                   <BaseSelectbox
                     class="flex-1"
-                    :isActive="detail.byAccountObject"
+                    :isActive="account.detailByAccountObject"
                     label=""
                     pholder=""
                     :isrequired="false"
                     :option-list="accountObjectOptionList"
                     noti=""
-                    v-model:selectedItemId="detail.byAccountObjectKind"
+                    v-model:selectedItemId="account.detailByAccountObjectKind"
                   />
                 </div>
                 <div class="line__box">
                   <BaseCheckbox
                     label="Tài khoản ngân hàng"
-                    :checked="detail.byBankAccount"
-                    @click="detail.byBankAccount = !detail.byBankAccount"
+                    :checked="account.detailByBankAccount"
+                    @click="
+                      account.detailByBankAccount = !account.detailByBankAccount
+                    "
                   />
                 </div>
               </div>
@@ -361,12 +363,6 @@ const form = ref({
   isLoading: false,
 });
 
-const detail = ref({
-  byBankAccount: false,
-  byAccountObject: false,
-  byAccountObjectKind: -1,
-});
-
 const accountObjectOptionList = ["Nhà cung cấp", "Khách hàng", "Nhân viên"];
 
 const categoryKindList = [
@@ -463,7 +459,7 @@ async function handleResponseStatusCode(code, error) {
  *
  * Author: Dũng (28/06/2023)
  */
-async function fetchAccountInfoToCustomerObject(accId) {
+async function fecthAccountToAccountObject(accId) {
   const response = await $axios.get($api.account.one(accId));
   const accFromApi = response.data;
   account.value = new Account(accFromApi);
@@ -476,7 +472,7 @@ async function fetchAccountInfoToCustomerObject(accId) {
  */
 async function getDataFromApi() {
   if (form.value.type == $enum.form.infoType) {
-    await fetchAccountInfoToCustomerObject(form.value.accId, form.value.type);
+    await fecthAccountToAccountObject(form.value.accId, form.value.type);
     const oldAcc = new Account({});
     oldAcc.cloneFromOtherAccount(account.value);
     oldAccount = oldAcc;
@@ -680,7 +676,7 @@ async function formDialogYesBtnOnClick() {
 }
 
 function detailByAccountObjectOnClick() {
-  detail.value.byAccountObject = !detail.value.byAccountObject;
+  account.value.detailByAccountObject = !account.value.detailByAccountObject;
 }
 
 //#endregion

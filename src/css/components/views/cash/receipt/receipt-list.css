@@ -1,15 +1,14 @@
-.pcontent {
-    flex: 1;
-    height: 100%;
+.rlist__pcontent {
     min-width: 800px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     position: relative;
   }
     
   /* Container */
   
-  .pcontent__container {
+  .rlist__pcontent__container {
     position: relative;
     width: 100%;
     flex: 1;
@@ -23,7 +22,7 @@
   }
   
   /* Search bar */
-  .pcontent__searchbar {
+  .rlist__pcontent__searchbar {
     display: flex;
     flex-shrink: 0;
     flex-direction: row-reverse;

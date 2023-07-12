@@ -103,6 +103,13 @@ const routes = [
               ReceiptForm: ReceiptForm,
             },
           },
+          {
+            path: ":id",
+            components: {
+              default: ReceiptList,
+              ReceiptForm: ReceiptForm,
+            },
+          },
         ],
       },
     ],

@@ -38,7 +38,7 @@
     border-collapse: separate;
     transform: translate3d(0, 0, 0);
     user-select: none;
-    position: relative;
+    position: absolute;
   }
   
   td {
@@ -339,4 +339,9 @@
   .right__loading{
     width: 2ch;
     height: 18px;
+  }
+
+  .w-120 {
+    min-width: 120px;
+    max-width: 120px;
   }

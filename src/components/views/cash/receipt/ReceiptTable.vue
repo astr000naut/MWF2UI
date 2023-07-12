@@ -5,7 +5,10 @@
         <tr>
           <th
             class="th1--sticky"
-            :style="{ width: tableStructure.checkboxWidth + 'px' }"
+            :style="{
+              minWidth: tableStructure.checkboxWidth + 'px',
+              maxWidth: tableStructure.checkboxWidth + 'px',
+            }"
           >
             <div class="align-center">
               <div
@@ -26,7 +29,10 @@
           <th
             v-for="header in tableStructure.headerList"
             :key="header.name"
-            :style="{ width: header.width != 0 ? header.width + 'px' : 'auto' }"
+            :style="{
+              minWidth: header.width != 0 ? header.width + 'px' : 'auto',
+              maxWidth: header.width != 0 ? header.width + 'px' : 'auto',
+            }"
           >
             <div :class="header.align">
               {{ header.name }}
@@ -39,27 +45,49 @@
       </thead>
       <tbody>
         <template v-if="isLoadingData">
-          <tr v-for="i in 10" :key="i">
-            <td class="td1--sticky"><div class="loading-item"></div></td>
-            <td v-for="j in tableStructure.headerList.length" :key="j">
+          <tr v-for="i in 12" :key="i">
+            <td
+              class="td1--sticky"
+              :style="{
+                minWidth: tableStructure.checkboxWidth + 'px',
+                maxWidth: tableStructure.checkboxWidth + 'px',
+              }"
+            >
               <div class="loading-item"></div>
             </td>
-            <td class="tdn--sticky">
+            <td
+              v-for="header in tableStructure.headerList"
+              :key="header.prop"
+              :style="{
+                minWidth: header.width != 0 ? header.width + 'px' : 'auto',
+                maxWidth: header.width != 0 ? header.width + 'px' : 'auto',
+              }"
+            >
+              <div class="loading-item"></div>
+            </td>
+            <td class="tdn--sticky w-120">
               <div class="loading-item"></div>
             </td>
           </tr>
         </template>
         <template v-else>
           <tr
-            v-for="({ active, selected, cus } = row, index) in rowList"
-            :key="cus.customerId"
+            v-for="({ active, selected, entity } = row, index) in rowList"
+            :key="entity.receiptId"
             :class="{
               active: active,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(cus.customerId)"
+            @dblclick="trOnDblclick(entity.receiptId)"
           >
-            <td class="td1--sticky" @dblclick.stop>
+            <td
+              class="td1--sticky"
+              @dblclick.stop
+              :style="{
+                minWidth: tableStructure.checkboxWidth + 'px',
+                maxWidth: tableStructure.checkboxWidth + 'px',
+              }"
+            >
               <div class="align-center">
                 <div
                   class="t__checkbox mi-24"
@@ -74,44 +102,50 @@
             </td>
             <td
               v-for="header in tableStructure.headerList"
-              :key="header.name + cus.customerId"
+              :key="header.name + entity.receiptId"
+              :style="{
+                minWidth: header.width != 0 ? header.width + 'px' : 'auto',
+                maxWidth: header.width != 0 ? header.width + 'px' : 'auto',
+              }"
             >
-              <div :class="header.align">{{ cus[header.prop] }}</div>
+              <div :class="header.align">
+                {{ entity[header.prop] }}
+              </div>
             </td>
             <td
-              :class="[table.expandCusId == cus.customerId ? 'above' : '']"
-              class="tdn--sticky"
+              :class="[table.expandEntityId == entity.receiptId ? 'above' : '']"
+              class="tdn--sticky w-120"
               @dblclick.stop
             >
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(cus.customerId)"
+                  @click="btnEditOnClick(entity.receiptId)"
                 >
                   {{ lang.table_items.edit }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
-                  @click="btnExpandOnClick(cus.customerId)"
+                  @click="btnExpandOnClick(entity.receiptId)"
                 ></button>
                 <ul
                   class="actions-list btn__expand"
                   :class="
-                    (cus.customerId ==
-                      rowList[rowList.length - 1].cus.customerId ||
-                      cus.customerId ==
-                        rowList[rowList.length - 2].cus.customerId) &&
+                    (entity.receiptId ==
+                      rowList[rowList.length - 1].entity.receiptId ||
+                      entity.receiptId ==
+                        rowList[rowList.length - 2].entity.receiptId) &&
                     rowList.length > 6
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandCusId == cus.customerId"
-                  @mouseleave="table.expandCusId = ''"
+                  v-show="table.expandEntityId == entity.receiptId"
+                  @mouseleave="table.expandEntityId = ''"
                 >
                   <li>
                     <div
                       class="li-data"
-                      @click="dupplicateCustomerOnClick(cus)"
+                      @click="dupplicateEntityOnClick(entity)"
                     >
                       {{ lang.table_items.dupplicate }}
                     </div>
@@ -119,7 +153,7 @@
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteCustomerFunction(cus.customerId)"
+                      @click="deleteEntityFunction(entity.receiptId)"
                     >
                       {{ lang.table_items.delete }}
                     </div>
@@ -230,10 +264,10 @@ const props = defineProps({
   pagingData: Object,
   isLoadingData: Boolean,
   rowList: Array,
-  deleteCustomerFunction: Function,
+  deleteEntityFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
-  selectedCusIds: Array,
+  selectedEntityIds: Array,
   selectedAmountInPage: Number,
   haveDataAfterCallApi: Boolean,
 });
@@ -241,13 +275,13 @@ const props = defineProps({
 const emits = defineEmits([
   "updatePagingData",
   "updateRowStatus",
-  "updateDupplicateCus",
+  "updateDupplicateEntity",
 ]);
 
 const table = ref({
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
-  expandCusId: "",
+  expandEntityId: "",
 });
 
 const tableStructure = {
@@ -256,51 +290,51 @@ const tableStructure = {
   headerList: [
     {
       name: "NGÀY HẠCH TOÁN",
-      prop: "identityDate",
+      prop: "postedDate",
       align: "text-center",
-      width: 160,
+      width: 240,
     },
     {
       name: "NGÀY CHỨNG TỪ",
-      prop: "identityDate",
+      prop: "receiptDate",
       align: "text-center",
-      width: 160,
+      width: 200,
     },
     {
       name: "SỐ CHỨNG TỪ",
-      prop: "identityNumber",
+      prop: "receiptNo",
       align: "text-left",
-      width: 0,
+      width: 240,
     },
     {
       name: "DIỄN GIẢI",
-      prop: "phoneNumber",
+      prop: "reason",
       align: "text-left",
-      width: 180,
+      width: 500,
     },
     {
       name: "SỐ TIỀN",
-      prop: "identityNumber",
+      prop: "totalAmount",
       align: "text-left",
-      width: 180,
+      width: 200,
     },
     {
       name: "ĐỐI TƯỢNG",
-      prop: "identityNumber",
+      prop: "customerName",
       align: "text-left",
-      width: 180,
+      width: 200,
     },
     {
       name: "MÃ ĐỐI TƯỢNG",
-      prop: "identityNumber",
+      prop: "customerCode",
       align: "text-left",
-      width: 180,
+      width: 200,
     },
     {
       name: "ĐỊA CHỈ",
-      prop: "identityNumber",
+      prop: "customerAddress",
       align: "text-left",
-      width: 180,
+      width: 240,
     },
   ],
 };
@@ -326,8 +360,8 @@ const isLastPage = computed(() => {
  * Sự kiện click vào nhân bản
  * Author: Dũng (03/06/2023)
  */
-function dupplicateCustomerOnClick(cus) {
-  emits("updateDupplicateCus", cus);
+function dupplicateEntityOnClick(entity) {
+  emits("updateDupplicateEntity", entity);
 }
 
 /**
@@ -361,23 +395,23 @@ async function prevPageOnClick() {
 
 /**
  * Click vào btn sửa KH
- * @param {String} cusId Id KH
+ * @param {String} entityId Id KH
  * Author: Dũng (08/05/2023)
  */
-function btnEditOnClick(cusId) {
-  router.push(`/DI/DICustomer/${cusId}`);
+function btnEditOnClick(entityId) {
+  router.push(`/CA/CAReceipt/${entityId}`);
 }
 
 /**
  * Click vào nút mở rộng của một KH
- * @param {String} cusId Id KH
+ * @param {String} entityId Id KH
  * Author: Dũng (08/05/2023)
  */
-function btnExpandOnClick(cusId) {
-  if (table.value.expandCusId == cusId) {
-    table.value.expandCusId = "";
+function btnExpandOnClick(entityId) {
+  if (table.value.expandEntityId == entityId) {
+    table.value.expandEntityId = "";
   } else {
-    table.value.expandCusId = cusId;
+    table.value.expandEntityId = entityId;
   }
 }
 
@@ -430,8 +464,8 @@ function trOnClick(rowIndex) {
  * DblClick vào checkbox
  * Author: Dũng (08/05/2023)
  */
-function trOnDblclick(cusId) {
-  router.push(`/DI/DICustomer/${cusId}`);
+function trOnDblclick(entityId) {
+  router.push(`/CA/CAReceipt/${entityId}`);
 }
 
 // #endregion
