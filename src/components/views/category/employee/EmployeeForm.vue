@@ -319,12 +319,6 @@
 
 <script setup>
 // #region import
-import BaseCombobox from "@/components/base/BaseCombobox.vue";
-import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
-import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
-import BaseLoader from "@/components/base/BaseLoader.vue";
-import BaseDialog from "@/components/base/BaseDialog.vue";
-import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import $enum from "@/js/common/enum";
 import { ref, inject, onMounted, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";

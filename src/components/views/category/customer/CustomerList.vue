@@ -146,9 +146,6 @@
 import CustomerTable from "@/components/views/category/customer/CustomerTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
-import BaseLoader from "@/components/base/BaseLoader.vue";
-import BaseDialog from "@/components/base/BaseDialog.vue";
-import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
 import $error from "../../../../js/resources/error";

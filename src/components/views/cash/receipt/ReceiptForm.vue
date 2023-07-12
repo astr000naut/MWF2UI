@@ -229,6 +229,20 @@
                       </div>
                     </td>
                     <td>
+                      <div class="td__wrapper">
+                        <input class="rdetail--input" type="text" value="" />
+                      </div>
+                    </td>
+                    <td>
+                      <div class="td__wrapper">
+                        <input
+                          class="rdetail--input text-right"
+                          type="text"
+                          value=""
+                        />
+                      </div>
+                    </td>
+                    <td>
                       <div
                         class="delete__button"
                         @click="customerBankAccDeleteOnClick(index)"
@@ -280,12 +294,8 @@
 </template>
 
 <script setup>
-import BaseButton from "@/components/base/BaseButton.vue";
-import BaseSelectbox from "@/components/base/BaseSelectbox.vue";
 import EmployeeCombobox from "../../category/customer/EmployeeCombobox.vue";
 import CustomerCombobox from "./CustomerCombobox.vue";
-import BaseTextfield from "@/components/base/BaseTextfield.vue";
-import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import FormAccountCombobox from "./FormAccountCombobox.vue";
 import { ref, watch, onMounted, inject } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -316,10 +326,22 @@ const detailTableStructure = [
     name: "TK nợ",
     prop: "description",
     align: "text-left",
-    width: 300,
+    width: 240,
   },
   {
     name: "TK có",
+    prop: "description",
+    align: "text-left",
+    width: 240,
+  },
+  {
+    name: "Đối tượng",
+    prop: "description",
+    align: "text-left",
+    width: 300,
+  },
+  {
+    name: "Tên đối tượng",
     prop: "description",
     align: "text-left",
     width: 300,
@@ -327,8 +349,8 @@ const detailTableStructure = [
   {
     name: "Số tiền",
     prop: "description",
-    align: "text-left",
-    width: 300,
+    align: "text-right",
+    width: 200,
   },
 ];
 

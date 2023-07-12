@@ -84,7 +84,6 @@
 <script setup>
 //#region import
 import { ref, inject } from "vue";
-import BaseLoader from "./BaseLoader.vue";
 import { vOnClickOutside } from "@vueuse/components";
 //#endregion
 

@@ -102,9 +102,6 @@
 import EmployeeTable from "@/components/views/category/employee/EmployeeTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
-import BaseLoader from "@/components/base/BaseLoader.vue";
-import BaseDialog from "@/components/base/BaseDialog.vue";
-import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
 import $error from "../../../../js/resources/error";

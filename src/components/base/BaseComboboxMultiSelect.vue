@@ -104,7 +104,6 @@ const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
 import $api from "../../js/api";
-import BaseLoader from "./BaseLoader.vue";
 const dataList = ref([]);
 const inputText = ref("");
 const isLoadingData = ref(false);

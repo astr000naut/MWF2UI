@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-import BaseSelectbox from "@/components/base/BaseSelectbox.vue";
 import { ref } from "vue";
 const selectedItemId = ref(-1);
 const optionList = ref(["Nhà cung cấp", "Khách hàng", "Nhân viên"]);

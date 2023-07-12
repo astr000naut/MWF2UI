@@ -317,13 +317,6 @@
 
 <script setup>
 //#region import
-import BaseTextfield from "../../../../components/base/BaseTextfield";
-import BaseCombobox from "../../../../components/base/BaseCombobox.vue";
-import BaseSelectbox from "@/components/base/BaseSelectbox.vue";
-import BaseNotibox from "@/components/base/BaseNotibox.vue";
-import BaseCheckbox from "../../../base/BaseCheckbox.vue";
-import BaseDialog from "@/components/base/BaseDialog.vue";
-import BaseLoader from "@/components/base/BaseLoader.vue";
 import { nextTick, ref, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import $enum from "@/js/common/enum";

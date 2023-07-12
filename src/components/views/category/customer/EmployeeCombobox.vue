@@ -86,7 +86,6 @@
 <script setup>
 import { ref, inject, nextTick } from "vue";
 import $api from "@/js/api";
-import BaseLoader from "@/components/base/BaseLoader.vue";
 const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
