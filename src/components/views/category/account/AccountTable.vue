@@ -151,7 +151,7 @@
       >
     </div>
     <div class="pag__rightside">
-      <div class="pag__recordcount">
+      <!-- <div class="pag__recordcount">
         <div class="record__amount__select" v-show="table.recordAmountOpen">
           <ul>
             <li
@@ -178,7 +178,7 @@
           ]"
           @click="pagArrowdownOnClick"
         ></div>
-      </div>
+      </div> -->
       <div class="pag__info">
         <div class="info__left">
           {{
@@ -200,7 +200,7 @@
         </div>
         <div class="info__text">{{ lang.tablePag.record }}</div>
       </div>
-      <div
+      <!-- <div
         class="pag__prev minc mi-24 mi-arrowleft"
         :class="[
           !isLoadingData && pagingData.pageNumber <= 1 ? 'disabled' : '',
@@ -211,7 +211,7 @@
         class="pag__next minc mi-24 mi-arrowright"
         :class="[!isLoadingData && isLastPage ? 'disabled' : '']"
         @click="nextPageOnClick"
-      ></div>
+      ></div> -->
     </div>
   </div>
 </template>
@@ -286,13 +286,13 @@ const table = ref({
  * Kiểm tra xem trang hiện tại có phải là trang cuối không
  * Author: Dũng (28/05/2023)
  */
-const isLastPage = computed(() => {
-  return (
-    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
-      props.pagingData.curAmount >=
-    props.pagingData.totalRecord
-  );
-});
+// const isLastPage = computed(() => {
+//   return (
+//     (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
+//       props.pagingData.curAmount >=
+//     props.pagingData.totalRecord
+//   );
+// });
 
 const rowListDisplay = computed(() => {
   return props.rowList.filter((row) => row.display);
@@ -305,20 +305,20 @@ const rowListDisplay = computed(() => {
  * Click next chuyển trang
  * Author: Dũng (08/05/2023)
  */
-async function nextPageOnClick() {
-  if (isLastPage.value || props.isLoadingData) return;
-  //await props.pagingNextPage();
-}
+// async function nextPageOnClick() {
+//   if (isLastPage.value || props.isLoadingData) return;
+//   //await props.pagingNextPage();
+// }
 
 /**
  * Click prev chuyển trang
  * Author: Dũng (08/05/2023)
  */
-async function prevPageOnClick() {
-  if (props.pagingData.pageNumber <= 1 || props.isLoadingData) return;
-  //await props.pagingPrevPage();
-  console.log("Prev");
-}
+// async function prevPageOnClick() {
+//   if (props.pagingData.pageNumber <= 1 || props.isLoadingData) return;
+//   //await props.pagingPrevPage();
+//   console.log("Prev");
+// }
 
 function accNumberExpandOnClick(accountId) {
   emits("updateRowStatus", {
@@ -349,23 +349,23 @@ function btnExpandOnClick(empId) {
  * @param {Number} recordAmount số lượng bản ghi/trang
  * Author: Dũng (08/05/2023)
  */
-function recordAmountOptionOnClick(recordAmount) {
-  emits("updatePagingData", {
-    totalRecord: props.pagingData.totalRecord,
-    curAmount: props.pagingData.curAmount,
-    pageSize: recordAmount,
-    pageNumber: 1,
-  });
-  table.value.recordAmountOpen = false;
-}
+// function recordAmountOptionOnClick(recordAmount) {
+//   emits("updatePagingData", {
+//     totalRecord: props.pagingData.totalRecord,
+//     curAmount: props.pagingData.curAmount,
+//     pageSize: recordAmount,
+//     pageNumber: 1,
+//   });
+//   table.value.recordAmountOpen = false;
+// }
 
 /**
  * Click mở menu chọn số lượng bản ghi/trang
  * Author: Dũng (08/05/2023)
  */
-function pagArrowdownOnClick() {
-  table.value.recordAmountOpen = !table.value.recordAmountOpen;
-}
+// function pagArrowdownOnClick() {
+//   table.value.recordAmountOpen = !table.value.recordAmountOpen;
+// }
 
 /**
  * Click vào tr
