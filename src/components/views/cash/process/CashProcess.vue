@@ -7,7 +7,7 @@
             <div class="title__text">NGHIỆP VỤ TIỀN MẶT</div>
           </div>
           <div class="top__content">
-            <div class="box__item receive__box">
+            <div class="box__item receive__box" @click="receiveBoxOnClick">
               <div class="box__text">Thu tiền</div>
             </div>
             <div class="box__item payment__box">
@@ -79,6 +79,10 @@ function customerItemOnClick() {
 
 function employeeItemOnClick() {
   router.push("/DI/DIEmployee");
+}
+
+function receiveBoxOnClick() {
+  router.push("/CA/CAReceipt/create");
 }
 </script>
 

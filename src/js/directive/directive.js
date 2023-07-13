@@ -13,7 +13,7 @@ export default function setUpDirective(app) {
       if (binding.value == null || binding.value.length == 0) return;
       const appTooltip = document.getElementsByClassName("app__tooltip")[0];
       // const position = binding.arg;
-      el.addEventListener("mouseover", (event) => {
+      el.addEventListener("mousemove", (event) => {
         mousemoveHandler(event, binding, appTooltip);
       });
       el.addEventListener("mouseleave", () => {
@@ -24,7 +24,7 @@ export default function setUpDirective(app) {
       if (binding.value == null || binding.value.length == 0) return;
       const appTooltip = document.getElementsByClassName("app__tooltip")[0];
       appTooltip.style.display = "none";
-      el.removeEventListener("mouseover", (event) => {
+      el.removeEventListener("mousemove", (event) => {
         mousemoveHandler(event, binding, appTooltip);
       });
       el.removeEventListener("mouseout", () => {

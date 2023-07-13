@@ -26,6 +26,22 @@
     overflow: auto;
 }
 
+::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+}
+
+.form::-webkit-scrollbar {
+    width: 9px;
+    background-color: #fff;
+}
+
+.form::-webkit-scrollbar-thumb {
+    background-color: var(--clr-t-border);
+    border-radius: 4px;
+    height: 100px;
+}
+
 .form__header {
     padding: 24px;
     background-color: #ededed;

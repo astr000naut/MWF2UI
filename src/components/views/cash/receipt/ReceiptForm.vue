@@ -681,7 +681,7 @@ async function btnCloseOnClick() {
     _.isEqual(oldReceipt, receipt.value) &&
     _.isEqual(oldReceiptDetails.value, receiptDetails.value)
   ) {
-    router.replace("/CA/CAReceipt");
+    router.back();
   } else {
     formDialog.value.isShow = true;
     await nextTick();
@@ -717,7 +717,7 @@ async function formDialogCloseBtnOnClick() {
 
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;
-  router.replace("/CA/CAReceipt");
+  router.back();
 }
 
 function focusOnFirstErrorInput() {
