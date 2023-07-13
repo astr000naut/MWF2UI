@@ -18,7 +18,10 @@
         </div>
       </div>
       <div class="header__rightarea">
-        <div class="header__noti mi mi-24 mi-header-bell"></div>
+        <div
+          class="header__noti mi mi-24 mi-header-bell"
+          v-tooltip="'Thông báo'"
+        ></div>
         <div class="header__user">
           <div class="header__avatar"></div>
           <div class="header__username">Dũng Nguyễn</div>

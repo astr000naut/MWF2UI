@@ -1,6 +1,7 @@
 const $enum = {
   form: {
     infoType: "info",
+    viewType: "view",
     createType: "create",
     dupplicateType: "dupplicate",
   },

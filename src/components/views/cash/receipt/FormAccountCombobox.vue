@@ -1,5 +1,9 @@
 <template>
-  <div class="facb">
+  <div
+    class="facb"
+    :class="[noti.length > 0 ? 'facb--emptynoti' : '']"
+    v-on-click-outside="onClickOutSide"
+  >
     <div class="facb__main" :class="[isTableOpen ? 'active' : '']">
       <div class="main__selected">
         <div class="selected__input">
@@ -18,6 +22,9 @@
           <i class="fas fa-chevron-down"></i>
         </button>
       </div>
+    </div>
+    <div class="facb__tooltip" v-show="noti.length > 0">
+      {{ noti }}
     </div>
     <div class="facb__table" v-show="isTableOpen">
       <div class="table__header">
@@ -78,6 +85,7 @@
 
 <script setup>
 import { ref, inject, nextTick } from "vue";
+import { vOnClickOutside } from "@vueuse/components";
 const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
@@ -87,6 +95,7 @@ const timeoutVal = 500;
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
 const selectedItemIndex = ref(0);
+const noti = ref("");
 var totalRecord = 0;
 
 const props = defineProps({
@@ -109,7 +118,7 @@ const tableSchema = [
 const fetchApi = "https://localhost:44381/api/v1/Accounts/FilterAccount";
 
 const emits = defineEmits(["update:selectedItemId", "update:selectedItemName"]);
-
+defineExpose({ noti, refInput });
 async function fetchNewItem(skip, take, keySearch, reload) {
   const response = await $axios.get(fetchApi, {
     params: {
@@ -160,6 +169,13 @@ async function btnDropDownOnClick() {
   }
 }
 
+function onClickOutSide() {
+  isTableOpen.value = false;
+  if (props.selectedItemId == "" && props.selectedItemName != "") {
+    emits("update:selectedItemName", "");
+  }
+}
+
 function inputKeyupHandler($event) {
   if (!isNormalCharacterKey($event.key)) return;
 
@@ -192,6 +208,7 @@ function inputKeyupHandler($event) {
  */
 function inputKeyPressHandler($event) {
   if (!isNormalCharacterKey($event.key)) return;
+  noti.value = "";
   isLoadingData.value = true;
   // Xóa setTimeout đã tạo từ tước
   while (typingTimers.length > 0) {
@@ -214,6 +231,7 @@ function isNormalCharacterKey(key) {
 function trOnClick(index) {
   emits("update:selectedItemId", itemList.value[index].accountId);
   emits("update:selectedItemName", itemList.value[index].accountNumber);
+  noti.value = "";
   selectedItemIndex.value = index;
   isTableOpen.value = false;
 }

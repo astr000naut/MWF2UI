@@ -19,11 +19,13 @@ import BaseSelectbox from "./components/base/BaseSelectbox.vue";
 import BaseToastbox from "./components/base/BaseToastbox.vue";
 
 import lang from "./js/resources/lang";
-
+import setUpDirective from "./js/directive/directive";
 var Emitter = require("tiny-emitter");
 const emitter = new Emitter();
 
 const app = createApp(App);
+
+setUpDirective(app);
 
 app.component("BaseButton", BaseButton);
 app.component("BaseTextfield", BaseTextfield);

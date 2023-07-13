@@ -1,3 +1,22 @@
+.form__loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #c7c7c71a;
+    z-index: 10;
+}
+  
+.form__wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #88888893;
+    z-index: 12;
+}
 .form {
     height: 100%;
     width: 100%;
@@ -24,6 +43,8 @@
 .left__title {
     font-weight: 700;
     line-height: 24px;
+    flex-basis: 250px;
+    flex-shrink: 0;
     font-size: 24px;
     overflow: hidden;
     white-space: nowrap;
@@ -263,7 +284,7 @@ td .delete__button {
 }
 
 .bot__upload {
-    margin-top: 12px;
+    margin-top: 40px;
 }
 .upload__top {
     display: flex;
@@ -295,4 +316,8 @@ td .delete__button {
 
 input:focus {
     border: 1px solid var(--clr-lg500)!important;
+}
+
+.p-left-10 {
+    padding-left: 10px;
 }

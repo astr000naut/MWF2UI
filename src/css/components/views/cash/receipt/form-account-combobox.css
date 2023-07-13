@@ -14,6 +14,26 @@
     border-radius: 4px;
 }
 
+.facb--emptynoti .facb__main {
+    border: 1px solid red !important;
+}
+
+.facb__tooltip {
+    display: none;
+}
+
+.facb--emptynoti:hover .facb__tooltip {
+    display: block;
+    background-color: rgb(223, 106, 106);
+    padding: 2px 4px;
+    font-size: 13px;
+    color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+}
+
 .main__selected {
     flex: 1;
     align-items: center;

@@ -1,8 +1,11 @@
 <template>
-  <TheHeader />
-  <div class="mainarea">
-    <TheSidebar />
-    <router-view></router-view>
+  <div class="app__wrapper">
+    <div class="app__tooltip"></div>
+    <TheHeader />
+    <div class="mainarea">
+      <TheSidebar />
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 

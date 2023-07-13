@@ -54,10 +54,11 @@
           </div>
         </div>
         <div class="header__right">
-          <BaseButton bname="" class="mi-36 btn--help" />
+          <BaseButton bname="" class="mi-36 btn--help" v-tooltip="'Giúp'" />
           <BaseButton
             bname=""
             class="mi-36 btn--close"
+            v-tooltip="'Đóng (ESC)'"
             @click="closeBtnOnClick"
           />
         </div>
@@ -264,6 +265,7 @@
                   <BaseTextfield
                     pholder="Đại diện theo PL"
                     label="Đại diện theo PL"
+                    tooltip="Đại diện theo pháp luật"
                     :isrequired="false"
                     v-model:text="customer.legalRepresentative"
                     noti=""

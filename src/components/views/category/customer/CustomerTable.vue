@@ -28,7 +28,7 @@
             :key="header.name"
             :style="{ width: header.width != 0 ? header.width + 'px' : 'auto' }"
           >
-            <div :class="header.align">
+            <div :class="header.align" v-tooltip="header.tooltip">
               {{ header.name }}
             </div>
           </th>
@@ -258,17 +258,20 @@ const tableStructure = {
       name: "MÃ KHÁCH HÀNG",
       prop: "customerCode",
       align: "text-left",
+      tootip: "",
       width: 200,
     },
     {
       name: "TÊN KHÁCH HÀNG",
       prop: "customerFullName",
       align: "text-left",
+      tootip: "",
       width: 300,
     },
     {
       name: "ĐỊA CHỈ",
       prop: "address",
+      tootip: "",
       align: "text-left",
       width: 0,
     },
@@ -276,11 +279,13 @@ const tableStructure = {
       name: "SỐ ĐIỆN THOẠI",
       prop: "phoneNumber",
       align: "text-left",
+      tootip: "",
       width: 180,
     },
     {
       name: "SỐ CMND",
       prop: "identityNumber",
+      tooltip: "Số chứng minh nhân dân",
       align: "text-left",
       width: 180,
     },

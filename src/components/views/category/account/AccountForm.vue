@@ -33,10 +33,11 @@
           {{ form.type == "create" ? "Thêm Tài khoản" : "Sửa Tài khoản" }}
         </div>
         <div class="header__right">
-          <BaseButton bname="" class="mi-36 btn--help" />
+          <BaseButton bname="" class="mi-36 btn--help" v-tooltip="'Giúp'" />
           <BaseButton
             bname=""
             class="mi-36 btn--close"
+            v-tooltip="'Đóng (ESC)'"
             @click="closeBtnOnClick"
           />
         </div>
@@ -154,6 +155,7 @@
                   <BaseCheckbox
                     class="flex-1"
                     label="Đối tượng THCP"
+                    v-tooltip="'Đối tượng tập hợp chi phí'"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -243,6 +245,7 @@
                   <BaseCheckbox
                     class="flex-1"
                     label="Khoản mục CP"
+                    v-tooltip="'Khoản mục chi phí'"
                     :checked="false"
                   />
                   <BaseSelectbox

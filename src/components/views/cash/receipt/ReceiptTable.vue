@@ -292,7 +292,7 @@ const tableStructure = {
       name: "NGÀY HẠCH TOÁN",
       prop: "postedDate",
       align: "text-center",
-      width: 240,
+      width: 200,
     },
     {
       name: "NGÀY CHỨNG TỪ",
@@ -304,13 +304,13 @@ const tableStructure = {
       name: "SỐ CHỨNG TỪ",
       prop: "receiptNo",
       align: "text-left",
-      width: 240,
+      width: 180,
     },
     {
       name: "DIỄN GIẢI",
       prop: "reason",
       align: "text-left",
-      width: 500,
+      width: 400,
     },
     {
       name: "SỐ TIỀN",
@@ -322,7 +322,7 @@ const tableStructure = {
       name: "ĐỐI TƯỢNG",
       prop: "customerName",
       align: "text-left",
-      width: 200,
+      width: 400,
     },
     {
       name: "MÃ ĐỐI TƯỢNG",

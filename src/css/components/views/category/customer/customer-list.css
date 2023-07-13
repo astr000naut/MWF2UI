@@ -211,6 +211,7 @@
 }
 
 .o_item {
+    cursor: pointer;
     height: 100%;
     flex: 1;
     padding: 8px 12px;

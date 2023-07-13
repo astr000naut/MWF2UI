@@ -36,21 +36,21 @@
     </div>
     <div class="pcontent__overview">
       <div class="overview__container" v-show="displayOverview">
-        <div class="o_item item--dued-debit">
+        <div class="o_item item--dued-debit" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
             <div class="top__number">0</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
           <div class="item__bottom">Nợ quá hạn</div>
         </div>
-        <div class="o_item item--total-debt">
+        <div class="o_item item--total-debt" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
             <div class="top__number">0</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
           <div class="item__bottom">Tổng nợ phải thu</div>
         </div>
-        <div class="o_item item--paid">
+        <div class="o_item item--paid" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
             <div class="top__number">0</div>
           </div>

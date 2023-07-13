@@ -26,15 +26,21 @@
       <div class="overview__container">
         <div class="o_item item--total-receive">
           <div class="o_item__left">Tổng thu đầu năm đến hiện tại</div>
-          <div class="o_item__right">456.617.444</div>
+          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+            456.617.444
+          </div>
         </div>
         <div class="o_item item--total-paid">
           <div class="o_item__left">Tổng chi đầu năm đến hiện tại</div>
-          <div class="o_item__right">200.456.546</div>
+          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+            200.456.546
+          </div>
         </div>
         <div class="o_item item--total-left">
           <div class="o_item__left">Tổng quỹ hiện tại</div>
-          <div class="o_item__right">600.617.444</div>
+          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+            600.617.444
+          </div>
         </div>
       </div>
     </div>
@@ -125,7 +131,7 @@ import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
 import $error from "../../../../js/resources/error";
-import $message from "../../../../js/resources/message";
+// import $message from "../../../../js/resources/message";
 const lang = inject("$lang");
 // #endregion
 
@@ -264,9 +270,8 @@ function showDeleteOneConfirmDialog(entityCode) {
  * Author: Dũng (08/05/2023)
  */
 function showBatchDeleteConfirmDialog() {
-  dialog.value.message = $message.customerMultipleDeleteConfirm(
-    selectedEntityIds.value.length
-  );
+  dialog.value.message =
+    "Bạn có chắc chắn muốn xóa hàng loạt phiếu thu? (fixed)";
   dialog.value.isDisplay = true;
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
@@ -327,7 +332,7 @@ async function deleteEntity() {
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
-      message: $message.customerDeleted,
+      message: "Phiếu thu đã bị xóa khỏi hệ thống",
       timeToLive: 1500,
     });
   } catch (error) {
@@ -365,7 +370,7 @@ async function deleteBatchEntity() {
 
     pushToast({
       type: "success",
-      message: $message.customerMultipeDeleted(deletedSucess),
+      message: `Xóa thành công ${deletedSucess} phiếu thu`,
       timeToLive: 1500,
     });
   } catch (error) {
@@ -613,6 +618,7 @@ async function entityOnUpdate(type, data) {
     case "create":
       pagingData.value.totalRecord += 1;
       pagingData.value.curAmount += 1;
+      haveDataAfterCallApi.value = true;
       rowList.value.unshift({
         active: false,
         selected: false,
@@ -623,7 +629,7 @@ async function entityOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.customerCreated,
+        message: "Tạo mới phiếu thu thành công",
         timeToLive: 1500,
       });
       break;
@@ -636,7 +642,7 @@ async function entityOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: $message.customerUpdated,
+        message: "Cập nhật phiếu thu thành công",
         timeToLive: 1500,
       });
       break;

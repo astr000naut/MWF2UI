@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from "uuid";
 export class ReceiptDetail {
+  status;
   receiptDetailId;
-  receiptID;
+  receiptId;
   description;
   debitAccountId;
   debitAccountNumber;
@@ -11,21 +13,25 @@ export class ReceiptDetail {
   amount;
 
   constructor(r) {
-    this.receiptDetailId = r.receiptDetailId;
-    this.receiptID = r.receiptID;
-    this.description = r.description;
-    this.debitAccountId = r.debitAccountId;
-    this.debitAccountNumber = r.debitAccountNumber;
-    this.creditAccountId = r.creditAccountId;
-    this.creditAccountNumber = r.creditAccountNumber;
-    this.customerCode = r.customerCode;
-    this.customerName = r.customerName;
-    this.amount = r.amount;
+    this.receiptDetailId = r.receiptDetailId ?? "";
+    // "create" "view" "update" "delete"
+    this.status = this.receiptDetailId == "" ? "create" : "view";
+    if (this.status == "create") this.receiptDetailId = uuidv4();
+    this.receiptId = r.receiptId ?? "";
+    this.description = r.description ?? "Thu tiền của";
+    this.debitAccountId = r.debitAccountId ?? "";
+    this.debitAccountNumber = r.debitAccountNumber ?? "";
+    this.creditAccountId = r.creditAccountId ?? "";
+    this.creditAccountNumber = r.creditAccountNumber ?? "";
+    this.customerCode = r.customerCode ?? "";
+    this.customerName = r.customerName ?? "";
+    this.amount = r.amount ?? "";
   }
 
   cloneFromOther(r) {
+    this.status = r.status;
     this.receiptDetailId = r.receiptDetailId;
-    this.receiptID = r.receiptID;
+    this.receiptId = r.receiptId;
     this.description = r.description;
     this.debitAccountId = r.debitAccountId;
     this.debitAccountNumber = r.debitAccountNumber;
@@ -38,16 +44,19 @@ export class ReceiptDetail {
 
   convertToApiFormat() {
     const obj = {
+      status: this.status,
       receiptDetailId: this.receiptDetailId,
-      receiptID: this.receiptID,
+      receiptId: this.receiptId.length > 0 ? this.receiptId : null,
       description: this.description,
-      debitAccountId: this.debitAccountId,
+      debitAccountId:
+        this.debitAccountId.length > 0 ? this.debitAccountId : null,
       debitAccountNumber: this.debitAccountNumber,
-      creditAccountId: this.creditAccountId,
+      creditAccountId:
+        this.creditAccountId.length > 0 ? this.creditAccountId : null,
       creditAccountNumber: this.creditAccountNumber,
       customerCode: this.customerCode,
       customerName: this.customerName,
-      amount: this.amount,
+      amount: Number(this.amount),
     };
     return obj;
   }
