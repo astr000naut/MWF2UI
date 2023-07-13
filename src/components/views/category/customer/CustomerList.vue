@@ -38,21 +38,21 @@
       <div class="overview__container" v-show="displayOverview">
         <div class="o_item item--dued-debit" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
-            <div class="top__number">0</div>
+            <div class="top__number">523.230.201</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
           <div class="item__bottom">Nợ quá hạn</div>
         </div>
         <div class="o_item item--total-debt" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
-            <div class="top__number">0</div>
+            <div class="top__number">1.230.402.868</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
           <div class="item__bottom">Tổng nợ phải thu</div>
         </div>
         <div class="o_item item--paid" v-tooltip="'Bấm vào để lọc'">
           <div class="item__top">
-            <div class="top__number">0</div>
+            <div class="top__number">636.545.751</div>
           </div>
           <div class="item__bottom">
             <div class="left__text">Đã thanh toán (30 ngày gần đây)</div>
@@ -63,7 +63,8 @@
       <div class="overview__expand">
         <div class="expand__button" @click="overviewExpandBtnOnClick">
           <div
-            class="expand__icon minc mi-8 mi-arrow-dropdown-8px rotate-180"
+            class="expand__icon minc mi-8 mi-arrow-dropdown-8px"
+            :class="displayOverview ? 'rotate-180' : ''"
           ></div>
         </div>
       </div>
