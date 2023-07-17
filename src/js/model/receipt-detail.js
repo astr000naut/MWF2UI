@@ -57,7 +57,7 @@ export class ReceiptDetail {
       creditAccountNumber: this.creditAccountNumber,
       customerCode: this.customerCode,
       customerName: this.customerName,
-      amount: Number(this.amount),
+      amount: numberFormater.getNumber(this.amount),
     };
     return obj;
   }
