@@ -1,4 +1,5 @@
 import $formatter from "../common/formater";
+import { v4 as uuidv4 } from "uuid";
 export class Customer {
   customerId;
   customerType;
@@ -66,7 +67,19 @@ export class Customer {
     this.maximizeDebtAmount = "";
     this.receiveAccount = e.receiveAccount ?? "";
     this.payAccount = e.payAccount ?? "";
-    this.bankAccountList = e.bankAccountList ?? "";
+    this.bankAccountList = [];
+    if (e.bankAccountList != null) {
+      this.bankAccountList = JSON.parse(e.bankAccountList);
+    }
+    if (this.bankAccountList.length == 0) {
+      this.bankAccountList.push({
+        id: uuidv4(),
+        bankAccount: "",
+        bankName: "",
+        bankBranch: "",
+        bankProvince: "",
+      });
+    }
     this.country = e.country ?? "";
     this.provinceOrCity = e.provinceOrCity ?? "";
     this.district = e.district ?? "";
@@ -75,7 +88,22 @@ export class Customer {
     this.provinceOrCityId = String(e.provinceOrCityId);
     this.districtId = String(e.districtId);
     this.wardOrCommuneId = String(e.wardOrCommuneId);
-    this.shippingAddressList = e.shippingAddressList ?? "";
+    this.shippingAddressList = {
+      sameOfAddress: false,
+      list: [
+        {
+          id: uuidv4(),
+          address: "",
+        },
+      ],
+    };
+    if (e.shippingAddressList != null) {
+      let eAddressList = JSON.parse(e.shippingAddressList);
+      if (eAddressList.list.length > 0) {
+        this.shippingAddressList.sameOfAddress = eAddressList.sameOfAddress;
+        this.shippingAddressList.list = eAddressList.list;
+      }
+    }
     this.description = e.description ?? "";
     this.identityNumber = e.identityNumber ?? "";
     this.identityDate = $formatter.changeFormat(e.identityDate);
@@ -113,7 +141,7 @@ export class Customer {
       maximizeDebtAmount: null,
       receiveAccount: this.receiveAccount,
       payAccount: this.payAccount,
-      bankAccountList: null,
+      bankAccountList: JSON.stringify(this.bankAccountList),
       country: this.country,
       provinceOrCity: this.provinceOrCity,
       district: this.district,
@@ -122,15 +150,13 @@ export class Customer {
       provinceOrCityId: Number(this.provinceOrCityId),
       districtId: Number(this.districtId),
       wardOrCommuneId: Number(this.wardOrCommuneId),
-      shippingAddressList: null,
+      shippingAddressList: JSON.stringify(this.shippingAddressList),
       description: this.description,
       identityNumber: this.identityNumber,
       identityDate: $formatter.formatDateToApiDate(this.identityDate),
       identityPlace: this.identityPlace,
       groupCodeList: this.groupCodeList.join(","),
     };
-    console.log(this);
-    console.log(obj);
     return obj;
   }
 

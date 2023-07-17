@@ -404,28 +404,28 @@
                   </thead>
                   <tbody>
                     <tr
-                      v-for="(bankAcc, index) in customerBankAccList"
-                      :key="bankAcc.bankAccount"
+                      v-for="(bankAcc, index) in customer.bankAccountList"
+                      :key="bankAcc.id"
                       ref="bankAccRowRefs"
                     >
                       <td>
                         <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankAccount" />
+                          <input type="text" v-model="bankAcc.bankAccount" />
                         </div>
                       </td>
                       <td>
                         <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankName" />
+                          <input type="text" v-model="bankAcc.bankName" />
                         </div>
                       </td>
                       <td>
                         <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankBranch" />
+                          <input type="text" v-model="bankAcc.bankBranch" />
                         </div>
                       </td>
                       <td>
                         <div class="td__wrapper">
-                          <input type="text" :value="bankAcc.bankProvince" />
+                          <input type="text" v-model="bankAcc.bankProvince" />
                         </div>
                       </td>
                       <td>
@@ -446,7 +446,11 @@
                   class="btn--secondary"
                   @click="bankAccAddOnClick"
                 />
-                <BaseButton bname="Xóa hết dòng" class="btn--secondary" />
+                <BaseButton
+                  bname="Xóa hết dòng"
+                  class="btn--secondary"
+                  @click="bankAccDeleteAllOnClick"
+                />
               </div>
             </div>
             <div class="main__panel main__oaddress" v-show="selectedTabId == 3">
@@ -505,25 +509,24 @@
               <div class="oad__right">
                 <div class="oad__right__title">
                   <div class="title__text">Địa chỉ giao hàng</div>
-                  <div class="title__checkbox">
-                    <div
-                      class="checkbox mi mi-18"
-                      :class="[true ? 'mi-checkbox-checked' : '']"
-                    ></div>
-                    <div class="checkbox__label">Giống địa chỉ khách hàng</div>
-                  </div>
+                  <BaseCheckbox
+                    label="Giống địa chỉ khách hàng"
+                    v-model:checked="customer.shippingAddressList.sameOfAddress"
+                    @click="sameOfAddressOnClick"
+                  />
                 </div>
                 <div class="oad__right__table m-top-6">
                   <table class="oad__table">
                     <tbody>
                       <tr
-                        v-for="(item, index) in customerShippingAddressList"
+                        v-for="(item, index) in customer.shippingAddressList
+                          .list"
                         :key="item.id"
                         ref="osAddressRowRefs"
                       >
                         <td>
                           <div class="address__input">
-                            <input type="text" :value="item.address" />
+                            <input type="text" v-model="item.address" />
                           </div>
                         </td>
                         <td>
@@ -544,7 +547,11 @@
                     class="btn--secondary"
                     @click="osAddressBtnAddOnClick"
                   />
-                  <BaseButton bname="Xóa hết dòng" class="btn--secondary" />
+                  <BaseButton
+                    bname="Xóa hết dòng"
+                    class="btn--secondary"
+                    @click="deleteAllShippingAddressOnClick"
+                  />
                 </div>
               </div>
             </div>
@@ -596,6 +603,7 @@ import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
 import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
+import { v4 as uuidv4 } from "uuid";
 
 const _ = require("lodash");
 //#endregion
@@ -637,32 +645,8 @@ const wardCboxSchema = {
   id: "wardId",
   name: "name",
 };
-const customerBankAccList = ref([
-  {
-    bankAccount: "123",
-    bankName: "BIDV",
-    bankBranch: "Cau giay",
-    bankProvince: "Hanoi",
-  },
-  {
-    bankAccount: "1234",
-    bankName: "BIDV",
-    bankBranch: "Cau giay",
-    bankProvince: "Hanoi",
-  },
-]);
 
 let firstErrorRef = null;
-const customerShippingAddressList = ref([
-  {
-    id: 0,
-    address: "144 Xuan Thuy",
-  },
-  {
-    id: 1,
-    address: "10 Ho Tung Mau",
-  },
-]);
 const selectedTabId = ref(0);
 const tabList = ref([
   {
@@ -885,8 +869,13 @@ function tabInfoOnClick(tabId) {
   selectedTabId.value = tabId;
 }
 
+function bankAccDeleteAllOnClick() {
+  customer.value.bankAccountList = [];
+}
+
 async function bankAccAddOnClick() {
-  customerBankAccList.value.push({
+  customer.value.bankAccountList.push({
+    id: uuidv4(),
     bankAccount: "",
     bankName: "",
     bankBranch: "",
@@ -894,27 +883,32 @@ async function bankAccAddOnClick() {
   });
   await nextTick();
   bankAccRowRefs.value[
-    customerBankAccList.value.length - 1
+    customer.value.bankAccountList.length - 1
   ].firstChild.firstChild.firstChild.focus();
 }
 
 function customerBankAccDeleteOnClick(index) {
-  customerBankAccList.value.splice(index, 1);
+  customer.value.bankAccountList.splice(index, 1);
+}
+
+function deleteAllShippingAddressOnClick() {
+  customer.value.shippingAddressList.list = [];
+  customer.value.shippingAddressList.sameOfAddress = false;
 }
 
 async function osAddressBtnAddOnClick() {
-  customerShippingAddressList.value.push({
-    id: customerShippingAddressList.value.length + 1,
+  customer.value.shippingAddressList.list.push({
+    id: uuidv4(),
     address: "",
   });
   await nextTick();
   osAddressRowRefs.value[
-    customerShippingAddressList.value.length - 1
+    customer.value.shippingAddressList.list.length - 1
   ].firstChild.firstChild.firstChild.focus();
 }
 
 function osAddressBtnDeleteOnClick(index) {
-  customerShippingAddressList.value.splice(index, 1);
+  customer.value.shippingAddressList.list.splice(index, 1);
 }
 
 /**
@@ -1062,6 +1056,7 @@ async function btnSaveOnClick() {
  */
 async function callEditCustomerApi() {
   const requestBody = customer.value.convertToApiFormat();
+  console.log(requestBody);
   await $axios.put($api.customer.one(form.value.cusId), requestBody);
 }
 
@@ -1095,6 +1090,17 @@ async function formDialogCloseBtnOnClick() {
     focusOnFirstErrorInput();
   } else {
     customerCodeRef.value.refInput.focus();
+  }
+}
+
+function sameOfAddressOnClick() {
+  if (customer.value.shippingAddressList.sameOfAddress) {
+    customer.value.shippingAddressList.list = [
+      {
+        id: uuidv4(),
+        address: customer.value.address,
+      },
+    ];
   }
 }
 
