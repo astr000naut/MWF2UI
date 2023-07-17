@@ -48,7 +48,6 @@
     border: 1px solid var(--clr-t-border);
     box-shadow: 4px 4px 5px var(--clr-t-bg);
     padding: 8px;
-    max-height: 308px;
     width: 100%;
     position: absolute;
     top: 100%;
@@ -57,7 +56,6 @@
   }
   
   .optionlist {
-    max-height: 292px;
     user-select: none;
     overflow-y: scroll;
   }

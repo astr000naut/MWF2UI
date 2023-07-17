@@ -1,4 +1,5 @@
 import $formatter from "../common/formater";
+import numberFormater from "../common/number-formater";
 export class Receipt {
   receiptId;
   customerId;
@@ -33,7 +34,10 @@ export class Receipt {
     this.postedDate = $formatter.changeFormat(r.postedDate);
     this.receiptDate = $formatter.changeFormat(r.receiptDate);
     this.receiptNo = r.receiptNo ?? "";
-    this.totalAmount = r.totalAmount ?? 0;
+    this.totalAmount =
+      numberFormater.format(r.totalAmount).length > 0
+        ? numberFormater.format(r.totalAmount)
+        : "0";
     this.receiptDetailList = r.receiptDetailList ?? [];
   }
 
@@ -56,6 +60,9 @@ export class Receipt {
   }
 
   convertToApiFormat() {
+    for (const receipt of this.receiptDetailList) {
+      receipt.amount = numberFormater.getNumber(receipt.amount);
+    }
     const obj = {
       customerId: this.customerId.length > 0 ? this.customerId : null,
       customerCode: this.customerCode,
@@ -69,7 +76,7 @@ export class Receipt {
       postedDate: $formatter.formatDateToApiDate(this.postedDate),
       receiptDate: $formatter.formatDateToApiDate(this.receiptDate),
       receiptNo: this.receiptNo,
-      totalAmount: Number(this.totalAmount),
+      totalAmount: numberFormater.getNumber(this.totalAmount),
       receiptDetailList: this.receiptDetailList,
     };
     return obj;

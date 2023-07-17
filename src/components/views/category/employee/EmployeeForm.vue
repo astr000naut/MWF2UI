@@ -117,6 +117,7 @@
                   v-model:text="employee.departmentName"
                   v-model:noti="formNoti.departmentName"
                   v-model:selectedItemId="employee.departmentId"
+                  :schema="comboboxSchema"
                   ref="departmentNameRef"
                 />
               </div>
@@ -404,6 +405,10 @@ const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const saveAndAddBtnRef = ref(null);
 const comboboxDepartmentList = ref([]);
+const comboboxSchema = {
+  id: "optionId",
+  name: "optionName",
+};
 
 resetFormState();
 // #endregion

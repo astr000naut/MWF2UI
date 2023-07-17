@@ -117,46 +117,54 @@
               </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.employeeCode }}</div>
-            </td>
-            <td>
-              <div class="text-left">{{ emp.employeeFullName }}</div>
-            </td>
-            <td>
-              <div class="text-left">
-                {{
-                  emp.gender == 0
-                    ? lang.gender.male
-                    : emp.gender == 1
-                    ? lang.gender.female
-                    : emp.gender == 2
-                    ? lang.gender.other
-                    : ""
-                }}
+              <div class="text-left" v-tooltip="emp.employeeCode">
+                {{ emp.employeeCode }}
               </div>
             </td>
             <td>
-              <div class="text-center">
+              <div class="text-left" v-tooltip="emp.employeeFullName">
+                {{ emp.employeeFullName }}
+              </div>
+            </td>
+            <td>
+              <div class="text-left" v-tooltip="getGenderText(emp.gender)">
+                {{ getGenderText(emp.gender) }}
+              </div>
+            </td>
+            <td>
+              <div class="text-center" v-tooltip="emp.dateOfBirth">
                 {{ emp.dateOfBirth }}
               </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.identityNumber }}</div>
+              <div class="text-left" v-tooltip="emp.identityNumber">
+                {{ emp.identityNumber }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.positionName }}</div>
+              <div class="text-left" v-tooltip="emp.positionName">
+                {{ emp.positionName }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.departmentName }}</div>
+              <div class="text-left" v-tooltip="emp.departmentName">
+                {{ emp.departmentName }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.bankAccount }}</div>
+              <div class="text-left" v-tooltip="emp.bankAccount">
+                {{ emp.bankAccount }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.bankName }}</div>
+              <div class="text-left" v-tooltip="emp.bankName">
+                {{ emp.bankName }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.bankBranch }}</div>
+              <div class="text-left" v-tooltip="emp.bankBranch">
+                {{ emp.bankBranch }}
+              </div>
             </td>
             <td
               :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
@@ -349,6 +357,12 @@ const isLastPage = computed(() => {
     props.pagingData.totalRecord
   );
 });
+
+function getGenderText(value) {
+  if (value == 0) return lang.gender.male;
+  else if (value == 1) return lang.gender.female;
+  return lang.gender.other;
+}
 // #endregion
 
 // #region handle event

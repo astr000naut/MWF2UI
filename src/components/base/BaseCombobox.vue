@@ -48,24 +48,23 @@
         <div
           class="optionlist"
           v-show="!cbox.isLoading"
-          :class="[cbox.hasScrollbar ? 'hascrollbar' : '']"
+          :class="[optionListDisplay.length > 5 ? 'hascrollbar' : '']"
+          :style="{ maxHeight: mxheight > 0 ? mxheight + 'px' : '308px' }"
         >
-          <template
-            v-for="{ optionId, optionName } in optionListDisplay"
-            :key="optionId"
-          >
+          <template v-for="item in optionListDisplay" :key="item[schema.id]">
             <div
               class="option__item"
-              @click="optionOnClick($event, optionId, optionName)"
+              @click="optionOnClick($event, item[schema.id], item[schema.name])"
               :class="[
-                optionId == selectedItemId ? 'item--selected' : '',
+                item[schema.id] == selectedItemId ? 'item--selected' : '',
                 cbox.cusorItemId != null &&
-                optionId == optionListDisplay[cbox.cusorItemId].optionId
+                item[schema.id] ==
+                  optionListDisplay[cbox.cusorItemId][schema.id]
                   ? 'item--highlighted'
                   : '',
               ]"
             >
-              <div class="option__text">{{ optionName }}</div>
+              <div class="option__text">{{ item[schema.name] }}</div>
               <div class="option__icon"></div>
             </div>
           </template>
@@ -104,7 +103,16 @@ const props = defineProps({
   optionList: Array,
   noti: String,
   pholder: String,
+  schema: Object,
+  mxheight: Number,
 });
+
+/*
+schema = {
+  id: "EmployeeId",
+  name: "EmployeeName"
+}
+*/
 
 const emits = defineEmits([
   "update:text",
@@ -123,6 +131,7 @@ const cbox = ref({
 //#endregion
 
 //#region function
+
 /**
  * Kiểm tra keypress có là ký tự text bình thường không
  * @param {String} key là $event.key
@@ -144,7 +153,7 @@ function filterData(input) {
   const optionDisplayList = [];
   for (let i = 0; i < props.optionList.length; ++i) {
     if (
-      props.optionList[i].optionName
+      props.optionList[i][props.schema.name]
         .toLowerCase()
         .includes(input.toLowerCase().trim())
     ) {
@@ -187,7 +196,7 @@ function inputEnterHandler() {
     // Update dữ liệu lên Form Object
     emits(
       "update:text",
-      optionListDisplay.value[cbox.value.cusorItemId].optionName
+      optionListDisplay.value[cbox.value.cusorItemId][props.schema.name]
     );
     emits("update:noti", "");
 
@@ -195,7 +204,7 @@ function inputEnterHandler() {
     cbox.value.isOptionboxOpen = false;
     emits(
       "update:selectedItemId",
-      optionListDisplay.value[cbox.value.cusorItemId].optionId
+      optionListDisplay.value[cbox.value.cusorItemId][props.schema.id]
     );
   }
 }
@@ -217,7 +226,7 @@ function inputArrowUpHandler() {
  */
 function focusOnARow() {
   for (let i = 0; i < optionListDisplay.value.length; ++i) {
-    if (optionListDisplay.value[i].optionId == props.selectedItemId) {
+    if (optionListDisplay.value[i][props.schema.id] == props.selectedItemId) {
       cbox.value.cusorItemId = i;
       break;
     }

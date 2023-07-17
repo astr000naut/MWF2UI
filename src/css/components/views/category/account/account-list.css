@@ -103,6 +103,7 @@
     align-items: center;
   }
   .expandall__text {
+    user-select: none;
     color: rgb(55, 127, 223);
     font-weight: 500;
     white-space: nowrap;

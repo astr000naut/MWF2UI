@@ -456,20 +456,24 @@
                     label="Vị trí địa lý"
                     pholder="Quốc gia"
                     :isrequired="false"
-                    :option-list="[]"
+                    :option-list="countryList"
                     v-model:text="customer.country"
                     noti=""
-                    selectedItemId=""
+                    v-model:selectedItemId="customer.countryId"
+                    :schema="countryCboxSchema"
+                    :mxheight="200"
                   />
 
                   <BaseCombobox
                     label=""
                     pholder="Tỉnh/Thành phố"
                     :isrequired="false"
-                    :option-list="[]"
+                    :option-list="provinceList"
                     v-model:text="customer.provinceOrCity"
                     noti=""
-                    selectedItemId=""
+                    v-model:selectedItemId="customer.provinceOrCityId"
+                    :schema="provinceCboxSchema"
+                    :mxheight="200"
                   />
                 </div>
                 <div class="oad__left__bot m-top-6">
@@ -477,20 +481,24 @@
                     label=""
                     pholder="Quận/Huyện"
                     :isrequired="false"
-                    :option-list="[]"
+                    :option-list="districtList"
                     v-model:text="customer.district"
                     noti=""
-                    selectedItemId=""
+                    v-model:selectedItemId="customer.districtId"
+                    :schema="districtCboxSchema"
+                    :mxheight="200"
                   />
 
                   <BaseCombobox
                     label=""
                     pholder="Xã/Phường"
                     :isrequired="false"
-                    :option-list="[]"
+                    :option-list="wardList"
                     v-model:text="customer.wardOrCommune"
                     noti=""
-                    selectedItemId=""
+                    v-model:selectedItemId="customer.wardOrCommuneId"
+                    :schema="wardCboxSchema"
+                    :mxheight="200"
                   />
                 </div>
               </div>
@@ -565,8 +573,13 @@
             bname="Cất"
             class="btn--secondary"
             @click="btnSaveOnClick"
+            v-tooltip:top="'Cất (Ctrl + S)'"
           />
-          <BaseButton bname="Cất và Thêm" class="btn--primary" />
+          <BaseButton
+            bname="Cất và Thêm"
+            class="btn--primary"
+            v-tooltip:top="'Cất (Ctrl + Shift + S)'"
+          />
         </div>
       </div>
     </div>
@@ -578,10 +591,12 @@
 import EmployeeCombobox from "./EmployeeCombobox.vue";
 import { nextTick, ref, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useLocation } from "@/js/composables/use-location";
 import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
 import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
+
 const _ = require("lodash");
 //#endregion
 
@@ -606,6 +621,22 @@ const formNoti = ref({
   customerCode: "",
   customerFullName: "",
 });
+const countryCboxSchema = {
+  id: "countryId",
+  name: "name",
+};
+const provinceCboxSchema = {
+  id: "provinceId",
+  name: "name",
+};
+const districtCboxSchema = {
+  id: "districtId",
+  name: "name",
+};
+const wardCboxSchema = {
+  id: "wardId",
+  name: "name",
+};
 const customerBankAccList = ref([
   {
     bankAccount: "123",
@@ -686,6 +717,9 @@ const employeeComboboxTableStructure = [
     width: 248,
   },
 ];
+
+const { countryList, provinceList, districtList, wardList } =
+  useLocation(customer);
 
 const props = defineProps({
   metadata: Object,

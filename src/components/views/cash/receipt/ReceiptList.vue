@@ -126,7 +126,7 @@
 <script setup>
 // #region import
 import ReceiptTable from "./ReceiptTable.vue";
-import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import { ref, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
@@ -589,6 +589,7 @@ async function loadDataFromApi() {
         });
       }
     }
+    console.log(rowList.value);
     // console.log(1);
     // console.log(rowList.value);
     // Số bản ghi ở trang hiện tại
@@ -633,19 +634,27 @@ async function entityOnUpdate(type, data) {
         timeToLive: 1500,
       });
       break;
-    case "edit":
-      for (const row of rowList.value) {
-        if (row.entity.receiptId == data.receiptId) {
-          row.entity = data;
+    case "edit": {
+      let tempRow = null;
+      let i = 0;
+      while (i < rowList.value.length) {
+        if (rowList.value[i].entity.receiptId == data.receiptId) {
+          tempRow = rowList.value[i];
+          tempRow.entity = data;
           break;
         }
+        ++i;
       }
+      rowList.value.splice(i, 1);
+      await nextTick();
+      rowList.value.splice(i, 0, tempRow);
       pushToast({
         type: "success",
         message: "Cập nhật phiếu thu thành công",
         timeToLive: 1500,
       });
       break;
+    }
     default:
       break;
   }

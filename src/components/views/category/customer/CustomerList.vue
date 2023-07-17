@@ -145,7 +145,7 @@
 <script setup>
 // #region import
 import CustomerTable from "@/components/views/category/customer/CustomerTable.vue";
-import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import { ref, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
@@ -605,7 +605,6 @@ async function loadCustomerData() {
       for (const cus of response.data.filteredList) {
         // Chuyển đổi từ customer nhận từ server sang Class customer của frontend
         const cusConverted = new Customer(cus);
-        console.log(cusConverted);
         const isSelected = selectedCusIds.value.includes(
           cusConverted.customerId
         );
@@ -660,19 +659,27 @@ async function customerOnUpdate(type, data) {
         timeToLive: 1500,
       });
       break;
-    case "edit":
-      for (const row of rowList.value) {
-        if (row.cus.customerId == data.customerId) {
-          row.cus = data;
+    case "edit": {
+      let tempRow = null;
+      let i = 0;
+      while (i < rowList.value.length) {
+        if (rowList.value[i].cus.customerId == data.customerId) {
+          tempRow = rowList.value[i];
+          tempRow.cus = data;
           break;
         }
+        ++i;
       }
+      rowList.value.splice(i, 1);
+      await nextTick();
+      rowList.value.splice(i, 0, tempRow);
       pushToast({
         type: "success",
         message: $message.customerUpdated,
         timeToLive: 1500,
       });
       break;
+    }
     default:
       break;
   }

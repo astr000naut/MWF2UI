@@ -9,7 +9,7 @@
     transform: translate(-50%, -50%);
     max-height: 100vh;
     max-width: 100vw;
-    overflow: visible;
+    overflow: auto;
     user-select: none;
   }
   

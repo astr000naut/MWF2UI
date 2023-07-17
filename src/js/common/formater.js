@@ -62,7 +62,7 @@ const $formatter = {
    * Author: Dũng (08/05/2023)
    */
   changeFormat: (inputDate) => {
-    if (!inputDate) return "";
+    if (inputDate == null || inputDate == "") return "";
     const date = moment(new Date(inputDate));
     return date.format(dateFormat);
   },

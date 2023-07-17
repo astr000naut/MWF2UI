@@ -100,7 +100,7 @@
 <script setup>
 // #region import
 import EmployeeTable from "@/components/views/category/employee/EmployeeTable.vue";
-import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import { ref, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
@@ -657,17 +657,26 @@ async function employeeOnUpdate(type, data) {
       });
       break;
     case "edit":
-      for (const row of rowList.value) {
-        if (row.emp.employeeId == data.employeeId) {
-          row.emp = data;
-          break;
+      {
+        let tempRow = null;
+        let i = 0;
+        while (i < rowList.value.length) {
+          if (rowList.value[i].emp.employeeId == data.employeeId) {
+            tempRow = rowList.value[i];
+            tempRow.emp = data;
+            break;
+          }
+          ++i;
         }
+        rowList.value.splice(i, 1);
+        await nextTick();
+        rowList.value.splice(i, 0, tempRow);
+        pushToast({
+          type: "success",
+          message: $message.employeeUpdated,
+          timeToLive: 1500,
+        });
       }
-      pushToast({
-        type: "success",
-        message: $message.employeeUpdated,
-        timeToLive: 1500,
-      });
       break;
     default:
       break;

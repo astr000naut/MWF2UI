@@ -94,6 +94,7 @@
                 v-model:text="account.categoryKindName"
                 noti=""
                 v-model:selectedItemId="account.categoryKind"
+                :schema="categoryKindSchema"
               />
             </div>
           </div>
@@ -109,7 +110,10 @@
             </div>
           </div>
           <div class="upper__line">
-            <BaseCheckbox label="Có hạch toán ngoại tệ" :checked="false" />
+            <BaseCheckbox
+              label="Có hạch toán ngoại tệ"
+              v-model:checked="temp"
+            />
           </div>
         </div>
         <div class="form__lower">
@@ -310,8 +314,13 @@
             bname="Cất"
             class="btn--secondary"
             @click="btnSaveOnClick"
+            v-tooltip:top="'Cất (Ctrl + S)'"
           />
-          <BaseButton bname="Cất và Thêm" class="btn--primary" />
+          <BaseButton
+            bname="Cất và Thêm"
+            class="btn--primary"
+            v-tooltip:top="'Cất và Thêm (Ctrl + Shift + S)'"
+          />
         </div>
       </div>
     </div>
@@ -336,6 +345,7 @@ const route = useRoute();
 const account = ref({});
 const lang = inject("$lang");
 // const _ = require("lodash");
+const temp = ref(false);
 
 var oldAccount = null;
 const formDialog = ref({
@@ -361,6 +371,10 @@ const form = ref({
 
 const accountObjectOptionList = ["Nhà cung cấp", "Khách hàng", "Nhân viên"];
 
+const categoryKindSchema = {
+  id: "optionId",
+  name: "optionName",
+};
 const categoryKindList = [
   {
     optionId: "0",

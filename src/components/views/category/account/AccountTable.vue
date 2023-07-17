@@ -63,25 +63,35 @@
                   @click="accNumberExpandOnClick(acc.accountId)"
                   @dblclick.stop
                 ></div>
-                <div class="an__text">
+                <div class="an__text" v-tooltip="acc['accountNumber']">
                   {{ acc["accountNumber"] }}
                 </div>
               </div>
             </td>
             <td>
-              <div class="text-left">{{ acc.accountNameVi }}</div>
+              <div class="text-left" v-tooltip="acc.accountNameVi">
+                {{ acc.accountNameVi }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ acc.categoryKindName }}</div>
+              <div class="text-left" v-tooltip="acc.categoryKindName">
+                {{ acc.categoryKindName }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ acc.accountNameEn }}</div>
+              <div class="text-left" v-tooltip="acc.accountNameEn">
+                {{ acc.accountNameEn }}
+              </div>
             </td>
             <td>
-              <div class="text-left">{{ acc.description }}</div>
+              <div class="text-left" v-tooltip="acc.description">
+                {{ acc.description }}
+              </div>
             </td>
             <td>
-              <div class="text-left">Đang sử dụng</div>
+              <div class="text-left" v-tooltip="'Đang sử dụng'">
+                Đang sử dụng
+              </div>
             </td>
             <td
               :class="[table.expandAccId == acc.accountId ? 'above' : '']"

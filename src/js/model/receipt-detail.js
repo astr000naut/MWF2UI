@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import numberFormater from "../common/number-formater";
 export class ReceiptDetail {
   status;
   receiptDetailId;
@@ -25,7 +26,7 @@ export class ReceiptDetail {
     this.creditAccountNumber = r.creditAccountNumber ?? "";
     this.customerCode = r.customerCode ?? "";
     this.customerName = r.customerName ?? "";
-    this.amount = r.amount ?? "";
+    this.amount = numberFormater.format(r.amount) ?? "";
   }
 
   cloneFromOther(r) {

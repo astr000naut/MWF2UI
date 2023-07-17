@@ -76,7 +76,9 @@
               v-for="header in tableStructure.headerList"
               :key="header.name + cus.customerId"
             >
-              <div :class="header.align">{{ cus[header.prop] }}</div>
+              <div :class="header.align" v-tooltip="cus[header.prop]">
+                {{ cus[header.prop] }}
+              </div>
             </td>
             <td
               :class="[table.expandCusId == cus.customerId ? 'above' : '']"

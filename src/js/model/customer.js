@@ -29,6 +29,10 @@ export class Customer {
   provinceOrCity;
   district;
   wardOrCommune;
+  countryId;
+  provinceOrCityId;
+  districtId;
+  wardOrCommuneId;
   shippingAddressList;
   description;
   identityNumber;
@@ -67,6 +71,10 @@ export class Customer {
     this.provinceOrCity = e.provinceOrCity ?? "";
     this.district = e.district ?? "";
     this.wardOrCommune = e.wardOrCommune ?? "";
+    this.countryId = String(e.countryId);
+    this.provinceOrCityId = String(e.provinceOrCityId);
+    this.districtId = String(e.districtId);
+    this.wardOrCommuneId = String(e.wardOrCommuneId);
     this.shippingAddressList = e.shippingAddressList ?? "";
     this.description = e.description ?? "";
     this.identityNumber = e.identityNumber ?? "";
@@ -110,6 +118,10 @@ export class Customer {
       provinceOrCity: this.provinceOrCity,
       district: this.district,
       wardOrCommune: this.wardOrCommune,
+      countryId: Number(this.countryId),
+      provinceOrCityId: Number(this.provinceOrCityId),
+      districtId: Number(this.districtId),
+      wardOrCommuneId: Number(this.wardOrCommuneId),
       shippingAddressList: null,
       description: this.description,
       identityNumber: this.identityNumber,
@@ -117,6 +129,8 @@ export class Customer {
       identityPlace: this.identityPlace,
       groupCodeList: this.groupCodeList.join(","),
     };
+    console.log(this);
+    console.log(obj);
     return obj;
   }
 
@@ -151,6 +165,10 @@ export class Customer {
     this.provinceOrCity = e.provinceOrCity;
     this.district = e.district;
     this.wardOrCommune = e.wardOrCommune;
+    this.countryId = e.countryId;
+    this.provinceOrCityId = e.provinceOrCityId;
+    this.districtId = e.districtId;
+    this.wardOrCommuneId = e.wardOrCommuneId;
     this.shippingAddressList = e.shippingAddressList;
     this.description = e.description;
     this.identityNumber = e.identityNumber;

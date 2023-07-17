@@ -172,7 +172,9 @@
             </div>
             <div class="tr__right">
               <div class="trr__label">Tổng tiền</div>
-              <div class="trr__amount">{{ receipt.totalAmount }}</div>
+              <div class="trr__amount">
+                {{ numberFormater.format(receipt.totalAmount) }}
+              </div>
             </div>
           </div>
         </div>
@@ -253,7 +255,9 @@
                         <input
                           class="rdetail--input text-right"
                           type="text"
+                          maxlength="18"
                           v-model="rdetail.amount"
+                          @input="rdetailAmountOnInput($event, rdetail)"
                         />
                       </div>
                     </td>
@@ -272,7 +276,9 @@
               </table>
             </div>
             <div class="table__summary">
-              <div class="total__money">0</div>
+              <div class="total__money">
+                {{ numberFormater.format(receipt.totalAmount) }}
+              </div>
             </div>
             <div class="table__control">
               <BaseButton
@@ -310,8 +316,13 @@
             bname="Cất"
             class="btn--secondary"
             @click="btnSaveOnClick"
+            v-tooltip:top="'Cất (Ctrl + S)'"
           />
-          <BaseButton bname="Cất và Thêm" class="btn--primary" />
+          <BaseButton
+            bname="Cất và Thêm"
+            class="btn--primary"
+            v-tooltip:top="'Cất và thêm (Ctrl + Shift + S)'"
+          />
         </div>
       </div>
     </div>
@@ -330,6 +341,7 @@ const emits = defineEmits(["updateEntityList", "update:metadata"]);
 const $axios = inject("$axios");
 import $api from "@/js/api";
 import { ReceiptDetail } from "../../../../js/model/receipt-detail";
+import numberFormater from "@/js/common/number-formater";
 const lang = inject("$lang");
 const _ = require("lodash");
 var firstErrorRef = null;
@@ -365,14 +377,14 @@ const detailTableStructure = [
     name: "TK nợ",
     prop: "",
     align: "text-left",
-    width: 240,
+    width: 200,
     tooltip: "Tài khoản nợ",
   },
   {
     name: "TK có",
     prop: "",
     align: "text-left",
-    width: 240,
+    width: 200,
     tooltip: "Tài khoản có",
   },
   {
@@ -444,17 +456,20 @@ const receiptDetailsDisplay = computed(() => {
 
 resetFormState();
 
-watch(
-  () => receipt.value.customerId,
-  () => {
-    receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
-  }
-);
+// watch(
+//   () => receipt.value.customerId,
+//   (oldId, newId) => {
+//     console.log(oldId);
+//     console.log(newId);
+//     receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
+//   }
+// );
 
 watch(receiptDetails.value, () => {
   receipt.value.totalAmount = 0;
   for (const rd of receiptDetails.value) {
-    if (rd.status != "delete") receipt.value.totalAmount += Number(rd.amount);
+    if (rd.status != "delete")
+      receipt.value.totalAmount += numberFormater.getNumber(rd.amount);
   }
 });
 
@@ -473,7 +488,6 @@ onMounted(async () => {
 
     // Lấy dữ liệu từ Server
     await getDataFromApi();
-
     form.value.isLoading = false;
   } catch (error) {
     form.value.isLoading = false;
@@ -591,6 +605,7 @@ async function btnSaveOnClick() {
         // Gọi API sửa
         await callEditAPI();
         // Emit sự kiện cập nhật để cập nhật trên table
+        console.log(receipt.value);
         emits("updateEntityList", "edit", receipt.value);
       } else {
         // Nếu form là form thêm mới hoặc nhân bản
@@ -718,6 +733,12 @@ async function formDialogCloseBtnOnClick() {
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;
   router.back();
+}
+
+function rdetailAmountOnInput(_$event, rdetail) {
+  rdetail.amount = numberFormater.format(
+    _$event.target.value.replace(/[^\d]/g, "")
+  );
 }
 
 function focusOnFirstErrorInput() {

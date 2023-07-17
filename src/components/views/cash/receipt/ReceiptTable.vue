@@ -108,8 +108,8 @@
                 maxWidth: header.width != 0 ? header.width + 'px' : 'auto',
               }"
             >
-              <div :class="header.align">
-                {{ entity[header.prop] }}
+              <div :class="header.align" v-tooltip="entity[header.prop]">
+                {{ header.formatFunction(entity[header.prop]) }}
               </div>
             </td>
             <td
@@ -252,6 +252,7 @@
 
 <script setup>
 // #region import
+import numberFormater from "@/js/common/number-formater";
 import { ref, computed, inject } from "vue";
 import { useRouter } from "vue-router";
 const lang = inject("$lang");
@@ -290,48 +291,56 @@ const tableStructure = {
   headerList: [
     {
       name: "NGÀY HẠCH TOÁN",
+      formatFunction: (s) => s,
       prop: "postedDate",
       align: "text-center",
       width: 200,
     },
     {
       name: "NGÀY CHỨNG TỪ",
+      formatFunction: (s) => s,
       prop: "receiptDate",
       align: "text-center",
       width: 200,
     },
     {
       name: "SỐ CHỨNG TỪ",
+      formatFunction: (s) => s,
       prop: "receiptNo",
       align: "text-left",
       width: 180,
     },
     {
       name: "DIỄN GIẢI",
+      formatFunction: (s) => s,
       prop: "reason",
       align: "text-left",
       width: 400,
     },
     {
       name: "SỐ TIỀN",
+      formatFunction: (s) => numberFormater.format(s),
       prop: "totalAmount",
-      align: "text-left",
+      align: "text-right",
       width: 200,
     },
     {
       name: "ĐỐI TƯỢNG",
+      formatFunction: (s) => s,
       prop: "customerName",
       align: "text-left",
       width: 400,
     },
     {
       name: "MÃ ĐỐI TƯỢNG",
+      formatFunction: (s) => s,
       prop: "customerCode",
       align: "text-left",
       width: 200,
     },
     {
       name: "ĐỊA CHỈ",
+      formatFunction: (s) => s,
       prop: "customerAddress",
       align: "text-left",
       width: 240,
