@@ -31,8 +31,8 @@ export class Receipt {
     if (r.documentIncluded != null) {
       this.documentIncluded = r.documentIncluded.toString();
     }
-    this.postedDate = $formatter.changeFormat(r.postedDate);
-    this.receiptDate = $formatter.changeFormat(r.receiptDate);
+    this.postedDate = $formatter.changeFormat(Date.now());
+    this.receiptDate = $formatter.changeFormat(Date.now());
     this.receiptNo = r.receiptNo ?? "";
     this.totalAmount =
       numberFormater.format(r.totalAmount).length > 0

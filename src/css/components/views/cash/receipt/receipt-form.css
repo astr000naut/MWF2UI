@@ -137,6 +137,10 @@
     margin-bottom: 18px;
 }
 
+.tr__left {
+    width: 280px;
+}
+
 .tl__row {
     display: flex;
     margin-bottom: 18px;
@@ -230,8 +234,6 @@
     border-bottom: 1px solid #c7c7c7;
     border-right: 1px solid #c7c7c7;
     padding: 6px 12px;
-    position: sticky;
-    top: 0px;
 }
 
 .rdetail__table td {

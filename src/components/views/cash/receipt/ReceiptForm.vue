@@ -21,7 +21,7 @@
     <div class="form__loader" v-show="form.isLoading">
       <BaseLoader />
     </div>
-    <div class="form">
+    <div class="form" ref="formRef">
       <div class="form__header">
         <div class="header__left">
           <div class="left__icon mi mi-24 mi-recent-log"></div>
@@ -150,7 +150,8 @@
                   pholder=""
                   label="Ngày hạch toán"
                   v-model:inputText="receipt.postedDate"
-                  noti=""
+                  v-model:noti="formNoti.postedDate"
+                  ref="postedDateRef"
                 />
               </div>
               <div class="tr__row">
@@ -158,12 +159,15 @@
                   pholder=""
                   label="Ngày phiếu thu"
                   v-model:inputText="receipt.receiptDate"
-                  noti=""
+                  v-model:noti="formNoti.receiptDate"
+                  ref="receiptDateRef"
                 />
               </div>
               <BaseTextfield
                 pholder=""
                 label="Số phiếu thu"
+                autoFillMessage="Shift + F8 để tự tạo số phiếu thu"
+                :autoFill="generateReceiptNo"
                 :isrequired="true"
                 v-model:text="receipt.receiptNo"
                 v-model:noti="formNoti.receiptNo"
@@ -220,7 +224,7 @@
                       <div class="td__wrapper">
                         <FormAccountCombobox
                           :style="{
-                            'z-index': 20 - index + 1,
+                            'z-index': 30 - index + 1,
                           }"
                           v-model:selectedItemId="rdetail.debitAccountId"
                           v-model:selectedItemName="rdetail.debitAccountNumber"
@@ -284,7 +288,7 @@
               <BaseButton
                 bname="Thêm dòng"
                 class="btn--secondary"
-                @click="bankAccAddOnClick"
+                @click="receiptDetailAddOnClick"
               />
               <BaseButton
                 bname="Xóa hết dòng"
@@ -337,6 +341,7 @@ import { ref, watch, onMounted, inject, nextTick, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Receipt } from "@/js/model/receipt";
 import $enum from "@/js/common/enum";
+import $formatter from "../../../../js/common/formater";
 const emits = defineEmits(["updateEntityList", "update:metadata"]);
 const $axios = inject("$axios");
 import $api from "@/js/api";
@@ -347,6 +352,7 @@ const _ = require("lodash");
 var firstErrorRef = null;
 const notiRef = ref(null);
 const receiptNoRef = ref(null);
+const formRef = ref(null);
 
 const formTypeList = [
   "1. Thu tiền khách hàng (không theo hóa đơn)",
@@ -448,22 +454,17 @@ const formNoti = ref({
   notiboxMessage: "",
 
   receiptNo: "",
+  postedDate: "",
+  receiptDate: "",
 });
+const postedDateRef = ref(null);
+const receiptDateRef = ref(null);
 
 const receiptDetailsDisplay = computed(() => {
   return receiptDetails.value.filter((rdetail) => rdetail.status != "delete");
 });
 
 resetFormState();
-
-// watch(
-//   () => receipt.value.customerId,
-//   (oldId, newId) => {
-//     console.log(oldId);
-//     console.log(newId);
-//     receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
-//   }
-// );
 
 watch(receiptDetails.value, () => {
   receipt.value.totalAmount = 0;
@@ -494,6 +495,47 @@ onMounted(async () => {
     console.log(error);
   }
 });
+
+watch(
+  () => receipt.value.customerId,
+  (newId, oldId) => {
+    if (oldId != "" || form.value.type == "create")
+      receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
+  }
+);
+
+watch(
+  () => receipt.value.reason,
+  (newReason, oldReason) => {
+    for (const rd of receiptDetails.value) {
+      if (rd.description == oldReason) {
+        rd.description = newReason;
+      }
+    }
+  }
+);
+
+watch(
+  () => receipt.value.postedDate,
+  (newDate, oldDate) => {
+    if (
+      receipt.value.receiptDate == "" ||
+      receipt.value.receiptDate == oldDate
+    ) {
+      receipt.value.receiptDate = newDate;
+    }
+    formNoti.value.postedDate = "";
+    formNoti.value.receiptDate = "";
+  }
+);
+
+watch(
+  () => receipt.value.receiptDate,
+  () => {
+    if (receipt.value.postedDate != "") formNoti.value.postedDate = "";
+    formNoti.value.receiptDate = "";
+  }
+);
 
 function resetFormState() {
   form.value = {
@@ -646,6 +688,24 @@ async function validateData() {
     }
   }
 
+  // Ngày hạch toán và ngày phiếu thu
+  // Ngày hạch toán trống
+  if (receipt.value.postedDate == "") {
+    formNoti.value.postedDate = "Ngày hạch toán không được để trống";
+    firstErrorRef = firstErrorRef ?? postedDateRef;
+  }
+  // Ngày phiếu thu trống
+  if (receipt.value.receiptDate == "") {
+    formNoti.value.receiptDate = "Ngày phiếu thu không được để trống";
+    firstErrorRef = firstErrorRef ?? receiptDateRef;
+  }
+  // Ngày hạch toán nhỏ hơn ngày phiếu thu
+  if (
+    !$formatter.compareDate(receipt.value.receiptDate, receipt.value.postedDate)
+  ) {
+    formNoti.value.postedDate = "Ngày hạch toán phải lớn hơn ngày phiếu thu";
+    firstErrorRef = firstErrorRef ?? postedDateRef;
+  }
   if (firstErrorRef != null) {
     // Update notibox value
     formNoti.value.notiboxType = "alert";
@@ -653,6 +713,18 @@ async function validateData() {
       "Dữ liệu không hợp lệ, vui lòng kiểm tra lại";
   } else {
     formNoti.value.notiboxMessage = "";
+  }
+}
+
+async function generateReceiptNo() {
+  try {
+    form.value.isLoading = true;
+    await fetchNewReceiptNo();
+    formNoti.value.receiptNo = "";
+    form.value.isLoading = false;
+  } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -715,10 +787,19 @@ function focusOnLastDescriptionInput() {
   ].focus();
 }
 
-async function bankAccAddOnClick() {
-  receiptDetails.value.push(new ReceiptDetail({}));
+async function receiptDetailAddOnClick() {
+  if (receiptDetails.value.length == 20) return;
+  const rd = new ReceiptDetail({});
+  if (receiptDetails.value.length) {
+    rd.cloneFromOther(receiptDetails.value[receiptDetails.value.length - 1]);
+  }
+  receiptDetails.value.push(rd);
   await nextTick();
   focusOnLastDescriptionInput();
+  if (receiptDetails.value.length > 3) {
+    console.log("hi");
+    formRef.value.scrollTo({ top: formRef.value.offsetHeight });
+  }
 }
 
 async function formDialogCloseBtnOnClick() {

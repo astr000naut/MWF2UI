@@ -56,6 +56,16 @@ const $formatter = {
     }
     return false;
   },
+  compareDate: (date1, date2) => {
+    if (date1 == "" || date2 == "") return true;
+    const d1 = moment(date1, common.dateFormat[common.defaultDateFormat], true);
+    const d2 = moment(
+      date2,
+      common.dateFormat[common.defaultDateFormat],
+      true
+    ).add(1, "day");
+    return d1.isBefore(d2);
+  },
   /**
    * Hàm format ngày sang định dạng dateFormat
    * @param {String} input ngày

@@ -19,7 +19,7 @@ export class ReceiptDetail {
     this.status = this.receiptDetailId == "" ? "create" : "view";
     if (this.status == "create") this.receiptDetailId = uuidv4();
     this.receiptId = r.receiptId ?? "";
-    this.description = r.description ?? "Thu tiền của";
+    this.description = r.description ?? "";
     this.debitAccountId = r.debitAccountId ?? "";
     this.debitAccountNumber = r.debitAccountNumber ?? "";
     this.creditAccountId = r.creditAccountId ?? "";
