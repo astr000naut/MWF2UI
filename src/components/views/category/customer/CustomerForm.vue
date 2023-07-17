@@ -331,14 +331,12 @@
             <div class="main__panel main__purchase" v-show="selectedTabId == 1">
               <div class="mp__top">
                 <div class="mp__top__left">
-                  <BaseCombobox
-                    label="Điều khoản thanh toán"
+                  <BaseTextfield
                     pholder=""
+                    label="Điều khoản thanh toán"
                     :isrequired="false"
-                    :option-list="[]"
                     v-model:text="customer.paymentTermName"
                     noti=""
-                    selectedItemId=""
                   />
                 </div>
                 <div class="mp__top__mid">
@@ -361,25 +359,22 @@
                 </div>
               </div>
               <div class="mp__mid m-top-12">
-                <BaseCombobox
-                  label="Tài khoản công nợ phải thu"
-                  pholder=""
-                  :isrequired="false"
-                  :option-list="[]"
-                  v-model:text="customer.receiveAccount"
-                  noti=""
-                  selectedItemId=""
-                />
-                <BaseCombobox
-                  v-show="customer.isProvider"
-                  label="Tài khoản công nợ phải trả"
-                  pholder=""
-                  :isrequired="false"
-                  :option-list="[]"
-                  v-model:text="customer.payAccount"
-                  noti=""
-                  selectedItemId=""
-                />
+                <div class="receive-account">
+                  <div class="ra__label">Tài khoản công nợ phải thu</div>
+                  <FormAccountCombobox
+                    :mheight="240"
+                    v-model:selectedItemName="customer.receiveAccount"
+                    v-model:selectedItemId="customer.receiveAccountId"
+                  />
+                </div>
+                <div class="pay-account" v-if="customer.isProvider">
+                  <div class="ra__label">Tài khoản công nợ phải trả</div>
+                  <FormAccountCombobox
+                    :mheight="240"
+                    v-model:selectedItemName="customer.payAccount"
+                    v-model:selectedItemId="customer.payAccountId"
+                  />
+                </div>
               </div>
             </div>
             <div class="main__panel main__bankacc" v-show="selectedTabId == 2">
@@ -596,6 +591,7 @@
 <script setup>
 //#region import
 import EmployeeCombobox from "./EmployeeCombobox.vue";
+import FormAccountCombobox from "../../cash/receipt/FormAccountCombobox.vue";
 import { nextTick, ref, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useLocation } from "@/js/composables/use-location";

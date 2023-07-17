@@ -25,6 +25,8 @@ export class Customer {
   maximizeDebtAmount;
   receiveAccount;
   payAccount;
+  payAccountId;
+  receiveAccountId;
   bankAccountList;
   country;
   provinceOrCity;
@@ -64,9 +66,11 @@ export class Customer {
     this.envoiceContactMobile = e.envoiceContactMobile ?? "";
     this.paymentTermName = e.paymentTermName ?? "";
     this.dueTime = e.dueTime ?? "";
-    this.maximizeDebtAmount = "";
+    this.maximizeDebtAmount = e.maximizeDebtAmount ?? "";
     this.receiveAccount = e.receiveAccount ?? "";
     this.payAccount = e.payAccount ?? "";
+    this.payAccountId = e.payAccountId ?? "";
+    this.receiveAccountId = e.receiveAccountId ?? "";
     this.bankAccountList = [];
     if (e.bankAccountList != null) {
       this.bankAccountList = JSON.parse(e.bankAccountList);
@@ -137,10 +141,13 @@ export class Customer {
       envoiceContactEmail: this.envoiceContactEmail,
       envoiceContactMobile: this.envoiceContactMobile,
       paymentTermName: this.paymentTermName,
-      dueTime: null,
-      maximizeDebtAmount: null,
+      dueTime: Number(this.dueTime),
+      maximizeDebtAmount: Number(this.maximizeDebtAmount),
       receiveAccount: this.receiveAccount,
       payAccount: this.payAccount,
+      payAccountId: this.payAccountId?.length > 0 ? this.payAccountId : null,
+      receiveAccountId:
+        this.receiveAccountId?.length > 0 ? this.receiveAccountId : null,
       bankAccountList: JSON.stringify(this.bankAccountList),
       country: this.country,
       provinceOrCity: this.provinceOrCity,
@@ -186,6 +193,8 @@ export class Customer {
     this.maximizeDebtAmount = e.maximizeDebtAmount;
     this.receiveAccount = e.receiveAccount;
     this.payAccount = e.payAccount;
+    this.payAccountId = e.payAccountId;
+    this.receiveAccountId = e.receiveAccountId;
     this.bankAccountList = e.bankAccountList;
     this.country = e.country;
     this.provinceOrCity = e.provinceOrCity;

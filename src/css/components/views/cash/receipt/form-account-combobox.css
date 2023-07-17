@@ -91,7 +91,6 @@
 .facb__table {
     position: absolute;
     top: 100%;
-    max-height: 308px;
     min-width: 400px;
     display: flex;
     flex-direction: column;

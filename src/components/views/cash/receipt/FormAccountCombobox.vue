@@ -26,7 +26,11 @@
     <div class="facb__tooltip" v-show="noti.length > 0">
       {{ noti }}
     </div>
-    <div class="facb__table" v-show="isTableOpen">
+    <div
+      class="facb__table"
+      v-show="isTableOpen"
+      :style="{ maxHeight: mheight > 0 ? mheight + 'px' : '308px' }"
+    >
       <div class="table__header">
         <table class="t__header">
           <thead>
@@ -101,6 +105,7 @@ var totalRecord = 0;
 const props = defineProps({
   selectedItemId: String,
   selectedItemName: String,
+  mheight: Number,
 });
 
 const tableSchema = [
