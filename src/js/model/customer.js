@@ -1,4 +1,5 @@
 import $formatter from "../common/formater";
+import numberFormater from "../common/number-formater";
 import { v4 as uuidv4 } from "uuid";
 export class Customer {
   customerId;
@@ -65,8 +66,11 @@ export class Customer {
     this.envoiceContactEmail = e.envoiceContactEmail ?? "";
     this.envoiceContactMobile = e.envoiceContactMobile ?? "";
     this.paymentTermName = e.paymentTermName ?? "";
-    this.dueTime = e.dueTime ?? "";
-    this.maximizeDebtAmount = e.maximizeDebtAmount ?? "";
+    this.dueTime = "";
+    if (e.dueTime != null) {
+      this.dueTime = String(e.dueTime);
+    }
+    this.maximizeDebtAmount = numberFormater.format(e.maximizeDebtAmount);
     this.receiveAccount = e.receiveAccount ?? "";
     this.payAccount = e.payAccount ?? "";
     this.payAccountId = e.payAccountId ?? "";
@@ -142,7 +146,7 @@ export class Customer {
       envoiceContactMobile: this.envoiceContactMobile,
       paymentTermName: this.paymentTermName,
       dueTime: Number(this.dueTime),
-      maximizeDebtAmount: Number(this.maximizeDebtAmount),
+      maximizeDebtAmount: numberFormater.getNumber(this.maximizeDebtAmount),
       receiveAccount: this.receiveAccount,
       payAccount: this.payAccount,
       payAccountId: this.payAccountId?.length > 0 ? this.payAccountId : null,

@@ -86,6 +86,8 @@
                 <BaseTextfield
                   pholder=""
                   label="Mã khách hàng"
+                  autoFillMessage="Shift + F8 để tự tạo mã"
+                  :autoFill="generateCusCode"
                   :isrequired="true"
                   v-model:text="customer.customerCode"
                   v-model:noti="formNoti.customerCode"
@@ -104,7 +106,7 @@
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
-                  ref="customerFullNameRef"
+                  ref="oCustomerFullNameRef"
                 />
               </div>
             </div>
@@ -128,6 +130,7 @@
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
+                  ref="pCustomerFullNameRef"
                 />
               </div>
             </div>
@@ -353,7 +356,9 @@
                     pholder=""
                     label="Số nợ tối đa"
                     :isrequired="false"
+                    type="money"
                     v-model:text="customer.maximizeDebtAmount"
+                    @update:text="textOnUpdate"
                     noti=""
                   />
                 </div>
@@ -681,7 +686,8 @@ var oldCustomer = null;
 
 const customerCodeRef = ref(null);
 const customerTINRef = ref(null);
-const customerFullNameRef = ref(null);
+const oCustomerFullNameRef = ref(null);
+const pCustomerFullNameRef = ref(null);
 
 const employeeComboboxTableStructure = [
   {
@@ -861,6 +867,10 @@ async function closeBtnOnClick() {
   await dialogRef.value.yesBtn.refBtn.focus();
 }
 
+function textOnUpdate() {
+  console.log(customer.value.maximizeDebtAmount);
+}
+
 function tabInfoOnClick(tabId) {
   selectedTabId.value = tabId;
 }
@@ -941,7 +951,12 @@ async function validateData() {
   // Tên bị trống
   if (customer.value.customerFullName.trim() == "") {
     formNoti.value.customerFullName = $error.fieldCannotEmpty("Tên khách hàng");
-    firstErrorRef = firstErrorRef ?? customerFullNameRef;
+
+    if (firstErrorRef == null)
+      firstErrorRef =
+        customer.value.customerType == 0
+          ? oCustomerFullNameRef
+          : pCustomerFullNameRef;
   } else {
     // Tên quá dài
     if (customer.value.customerFullName.length > 100) {
@@ -949,7 +964,11 @@ async function validateData() {
         "Tên khách hàng",
         100
       );
-      firstErrorRef = firstErrorRef ?? customerFullNameRef;
+      if (firstErrorRef == null)
+        firstErrorRef =
+          customer.value.customerType == 0
+            ? oCustomerFullNameRef
+            : pCustomerFullNameRef;
     }
   }
 
@@ -1117,6 +1136,18 @@ function formDialogNoBtnOnClick() {
 async function formDialogYesBtnOnClick() {
   formDialog.value.isShow = false;
   await btnSaveOnClick();
+}
+
+async function generateCusCode() {
+  try {
+    form.value.isLoading = true;
+    await fetchNewCustomerCode();
+    formNoti.value.customerCode = "";
+    form.value.isLoading = false;
+  } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
+  }
 }
 
 //#endregion

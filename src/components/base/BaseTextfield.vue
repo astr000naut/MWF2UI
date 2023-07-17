@@ -19,6 +19,7 @@
     </div>
     <div class="txtfield__textbox">
       <input
+        :maxlength="type == 'money' ? 18 : 255"
         class="txtfield__input"
         :class="[textRight ? 'input-text-right' : '']"
         type="text"
@@ -27,7 +28,7 @@
         @blur="inputOnBlur"
         :value="text"
         ref="refInput"
-        @input="$emit('update:text', $event.target.value)"
+        @input="textFieldOnInput($event)"
         @keyup="inputKeyupHandler"
         @keypress="inputKeyPressHandler"
         @keydown.shift.f8.prevent="autoFill"
@@ -41,6 +42,7 @@
 <script setup>
 //#region import
 import { ref } from "vue";
+import numberFormater from "@/js/common/number-formater";
 //#endregion
 
 //#region init
@@ -52,6 +54,7 @@ const props = defineProps({
   tooltip: String,
   hideLabel: Boolean,
   noti: String,
+  type: String,
   realTimeSearch: Boolean,
   doSearch: Function,
   autoFill: Function,
@@ -118,6 +121,12 @@ function inputKeyupHandler($event) {
       emits("update:noti", "");
     }
   }
+  if (props.type == "money") {
+    let s = numberFormater.format(
+      $event.target.value.toString().replace(/[^\d]/g, "")
+    );
+    emits("update:text", s);
+  }
   if (isNormalCharacterKey($event.key) && props.realTimeSearch) {
     // Xóa các timeout trước trong khi typing
     while (typingTimers.length > 0) {
@@ -146,6 +155,10 @@ function inputKeyPressHandler($event) {
       typingTimers.splice(0, 1);
     }
   }
+}
+
+function textFieldOnInput(_$event) {
+  emits("update:text", _$event.target.value);
 }
 
 /**

@@ -23,7 +23,7 @@ export function useLocation(customer) {
   watch(
     () => customer.value.countryId,
     async (newId) => {
-      if (newId == "") return;
+      if (newId == "undefined" || newId == "") return;
       if (provinceCache[newId] == null) {
         const response = await axios.get(api.location.province(1));
         provinceCache[newId] = response.data;
@@ -34,7 +34,7 @@ export function useLocation(customer) {
   watch(
     () => customer.value.provinceOrCityId,
     async (newId) => {
-      if (newId == "") return;
+      if (newId == "undefined" || newId == "") return;
       if (districtCache[newId] == null) {
         const response = await axios.get(api.location.district(newId));
         districtCache[newId] = response.data;
@@ -45,7 +45,7 @@ export function useLocation(customer) {
   watch(
     () => customer.value.districtId,
     async (newId) => {
-      if (newId == "") return;
+      if (newId == "undefined" || newId == "") return;
       if (wardCache[newId] == null) {
         const response = await axios.get(api.location.ward(newId));
         wardCache[newId] = response.data;
