@@ -4,6 +4,7 @@ const accountApi = (baseUrl) => {
     index: baseUrl + controller,
     one: (id) => baseUrl + controller + `/${id}`,
     filter: baseUrl + controller + "/FilterAccount",
+    checkNumberExist: baseUrl + controller + "/CheckCodeExist",
   };
 };
 

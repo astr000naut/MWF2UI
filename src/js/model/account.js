@@ -14,6 +14,7 @@ export class Account {
   detailByBankAccount;
   detailByAccountObject;
   detailByAccountObjectKind;
+  foreignCurrencyAccounting;
   constructor(a) {
     this.accountId = a.accountId ?? "";
     this.accountNumber = a.accountNumber ?? "";
@@ -46,6 +47,7 @@ export class Account {
     this.detailByBankAccount = a.detailByBankAccount;
     this.detailByAccountObject = a.detailByAccountObject;
     this.detailByAccountObjectKind = a.detailByAccountObjectKind;
+    this.foreignCurrencyAccounting = a.foreignCurrencyAccounting ?? false;
   }
 
   cloneFromOtherAccount(a) {
@@ -64,6 +66,7 @@ export class Account {
     this.detailByBankAccount = a.detailByBankAccount;
     this.detailByAccountObject = a.detailByAccountObject;
     this.detailByAccountObjectKind = a.detailByAccountObjectKind;
+    this.foreignCurrencyAccounting = a.foreignCurrencyAccounting;
   }
 
   convertToApiFormat() {
@@ -78,6 +81,7 @@ export class Account {
       detailByBankAccount: this.detailByBankAccount,
       detailByAccountObject: this.detailByAccountObject,
       detailByAccountObjectKind: this.detailByAccountObjectKind,
+      foreignCurrencyAccounting: this.foreignCurrencyAccounting,
     };
     return obj;
   }

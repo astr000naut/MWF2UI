@@ -121,6 +121,9 @@ function inputKeyupHandler($event) {
       emits("update:noti", "");
     }
   }
+  if (props.text.length != 0 && $event.key == "Backspace") {
+    emits("update:noti", "");
+  }
   if (props.type == "money") {
     let s = numberFormater.format(
       $event.target.value.toString().replace(/[^\d]/g, "")

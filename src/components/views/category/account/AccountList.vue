@@ -18,7 +18,7 @@
   />
   <router-view
     name="CustomerForm"
-    @update-acclist="accountOnUpdate"
+    @update-acc-list="accountOnUpdate"
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
@@ -472,6 +472,13 @@ function deleteAccountOnClick(accId) {
   let accNameVi = "";
   cache.value.accDeleteId = accId;
   for (let index in rowList.value) {
+    if (rowList.value[index].acc.isParent) {
+      pushToast({
+        type: "fail",
+        message: "Không thể xóa danh mục cha nếu chưa xóa danh mục con",
+      });
+      return;
+    }
     if (rowList.value[index].acc.accountId == accId) {
       cache.value.accDeleteIndex = index;
       accNameVi = rowList.value[index].acc.accountNameVi;
@@ -620,6 +627,7 @@ async function accountOnUpdate(type, data) {
       if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
         await loadAccountData();
       }
+      haveDataAfterCallApi.value = true;
       pushToast({
         type: "success",
         message: "Tạo mới tài khoản thành công (fixed)",

@@ -51,7 +51,8 @@
                 label="Số tài khoản"
                 :isrequired="true"
                 v-model:text="account.accountNumber"
-                noti=""
+                v-model:noti="formNoti.accountNumber"
+                ref="accountNumberRef"
               />
             </div>
           </div>
@@ -62,7 +63,8 @@
                 label="Tên tài khoản"
                 :isrequired="true"
                 v-model:text="account.accountNameVi"
-                noti=""
+                v-model:noti="formNoti.accountNameVi"
+                ref="accountNameViRef"
               />
             </div>
             <div class="line__right flex-1">
@@ -92,27 +94,31 @@
                 :isrequired="true"
                 :option-list="categoryKindList"
                 v-model:text="account.categoryKindName"
-                noti=""
+                v-model:noti="formNoti.categoryKind"
                 v-model:selectedItemId="account.categoryKind"
                 :schema="categoryKindSchema"
+                ref="accountKindRef"
               />
             </div>
           </div>
           <div class="upper__line">
             <div class="flex-1">
-              <BaseTextfield
-                pholder=""
-                label="Diễn giải"
-                :isrequired="false"
-                v-model:text="account.description"
-                noti=""
-              />
+              <div class="text__area">
+                <div class="text__area__label">Diễn giải</div>
+                <textarea
+                  name=""
+                  id=""
+                  cols="100"
+                  rows="4"
+                  v-model="account.description"
+                ></textarea>
+              </div>
             </div>
           </div>
           <div class="upper__line">
             <BaseCheckbox
               label="Có hạch toán ngoại tệ"
-              v-model:checked="temp"
+              v-model:checked="account.foreignCurrencyAccounting"
             />
           </div>
         </div>
@@ -345,7 +351,6 @@ const route = useRoute();
 const account = ref({});
 const lang = inject("$lang");
 // const _ = require("lodash");
-const temp = ref(false);
 
 var oldAccount = null;
 const formDialog = ref({
@@ -356,10 +361,18 @@ const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
   notiboxMessage: "",
+
+  accountNumber: "",
+  accountNameVi: "",
+  accountKind: "",
+  categoryKind: "",
 });
 
 let firstErrorRef = null;
 const notiRef = ref(null);
+const accountNumberRef = ref(null);
+const accountNameViRef = ref(null);
+const accountKindRef = ref(null);
 
 const form = ref({
   size: 0,
@@ -524,11 +537,77 @@ function closeBtnOnClick() {
  */
 async function validateData() {
   firstErrorRef = null;
-  // need
 
-  // if (!account.value.accountNumber.startsWith(account.value.parentNumber)) {
+  // Số tài khoản
+  // Trống
+  if (account.value.accountNumber.trim() == "") {
+    account.value.accountNumber = "";
+    formNoti.value.accountNumber = $error.fieldCannotEmpty("Số tài khoản");
+    firstErrorRef = firstErrorRef ?? accountNumberRef;
+  } else {
+    // Số TK quá ngắn
+    if (account.value.accountNumber.length < 3) {
+      formNoti.value.accountNumber = "Số tài khoản phải có độ dài >= 3 ký tự";
+      firstErrorRef = firstErrorRef ?? accountNumberRef;
+    }
 
-  // }
+    // Số TK quá dài
+    if (account.value.accountNumber.length > 50) {
+      formNoti.value.accountNumber = $error.fieldTooLong("Số tài khoản", 50);
+      firstErrorRef = firstErrorRef ?? accountNumberRef;
+    }
+
+    // Tài khoản không bắt đầu bằng tài khoản tổng hợp
+    if (account.value.accountNumber.length > 3) {
+      if (account.value.parentNumber == "") {
+        formNoti.value.accountNumber =
+          "Số tài khoản có độ dài > 3 ký tự phải điền thông tin <tài khoản tổng hợp>";
+        firstErrorRef = firstErrorRef ?? accountNumberRef;
+      }
+    }
+
+    // Tài khoản không bắt đầu bằng tài khoản tổng hợp
+    if (
+      account.value.parentNumber != "" &&
+      !account.value.accountNumber.startsWith(account.value.parentNumber)
+    ) {
+      formNoti.value.accountNumber =
+        "Số tài khoản chi tiết phải bắt đầu bằng số tài khoản tổng hợp";
+      firstErrorRef = firstErrorRef ?? accountNumberRef;
+    }
+
+    // Trùng số TK
+    const isAccountNumberExist = await isAccNumberExist(
+      account.value.accountNumber,
+      form.value.accId
+    );
+    if (isAccountNumberExist) {
+      formNoti.value.accountNumber = "Số tài khoản đã tồn tại";
+      firstErrorRef = firstErrorRef ?? accountNumberRef;
+    }
+  }
+
+  // Tên tài khoản
+  // Tên bị trống
+  if (account.value.accountNameVi.trim() == "") {
+    formNoti.value.accountNameVi = $error.fieldCannotEmpty("Tên tài khoản");
+    firstErrorRef = firstErrorRef ?? accountNameViRef;
+  } else {
+    // Tên quá dài
+    if (account.value.accountNameVi.length > 100) {
+      formNoti.value.employeeFullName = $error.fieldTooLong(
+        "Tên tài khoản",
+        100
+      );
+      firstErrorRef = firstErrorRef ?? accountNameViRef;
+    }
+  }
+
+  // Tính chất
+  if (account.value.categoryKindName.trim() == "") {
+    formNoti.value.categoryKind = $error.fieldCannotEmpty("Tính chất");
+    firstErrorRef = firstErrorRef ?? accountKindRef;
+  }
 
   if (firstErrorRef != null) {
     // Update notibox value
@@ -589,13 +668,13 @@ async function btnSaveOnClick() {
         // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
         if (oldAccount.parentId != account.value.parentId) {
           // reload lại cây account
-          emits("updateAcclist", "edit", {
+          emits("updateAccList", "edit", {
             account: account.value,
             reload: true,
           });
         } else {
           // không cần reload cây account
-          emits("updateAcclist", "edit", {
+          emits("updateAccList", "edit", {
             account: account.value,
             reload: false,
           });
@@ -606,7 +685,7 @@ async function btnSaveOnClick() {
         const newAccountId = await callCreateAccountApi();
         account.value.accountId = newAccountId;
         // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
-        emits("updateAcclist", "create", {
+        emits("updateAccList", "create", {
           account: account.value,
         });
       }
@@ -621,6 +700,16 @@ async function btnSaveOnClick() {
   }
 }
 
+async function isAccNumberExist(accNumber, accId) {
+  const response = await $axios.get($api.account.checkNumberExist, {
+    params: {
+      id: accId,
+      code: accNumber,
+    },
+  });
+  return response.data;
+}
+
 /**
  * Gọi API sửa account
  *
@@ -628,7 +717,6 @@ async function btnSaveOnClick() {
  */
 async function callEditAccountApi() {
   const requestBody = account.value.convertToApiFormat();
-  console.log(requestBody);
   await $axios.put($api.account.one(form.value.accId), requestBody);
 }
 
