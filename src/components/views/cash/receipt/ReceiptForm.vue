@@ -326,6 +326,7 @@
             bname="Cất và Thêm"
             class="btn--primary"
             v-tooltip:top="'Cất và thêm (Ctrl + Shift + S)'"
+            @click="btnSaveAndAddOnClick"
           />
         </div>
       </div>
@@ -499,7 +500,7 @@ onMounted(async () => {
 watch(
   () => receipt.value.customerId,
   (newId, oldId) => {
-    if (oldId != "" || form.value.type == "create")
+    if (newId != "" && (oldId != "" || form.value.type == "create"))
       receipt.value.reason = "Thu tiền của " + receipt.value.customerName;
   }
 );
@@ -544,6 +545,8 @@ function resetFormState() {
     isLoading: false,
   };
   receipt.value = new Receipt({});
+  receiptDetails.value = [];
+  receiptDetails.value.push(new ReceiptDetail({}));
 }
 
 async function fetchEntityToEntityObject(entityId) {
@@ -660,6 +663,55 @@ async function btnSaveOnClick() {
 
       form.value.isLoading = false;
       router.replace("/CA/CAReceipt");
+    }
+  } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
+  }
+}
+
+async function btnSaveAndAddOnClick() {
+  try {
+    form.value.isLoading = true;
+    await validateData();
+    // Nếu có một lỗi nào đó sau khi validate
+    if (formNoti.value.notiboxMessage.length) {
+      form.value.isLoading = false;
+      // show notibox
+      await displayNotiBox();
+    } else {
+      // Nếu Validate thành công
+
+      // Cập nhật lại thông tin trên bảng receipt Detail
+      updateReceiptDetailInfo();
+      // Gắn receipt detail list vào
+      receipt.value.receiptDetailList = [];
+      for (const rd of receiptDetails.value) {
+        receipt.value.receiptDetailList.push(rd.convertToApiFormat());
+      }
+
+      // Nếu form là form cập nhật thông tin
+      if (form.value.type == $enum.form.infoType) {
+        // Gọi API sửa
+        await callEditAPI();
+        // Emit sự kiện cập nhật để cập nhật trên table
+        console.log(receipt.value);
+        emits("updateEntityList", "edit", receipt.value);
+      } else {
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới
+        const newId = await callCreateAPI();
+        receipt.value.receiptId = newId;
+        // Emit sự kiện thêm mới để cập nhật trên table
+        emits("updateEntityList", "create", receipt.value);
+      }
+
+      form.value.isLoading = false;
+      await router.replace("/CA/CAReceipt/create");
+
+      resetFormState();
+
+      await fetchNewReceiptNo();
     }
   } catch (error) {
     form.value.isLoading = false;

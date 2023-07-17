@@ -326,6 +326,7 @@
             bname="Cất và Thêm"
             class="btn--primary"
             v-tooltip:top="'Cất và Thêm (Ctrl + Shift + S)'"
+            @click="btnSaveAndAddOnClick"
           />
         </div>
       </div>
@@ -440,7 +441,7 @@ function focusOnFirstInput() {
 }
 
 /**
- * Reset giá trị customer và trạng thái form
+ * Reset giá trị và trạng thái form
  *
  * Author: Dũng (08/05/2023)
  */
@@ -595,10 +596,7 @@ async function validateData() {
   } else {
     // Tên quá dài
     if (account.value.accountNameVi.length > 100) {
-      formNoti.value.employeeFullName = $error.fieldTooLong(
-        "Tên tài khoản",
-        100
-      );
+      formNoti.value.accountNameVi = $error.fieldTooLong("Tên tài khoản", 100);
       firstErrorRef = firstErrorRef ?? accountNameViRef;
     }
   }
@@ -665,7 +663,7 @@ async function btnSaveOnClick() {
       if (form.value.type == $enum.form.infoType) {
         // Gọi API sửa nhân viên
         await callEditAccountApi();
-        // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
+        // Emit sự kiện cập nhật lên List để cập nhật trên table
         if (oldAccount.parentId != account.value.parentId) {
           // reload lại cây account
           emits("updateAccList", "edit", {
@@ -681,10 +679,10 @@ async function btnSaveOnClick() {
         }
       } else {
         // Nếu form là form thêm mới hoặc nhân bản
-        // Gọi API thêm mới nhân viên
+        // Gọi API thêm mới
         const newAccountId = await callCreateAccountApi();
         account.value.accountId = newAccountId;
-        // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
+        // Emit sự kiện thêm mới lênList để cập nhật trên table
         emits("updateAccList", "create", {
           account: account.value,
         });
@@ -696,6 +694,65 @@ async function btnSaveOnClick() {
   } catch (error) {
     form.value.isLoading = false;
     console.log(error);
+    await handleResponseStatusCode(error.response.status, error);
+  }
+}
+
+async function btnSaveAndAddOnClick() {
+  try {
+    form.value.isLoading = true;
+    // Validate dữ liệu
+    await validateData();
+
+    // Nếu có một lỗi nào đó sau khi validate
+    if (formNoti.value.notiboxMessage != "") {
+      form.value.isLoading = false;
+      // show notibox
+      await displayNotiBox();
+    } else {
+      // Nếu validate thành công
+
+      // Nếu form là form cập nhật thông tin
+      if (form.value.type == $enum.form.infoType) {
+        // edit
+        await callEditAccountApi();
+        // Emit sự kiện cập nhật lên List để cập nhật trên table
+        if (oldAccount.parentId != account.value.parentId) {
+          // reload lại cây account
+          emits("updateAccList", "edit", {
+            account: account.value,
+            reload: true,
+          });
+        } else {
+          // không cần reload cây account
+          emits("updateAccList", "edit", {
+            account: account.value,
+            reload: false,
+          });
+        }
+      } else {
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới
+        const newAccountId = await callCreateAccountApi();
+        account.value.accountId = newAccountId;
+        // Emit sự kiện thêm mới lênList để cập nhật trên table
+        emits("updateAccList", "create", {
+          account: account.value,
+        });
+      }
+
+      form.value.isLoading = false;
+      // Quay lại trang /DI/DIEmployee/create
+      await router.replace("/DI/DIAccount/create");
+
+      // Reset lại các trường thông tin trên form
+      resetFormState();
+
+      // Focus vào ô mã nhân viên
+      accountNumberRef.value.refInput.focus();
+    }
+  } catch (error) {
+    form.value.isLoading = false;
     await handleResponseStatusCode(error.response.status, error);
   }
 }
@@ -748,9 +805,6 @@ async function formDialogCloseBtnOnClick() {
   await nextTick();
   if (firstErrorRef != null) {
     focusOnFirstErrorInput();
-  } else {
-    //customerCodeRef.value.refInput.focus();
-    // need
   }
 }
 

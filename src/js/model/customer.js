@@ -145,7 +145,7 @@ export class Customer {
       envoiceContactEmail: this.envoiceContactEmail,
       envoiceContactMobile: this.envoiceContactMobile,
       paymentTermName: this.paymentTermName,
-      dueTime: Number(this.dueTime),
+      dueTime: this.dueTime != "" ? Number(this.dueTime) : null,
       maximizeDebtAmount: numberFormater.getNumber(this.maximizeDebtAmount),
       receiveAccount: this.receiveAccount,
       payAccount: this.payAccount,

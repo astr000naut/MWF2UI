@@ -586,6 +586,7 @@
             bname="Cất và Thêm"
             class="btn--primary"
             v-tooltip:top="'Cất (Ctrl + Shift + S)'"
+            @click="btnSaveAndAddOnClick"
           />
         </div>
       </div>
@@ -777,10 +778,13 @@ function resetFormState() {
  */
 async function handleResponseStatusCode(code, error) {
   formNoti.value.notiboxType = "alert";
+  console.log(code);
+  console.log(error);
   if (code == 400) {
     // Trường hợp backend trả về BadRequest
     formNoti.value.notiboxMessage = $error.invalidInput;
-    // await displayNotiBox();
+    console.log(1);
+    await displayNotiBox();
   } else if (code == 404) {
     // Trường hợp không tìm thấy ID của nhân viên trên URL
     await router.replace("/DI/DICustomer");
@@ -1060,7 +1064,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     form.value.isLoading = false;
     console.log(error);
-    // await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -1081,7 +1085,7 @@ async function callEditCustomerApi() {
  * Author: Dũng (08/05/2023)
  */
 function focusOnFirstErrorInput() {
-  firstErrorRef.value.refInput.focus();
+  if (firstErrorRef != null) firstErrorRef.value.refInput.focus();
 }
 
 /**
@@ -1126,6 +1130,54 @@ function sameOfAddressOnClick() {
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;
   router.replace("/DI/DICustomer");
+}
+
+async function btnSaveAndAddOnClick() {
+  try {
+    form.value.isLoading = true;
+    // Validate dữ liệu
+    await validateData();
+
+    // Nếu có một lỗi nào đó sau khi validate
+    if (formNoti.value.notiboxMessage != "") {
+      form.value.isLoading = false;
+      // show notibox
+      await displayNotiBox();
+    } else {
+      // Nếu validate thành công
+      // Nếu form là form cập nhật thông tin
+      if (form.value.type == $enum.form.infoType) {
+        // edit
+        await callEditCustomerApi();
+
+        // Emit sự kiện cập nhật lên List để cập nhật trên table
+        emits("updateCuslist", "edit", customer.value);
+      } else {
+        // Nếu form là form thêm mới hoặc nhân bản
+        const newId = await callCreateCustomerApi();
+        customer.value.customerId = newId;
+
+        // Emit sự kiện thêm mới lên List để cập nhật trên table
+        emits("updateCuslist", "create", customer.value);
+      }
+
+      form.value.isLoading = false;
+      // Quay lại trang /DI/DIEmployee/create
+      await router.replace("/DI/DICustomer/create");
+
+      // Reset lại các trường thông tin trên form
+      resetFormState();
+
+      // Lấy mãmới
+      await fetchNewCustomerCode();
+
+      // Focus vào ô mã
+      customerCodeRef.value.refInput.focus();
+    }
+  } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
+  }
 }
 
 /**
