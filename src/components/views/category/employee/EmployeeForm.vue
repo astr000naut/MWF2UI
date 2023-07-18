@@ -26,7 +26,7 @@
         <div class="header__left">
           <div class="header__title">
             {{
-              form.type == $enum.form.infoType
+              form.type == $enum.form.editType
                 ? lang.form.title.edit
                 : lang.form.title.add
             }}
@@ -417,7 +417,7 @@ resetFormState();
 onMounted(async () => {
   try {
     // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /employee
-    if (form.value.type == $enum.form.infoType && !isUUID(form.value.empId)) {
+    if (form.value.type == $enum.form.editType && !isUUID(form.value.empId)) {
       await router.replace("/DI/DIEmployee");
       return;
     }
@@ -479,7 +479,7 @@ function isUUID(str) {
 function resetFormState() {
   form.value = {
     type: route.params.id
-      ? $enum.form.infoType
+      ? $enum.form.editType
       : props.metadata.isDupplicate
       ? $enum.form.dupplicateType
       : $enum.form.createType,
@@ -600,7 +600,7 @@ async function getDataFromApi() {
     return;
   }
 
-  if (form.value.type == $enum.form.infoType) {
+  if (form.value.type == $enum.form.editType) {
     // Fetch employee information
     await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
     const oldEmp = new Employee({});
@@ -988,7 +988,7 @@ async function btnSaveOnClick() {
       // Nếu Validate thành công
 
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // Gọi API sửa nhân viên
         await callEditEmployeeApi();
         // Emit sự kiện cập nhật Employee lên EmployeeList để cập nhật trên table
@@ -1031,7 +1031,7 @@ async function btnSaveAndAddOnClick() {
       // Nếu validate thành công
 
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // edit employee
         await callEditEmployeeApi();
 

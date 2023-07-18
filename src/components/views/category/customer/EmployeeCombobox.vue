@@ -5,6 +5,7 @@
       <div class="main__selected">
         <div class="selected__input">
           <input
+            :disabled="blocked"
             type="text"
             ref="refInput"
             :value="selectedEmployeeName"
@@ -18,7 +19,11 @@
         <div class="btn__add">
           <div class="btn__add__icon mi mi-12 mi-add--green"></div>
         </div>
-        <button class="btn__dropdown" @click="btnDropDownOnClick">
+        <button
+          class="btn__dropdown"
+          @click="btnDropDownOnClick"
+          :disabled="blocked"
+        >
           <i class="fas fa-chevron-down"></i>
         </button>
       </div>
@@ -97,6 +102,7 @@ const talbeContentRef = ref(null);
 const selectedEmployeeIndex = ref(0);
 
 const props = defineProps({
+  blocked: Boolean,
   selectedEmployeeId: String,
   selectedEmployeeName: String,
   tableStructure: Array,

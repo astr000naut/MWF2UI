@@ -30,6 +30,7 @@
           </div>
           <div class="left__select">
             <BaseSelectbox
+              :blocked="formStatus == 1 || formStatus == 2 || formStatus == 3"
               style="width: 390px"
               :isActive="true"
               label=""
@@ -67,6 +68,9 @@
               <div class="tl__row cg12">
                 <div class="cus__combobox fl1">
                   <CustomerCombobox
+                    :blocked="
+                      formStatus == 1 || formStatus == 3 || formStatus == 2
+                    "
                     v-model:selectedEntityId="receipt.customerId"
                     v-model:selectedEntityCode="receipt.customerCode"
                     v-model:selectedEntityName="receipt.customerName"
@@ -83,6 +87,7 @@
               </div>
               <div class="tl__row">
                 <BaseTextfield
+                  :blocked="formStatus == 1 || formStatus == 2"
                   pholder=""
                   :label="lang.cash_receipt.label.contactName"
                   :isrequired="false"
@@ -93,6 +98,7 @@
               <div class="tl__row">
                 <div class="emp__combobox fl1">
                   <EmployeeCombobox
+                    :blocked="formStatus == 1 || formStatus == 2"
                     v-model:selectedEmployeeId="receipt.employeeId"
                     v-model:selectedEmployeeName="receipt.employeeName"
                     :table-structure="employeeComboboxTableStructure"
@@ -109,6 +115,7 @@
             <div class="tl__right fl2">
               <div class="tl__row">
                 <BaseTextfield
+                  :blocked="formStatus == 1 || formStatus == 2"
                   pholder=""
                   :label="lang.cash_receipt.label.customerName"
                   :isrequired="false"
@@ -118,6 +125,7 @@
               </div>
               <div class="tl__row">
                 <BaseTextfield
+                  :blocked="formStatus == 1 || formStatus == 2"
                   pholder=""
                   :label="lang.cash_receipt.label.address"
                   :isrequired="false"
@@ -128,6 +136,7 @@
               <div class="tl__row fl cg12">
                 <div class="receipt__reason fl2">
                   <BaseTextfield
+                    :blocked="formStatus == 1 || formStatus == 2"
                     pholder=""
                     :label="lang.cash_receipt.label.reason"
                     :isrequired="false"
@@ -137,6 +146,7 @@
                 </div>
                 <div class="document-included fl1">
                   <BaseTextfield
+                    :blocked="formStatus == 1 || formStatus == 2"
                     :pholder="lang.cash_receipt.text.amount"
                     :label="lang.cash_receipt.label.documentIncluded"
                     :isrequired="false"
@@ -157,6 +167,9 @@
             <div class="tr__left">
               <div class="tr__row">
                 <BaseDatepicker
+                  :blocked="
+                    formStatus == 1 || formStatus == 3 || formStatus == 2
+                  "
                   pholder=""
                   :label="lang.cash_receipt.label.postedDate"
                   v-model:inputText="receipt.postedDate"
@@ -166,6 +179,9 @@
               </div>
               <div class="tr__row">
                 <BaseDatepicker
+                  :blocked="
+                    formStatus == 1 || formStatus == 3 || formStatus == 2
+                  "
                   pholder=""
                   :label="lang.cash_receipt.label.receiptDate"
                   v-model:inputText="receipt.receiptDate"
@@ -174,6 +190,7 @@
                 />
               </div>
               <BaseTextfield
+                :blocked="formStatus == 1 || formStatus == 3 || formStatus == 2"
                 pholder=""
                 :label="lang.cash_receipt.label.receiptNo"
                 :autoFillMessage="lang.cash_receipt.message.autoGenReceiptNo"
@@ -225,6 +242,7 @@
                     <td>
                       <div class="td__wrapper">
                         <input
+                          :disabled="formStatus == 1 || formStatus == 2"
                           class="rdetail--input"
                           type="text"
                           v-model="rdetail.description"
@@ -235,6 +253,11 @@
                     <td>
                       <div class="td__wrapper">
                         <FormAccountCombobox
+                          :blocked="
+                            formStatus == 1 ||
+                            formStatus == 3 ||
+                            formStatus == 2
+                          "
                           :style="{
                             'z-index': 30 - index + 1,
                           }"
@@ -247,6 +270,11 @@
                     <td>
                       <div class="td__wrapper">
                         <FormAccountCombobox
+                          :blocked="
+                            formStatus == 1 ||
+                            formStatus == 3 ||
+                            formStatus == 2
+                          "
                           :style="{
                             'z-index': 20 - index + 1,
                           }"
@@ -269,6 +297,11 @@
                     <td>
                       <div class="td__wrapper">
                         <input
+                          :disabled="
+                            formStatus == 1 ||
+                            formStatus == 3 ||
+                            formStatus == 2
+                          "
                           class="rdetail--input text-right"
                           type="text"
                           maxlength="18"
@@ -298,11 +331,13 @@
             </div>
             <div class="table__control">
               <BaseButton
+                :blocked="formStatus == 1 || formStatus == 2 || formStatus == 3"
                 :bname="lang.button.addLine"
                 class="btn--secondary"
                 @click="receiptDetailAddOnClick"
               />
               <BaseButton
+                :blocked="formStatus == 1 || formStatus == 2 || formStatus == 3"
                 :bname="lang.button.deleteAllLine"
                 class="btn--secondary"
                 @click="softDeleteAllReceiptDetailOnClick"
@@ -333,6 +368,19 @@
         </div>
         <div class="footer__right">
           <BaseButton
+            v-show="formStatus == 2"
+            :bname="lang.cash_receipt.button.fastEdit"
+            class="btn--secondary"
+            @click="btnFastEditOnClick"
+          />
+          <BaseButton
+            v-show="formStatus == 1"
+            :bname="lang.cash_receipt.button.edit"
+            class="btn--secondary"
+            @click="btnEditOnClick"
+          />
+          <BaseButton
+            v-show="formStatus == 0 || formStatus == 4 || formStatus == 3"
             :bname="lang.cash_receipt.button.save"
             class="btn--secondary"
             @click="btnSaveOnClick"
@@ -340,9 +388,22 @@
           />
           <BaseButton
             :bname="lang.cash_receipt.button.saveAndAdd"
+            v-show="formStatus == 0 || formStatus == 4 || formStatus == 3"
             class="btn--primary"
             v-tooltip:top="'Cất và thêm (Ctrl + Shift + S)'"
             @click="btnSaveAndAddOnClick"
+          />
+          <BaseButton
+            v-show="formStatus == 1"
+            :bname="lang.cash_receipt.button.doLedge"
+            class="btn--primary"
+            @click="doLedgeOnClick"
+          />
+          <BaseButton
+            v-show="formStatus == 2"
+            :bname="lang.cash_receipt.button.unLedge"
+            class="btn--primary"
+            @click="unLedgeOnClick"
           />
         </div>
       </div>
@@ -363,7 +424,7 @@ import $api from "@/js/api";
 import { ReceiptDetail } from "../../../../js/model/receipt-detail";
 import numberFormater from "@/js/common/number-formater";
 
-const emits = defineEmits(["updateEntityList", "update:metadata"]);
+// const emits = defineEmits(["updateEntityList", "update:metadata"]);
 const $axios = inject("$axios");
 const lang = inject("$lang");
 const _ = require("lodash");
@@ -477,6 +538,18 @@ const receiptDetailsDisplay = computed(() => {
   return receiptDetails.value.filter((rdetail) => rdetail.status != "delete");
 });
 
+const formStatus = computed(() => {
+  if (receipt.value.ledgerStatus == false) {
+    if (form.value.type == $enum.form.createType) return 0;
+    if (form.value.type == $enum.form.viewType) return 1;
+    if (form.value.type == $enum.form.editType) return 4;
+  } else {
+    if (form.value.type == $enum.form.viewType) return 2;
+    if (form.value.type == $enum.form.fastEditType) return 3;
+  }
+  return null;
+});
+
 resetFormState();
 
 watch(receiptDetails.value, () => {
@@ -491,7 +564,7 @@ onMounted(async () => {
   try {
     // Nếu form là kiểu thông tin account mà id của router không hợp lệ thì quay lại
     if (
-      form.value.type == $enum.form.infoType &&
+      form.value.type == $enum.form.viewType &&
       !isUUID(form.value.entityId)
     ) {
       await router.replace("/CA/CAReceipt");
@@ -502,6 +575,7 @@ onMounted(async () => {
 
     // Lấy dữ liệu từ Server
     await getDataFromApi();
+
     form.value.isLoading = false;
   } catch (error) {
     form.value.isLoading = false;
@@ -552,7 +626,7 @@ watch(
 
 function resetFormState() {
   form.value = {
-    type: route.params.id ? "info" : "create",
+    type: route.params.id ? $enum.form.viewType : $enum.form.createType,
     entityId: route.params.id ?? "",
     isLoading: false,
   };
@@ -565,6 +639,7 @@ async function fetchEntityToEntityObject(entityId) {
   const response = await $axios.get($api.receipt.one(entityId));
   const entityFromApi = response.data;
   receipt.value = new Receipt(entityFromApi);
+  if (receipt.value.receiptDetailList.length > 0) receiptDetails.value = [];
   for (const rd of receipt.value.receiptDetailList) {
     receiptDetails.value.push(new ReceiptDetail(rd));
     oldReceiptDetails.value.push(new ReceiptDetail(rd));
@@ -578,19 +653,17 @@ async function fetchNewReceiptNo() {
 }
 
 async function getDataFromApi() {
-  if (form.value.type == $enum.form.infoType) {
+  if (form.value.type == $enum.form.viewType) {
     await fetchEntityToEntityObject(form.value.entityId);
   }
   if (form.value.type == $enum.form.createType) {
     await fetchNewReceiptNo();
   }
-
-  if (receiptDetails.value.length == 0) {
-    receiptDetails.value.push(new ReceiptDetail({}));
-  }
 }
 
 function softDeleteReceiptDetail(id) {
+  if (formStatus.value == 3 || formStatus.value == 1 || formStatus.value == 2)
+    return;
   let i = 0;
   console.log(receiptDetails.value);
   while (i < receiptDetails.value.length) {
@@ -657,24 +730,38 @@ async function btnSaveOnClick() {
         receipt.value.receiptDetailList.push(rd.convertToApiFormat());
       }
 
-      // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
-        // Gọi API sửa
-        await callEditAPI();
-        // Emit sự kiện cập nhật để cập nhật trên table
-        console.log(receipt.value);
-        emits("updateEntityList", "edit", receipt.value);
-      } else {
+      // Status 0 to 1
+      if (form.value.type == $enum.form.createType) {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới
+        receipt.value.ledgerStatus = true;
         const newId = await callCreateAPI();
         receipt.value.receiptId = newId;
+        form.value.type = $enum.form.viewType;
         // Emit sự kiện thêm mới để cập nhật trên table
-        emits("updateEntityList", "create", receipt.value);
+        // emits("updateEntityList", "create", receipt.value);
+        form.value.isLoading = false;
+        return;
+      }
+      // Status 4 to 1
+      if (form.value.type == $enum.form.editType) {
+        receipt.value.ledgerStatus = false;
+        // Gọi API sửa
+        await callEditAPI();
+        form.value.type = $enum.form.viewType;
+        form.value.isLoading = false;
+        return;
       }
 
-      form.value.isLoading = false;
-      router.replace("/CA/CAReceipt");
+      // Status 3 to 2
+      if (form.value.type == $enum.form.fastEditType) {
+        receipt.value.ledgerStatus = true;
+        // Gọi API sửa
+        await callEditAPI();
+        form.value.type = $enum.form.viewType;
+        form.value.isLoading = false;
+        return;
+      }
     }
   } catch (error) {
     console.log(error);
@@ -703,30 +790,76 @@ async function btnSaveAndAddOnClick() {
         receipt.value.receiptDetailList.push(rd.convertToApiFormat());
       }
 
-      // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
-        // Gọi API sửa
-        await callEditAPI();
-        // Emit sự kiện cập nhật để cập nhật trên table
-        console.log(receipt.value);
-        emits("updateEntityList", "edit", receipt.value);
-      } else {
+      // Status 0 to 0
+      if (form.value.type == $enum.form.createType) {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới
-        const newId = await callCreateAPI();
-        receipt.value.receiptId = newId;
-        // Emit sự kiện thêm mới để cập nhật trên table
-        emits("updateEntityList", "create", receipt.value);
+        await callCreateAPI();
+        resetFormState();
+        await fetchNewReceiptNo();
+        form.value.isLoading = false;
+        return;
       }
 
-      form.value.isLoading = false;
-      await router.replace("/CA/CAReceipt/create");
+      // Status 4 to 0
+      if (form.value.type == $enum.form.editType) {
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới
+        await callEditAPI();
+        resetFormState();
+        await fetchNewReceiptNo();
+        form.value.isLoading = false;
+        return;
+      }
 
-      resetFormState();
-
-      await fetchNewReceiptNo();
+      // Status 3 to 0
+      if (form.value.type == $enum.form.fastEditType) {
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới
+        await callEditAPI();
+        resetFormState();
+        await fetchNewReceiptNo();
+        form.value.isLoading = false;
+        return;
+      }
     }
   } catch (error) {
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error);
+  }
+}
+
+function btnEditOnClick() {
+  form.value.type = $enum.form.editType;
+}
+
+function btnFastEditOnClick() {
+  form.value.type = $enum.form.fastEditType;
+}
+
+async function doLedgeOnClick() {
+  try {
+    form.value.isLoading = true;
+    receipt.value.ledgerStatus = true;
+    await callEditAPI();
+    form.value.isLoading = false;
+  } catch (error) {
+    console.log(error);
+    receipt.value.ledgerStatus = false;
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error);
+  }
+}
+
+async function unLedgeOnClick() {
+  try {
+    form.value.isLoading = true;
+    receipt.value.ledgerStatus = false;
+    await callEditAPI();
+    form.value.isLoading = false;
+  } catch (error) {
+    console.log(error);
+    receipt.value.ledgerStatus = true;
     form.value.isLoading = false;
     await handleResponseStatusCode(error);
   }
@@ -827,8 +960,8 @@ async function handleResponseStatusCode(error) {
     formNoti.value.notiboxMessage = lang.cash_receipt.error.invalidInput;
     await displayNotiBox();
   } else if (code == 404) {
-    // Trường hợp không tìm thấy ID của nhân viên trên URL
-    await router.replace("/DI/DIEmployee");
+    // Trường hợp không tìm thấy ID của receipt trên URL
+    await router.replace("/CA/CAReceipt");
   } else {
     // Các trường hợp còn lại
     formNoti.value.notiboxMessage = error.response.data.UserMessage;
@@ -843,6 +976,10 @@ async function displayNotiBox() {
 }
 
 async function btnCloseOnClick() {
+  if (formStatus.value == 1 || formStatus.value == 2) {
+    router.back();
+    return;
+  }
   if (
     _.isEqual(oldReceipt, receipt.value) &&
     _.isEqual(oldReceiptDetails.value, receiptDetails.value)
@@ -890,6 +1027,10 @@ async function formDialogCloseBtnOnClick() {
   }
 }
 
+// function btnFastEditOnClick() {
+//   form.value.type = $enum.form.fastEditType;
+// }
+
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;
   router.back();
@@ -902,6 +1043,7 @@ function rdetailAmountOnInput(_$event, rdetail) {
 }
 
 function focusOnFirstErrorInput() {
+  if (firstErrorRef == null) return;
   if (firstErrorRef.value) {
     firstErrorRef.value.refInput.focus();
   } else {

@@ -416,7 +416,7 @@ resetFormState();
 onMounted(async () => {
   try {
     // Nếu form là kiểu thông tin account mà id của router không hợp lệ thì quay lại
-    if (form.value.type == $enum.form.infoType && !isUUID(form.value.accId)) {
+    if (form.value.type == $enum.form.editType && !isUUID(form.value.accId)) {
       await router.replace("/DI/DIAccount");
       return;
     }
@@ -449,7 +449,7 @@ function resetFormState() {
   form.value = {
     size: 0,
     collapse: true,
-    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
+    type: route.params.id ? $enum.form.editType : $enum.form.createType,
     accId: route.params.id ?? "",
     isLoading: false,
   };
@@ -497,7 +497,7 @@ async function fecthAccountToAccountObject(accId) {
  * Author: Dũng (08/05/2023)
  */
 async function getDataFromApi() {
-  if (form.value.type == $enum.form.infoType) {
+  if (form.value.type == $enum.form.editType) {
     await fecthAccountToAccountObject(form.value.accId, form.value.type);
     const oldAcc = new Account({});
     oldAcc.cloneFromOtherAccount(account.value);
@@ -662,7 +662,7 @@ async function btnSaveOnClick() {
       // Nếu Validate thành công
 
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // Gọi API sửa nhân viên
         await callEditAccountApi();
         // Emit sự kiện cập nhật lên List để cập nhật trên table
@@ -715,7 +715,7 @@ async function btnSaveAndAddOnClick() {
       // Nếu validate thành công
 
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // edit
         await callEditAccountApi();
         // Emit sự kiện cập nhật lên List để cập nhật trên table

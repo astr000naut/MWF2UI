@@ -19,6 +19,7 @@
     </div>
     <div class="txtfield__textbox">
       <input
+        :disabled="blocked"
         :maxlength="type == 'money' ? 18 : 255"
         class="txtfield__input"
         :class="[textRight ? 'input-text-right' : '']"
@@ -47,6 +48,7 @@ import numberFormater from "@/js/common/number-formater";
 
 //#region init
 const props = defineProps({
+  blocked: Boolean,
   pholder: String,
   label: String,
   text: String,

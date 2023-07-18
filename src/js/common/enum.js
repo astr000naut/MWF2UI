@@ -1,9 +1,10 @@
 const $enum = {
   form: {
-    infoType: "info",
+    editType: "edit",
     viewType: "view",
     createType: "create",
     dupplicateType: "dupplicate",
+    fastEditType: "fastEdit",
   },
   gender: {
     male: 0,

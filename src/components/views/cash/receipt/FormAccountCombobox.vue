@@ -8,6 +8,7 @@
       <div class="main__selected">
         <div class="selected__input">
           <input
+            :disabled="blocked"
             type="text"
             ref="refInput"
             :value="selectedItemName"
@@ -18,7 +19,11 @@
         </div>
       </div>
       <div class="main__action">
-        <button class="btn__dropdown" @click="btnDropDownOnClick">
+        <button
+          :disabled="blocked"
+          class="btn__dropdown"
+          @click="btnDropDownOnClick"
+        >
           <i class="fas fa-chevron-down"></i>
         </button>
       </div>
@@ -104,6 +109,7 @@ const noti = ref("");
 var totalRecord = 0;
 
 const props = defineProps({
+  blocked: Boolean,
   selectedItemId: String,
   selectedItemName: String,
   mheight: Number,

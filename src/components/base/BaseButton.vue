@@ -1,5 +1,5 @@
 <template>
-  <button ref="refBtn">{{ bname }}</button>
+  <button :disabled="blocked" ref="refBtn">{{ bname }}</button>
 </template>
 
 <script setup>
@@ -9,6 +9,7 @@ import { ref } from "vue";
 
 //#region  init
 defineProps({
+  blocked: Boolean,
   // Ten button
   bname: String,
 });

@@ -21,6 +21,7 @@
           }}
         </div>
         <button
+          :disabled="blocked"
           class="select__button"
           tabindex="-1"
           @click="selectButtonOnClick"
@@ -72,6 +73,7 @@ import { vOnClickOutside } from "@vueuse/components";
 //#region init
 
 const props = defineProps({
+  blocked: Boolean,
   isActive: Boolean,
   label: String,
   isrequired: Boolean,

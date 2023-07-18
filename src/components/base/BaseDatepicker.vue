@@ -8,6 +8,7 @@
     <div class="dpicker__selector">
       <div class="dpicker__input">
         <input
+          :disabled="blocked"
           type="text"
           :placeholder="pholder.length > 0 ? pholder : $formatter.dateFormat"
           :value="inputText"
@@ -159,6 +160,7 @@ import { vOnClickOutside } from "@vueuse/components";
 //#region init
 const refInput = ref(null);
 const props = defineProps({
+  blocked: Boolean,
   label: String,
   pholder: String,
   inputText: String,
@@ -349,6 +351,7 @@ function yearItemOnClick(_e, yearChoosed) {
  * Author: Dũng (08/05/2023)
  */
 function miCalendarOnClick() {
+  if (props.blocked == true) return;
   // Init
   if (!isBoxOpen.value) {
     emits("update:noti", "");

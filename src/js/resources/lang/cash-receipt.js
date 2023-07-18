@@ -62,6 +62,10 @@ const cash_receipt = {
   button: {
     save: "Cất",
     saveAndAdd: "Cất và Thêm",
+    doLedge: "Ghi sổ",
+    unLedge: "Bỏ ghi",
+    fastEdit: "Sửa nhanh",
+    edit: "Sửa",
   },
   formType: [
     "1. Thu tiền khách hàng (không theo hóa đơn)",

@@ -37,7 +37,7 @@ export class Receipt {
     this.receiptNo = r.receiptNo ?? "";
     this.totalAmount = numberFormater.format(r.totalAmount) ?? "0";
     this.receiptDetailList = r.receiptDetailList ?? [];
-    this.ledgerStatus = r.ledgerStatus;
+    this.ledgerStatus = r.ledgerStatus ?? false;
   }
 
   cloneFromOtherReceipt(r) {

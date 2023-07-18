@@ -25,7 +25,7 @@
       <div class="form__header">
         <div class="header__left">
           {{
-            form.type == "info"
+            form.type == "edit"
               ? "Sửa thông tin khách hàng"
               : "Thêm mới khách hàng"
           }}
@@ -719,7 +719,7 @@ resetFormState();
 onMounted(async () => {
   try {
     // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /DI/DICustomer
-    if (form.value.type == $enum.form.infoType && !isUUID(form.value.cusId)) {
+    if (form.value.type == $enum.form.editType && !isUUID(form.value.cusId)) {
       await router.replace("/DI/DICustomer");
       return;
     }
@@ -754,7 +754,7 @@ function focusOnFirstInput() {
 function resetFormState() {
   form.value = {
     type: route.params.id
-      ? $enum.form.infoType
+      ? $enum.form.editType
       : props.metadata.isDupplicate
       ? $enum.form.dupplicateType
       : $enum.form.createType,
@@ -821,7 +821,7 @@ async function getDataFromApi() {
     return;
   }
 
-  if (form.value.type == $enum.form.infoType) {
+  if (form.value.type == $enum.form.editType) {
     // Fetch customer information
     await fetchCustomerInfoToCustomerObject(form.value.cusId, form.value.type);
     const oldCus = new Customer({});
@@ -1046,7 +1046,7 @@ async function btnSaveOnClick() {
       // Nếu Validate thành công
 
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // Gọi API sửa nhân viên
         await callEditCustomerApi();
         // Emit sự kiện cập nhật Customer lên CustomerList để cập nhật trên table
@@ -1148,7 +1148,7 @@ async function btnSaveAndAddOnClick() {
     } else {
       // Nếu validate thành công
       // Nếu form là form cập nhật thông tin
-      if (form.value.type == $enum.form.infoType) {
+      if (form.value.type == $enum.form.editType) {
         // edit
         await callEditCustomerApi();
 
