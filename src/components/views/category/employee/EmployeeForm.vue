@@ -429,7 +429,7 @@ onMounted(async () => {
     employeeCodeRef.value.refInput.focus();
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 });
 
@@ -503,7 +503,9 @@ function resetFormState() {
  * @param {code}
  * Author: Dũng (08/05/2023)
  */
-async function handleResponseStatusCode(code, error) {
+async function handleResponseStatusCode(error) {
+  if (error == null || error.response == null) return;
+  let code = error.response.status;
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     // Trường hợp backend trả về BadRequest
@@ -532,7 +534,7 @@ async function generateEmpCode() {
     form.value.isLoading = false;
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -1005,7 +1007,7 @@ async function btnSaveOnClick() {
     }
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -1059,7 +1061,7 @@ async function btnSaveAndAddOnClick() {
     }
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 

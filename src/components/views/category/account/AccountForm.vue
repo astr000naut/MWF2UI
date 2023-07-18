@@ -429,7 +429,7 @@ onMounted(async () => {
   } catch (error) {
     form.value.isLoading = false;
     console.log(error);
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 });
 //#endregion
@@ -461,7 +461,9 @@ function resetFormState() {
  * @param {code}
  * Author: Dũng (08/05/2023)
  */
-async function handleResponseStatusCode(code, error) {
+async function handleResponseStatusCode(error) {
+  if (error == null || error.response == null) return;
+  let code = error.response.status;
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     // Trường hợp backend trả về BadRequest
@@ -694,7 +696,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     form.value.isLoading = false;
     console.log(error);
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -753,7 +755,7 @@ async function btnSaveAndAddOnClick() {
     }
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 

@@ -679,7 +679,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -728,7 +728,7 @@ async function btnSaveAndAddOnClick() {
     }
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -801,7 +801,7 @@ async function generateReceiptNo() {
     form.value.isLoading = false;
   } catch (error) {
     form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error);
   }
 }
 
@@ -818,7 +818,9 @@ async function callCreateAPI() {
   return response.data;
 }
 
-async function handleResponseStatusCode(code, error) {
+async function handleResponseStatusCode(error) {
+  if (error == null || error.response == null) return;
+  let code = error.response.status;
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     // Trường hợp backend trả về BadRequest
