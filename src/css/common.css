@@ -183,3 +183,8 @@ textarea::-webkit-scrollbar-track {
 textarea::-webkit-scrollbar-thumb {
     background-color: var(--clr-t-border);
 }
+
+input:disabled {
+    background-color: transparent;
+}
+

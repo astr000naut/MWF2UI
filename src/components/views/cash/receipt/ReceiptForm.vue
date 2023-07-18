@@ -364,7 +364,11 @@
       </div>
       <div class="form__footer">
         <div class="footer__left">
-          <BaseButton bname="Hủy" class="btn--secondary" />
+          <BaseButton
+            bname="Hủy"
+            class="btn--secondary"
+            @click="btnCancelOnClick"
+          />
         </div>
         <div class="footer__right">
           <BaseButton
@@ -806,6 +810,7 @@ async function btnSaveAndAddOnClick() {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới
         await callEditAPI();
+        await router.replace("/CA/CAReceipt/create");
         resetFormState();
         await fetchNewReceiptNo();
         form.value.isLoading = false;
@@ -817,6 +822,7 @@ async function btnSaveAndAddOnClick() {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới
         await callEditAPI();
+        await router.replace("/CA/CAReceipt/create");
         resetFormState();
         await fetchNewReceiptNo();
         form.value.isLoading = false;
@@ -1027,9 +1033,9 @@ async function formDialogCloseBtnOnClick() {
   }
 }
 
-// function btnFastEditOnClick() {
-//   form.value.type = $enum.form.fastEditType;
-// }
+function btnCancelOnClick() {
+  router.back();
+}
 
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;

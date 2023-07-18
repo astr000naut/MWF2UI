@@ -120,9 +120,9 @@
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(entity.receiptId)"
+                  @click="btnViewOnClick(entity.receiptId)"
                 >
-                  {{ lang.table_items.edit }}
+                  {{ lang.table_items.view }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
@@ -403,11 +403,11 @@ async function prevPageOnClick() {
 }
 
 /**
- * Click vào btn sửa KH
- * @param {String} entityId Id KH
+ * Click vào btn view receipt
+ * @param {String} entityId
  * Author: Dũng (08/05/2023)
  */
-function btnEditOnClick(entityId) {
+function btnViewOnClick(entityId) {
   router.push(`/CA/CAReceipt/${entityId}`);
 }
 

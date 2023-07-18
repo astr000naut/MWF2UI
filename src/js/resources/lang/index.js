@@ -150,6 +150,7 @@ const lang = {
     delete: "Xóa",
     dupplicate: "Nhân bản",
     stop: "Ngừng sử dụng",
+    view: "Xem",
   },
   tableHeader: {
     empCode: "MÃ NHÂN VIÊN",
