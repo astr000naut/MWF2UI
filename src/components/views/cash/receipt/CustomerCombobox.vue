@@ -74,7 +74,7 @@
               </td>
             </tr>
             <tr v-show="entityList.length == 0">
-              <div class="no__data">Không có dữ liệu</div>
+              <div class="no__data">{{ lang.dataNotFound }}</div>
             </tr>
           </tbody>
         </table>
@@ -89,6 +89,7 @@ import $api from "@/js/api";
 const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
+const lang = inject("$lang");
 const entityList = ref([]);
 const typingTimers = [];
 const timeoutVal = 500;

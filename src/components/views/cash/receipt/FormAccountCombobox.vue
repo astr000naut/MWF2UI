@@ -78,7 +78,7 @@
               </td>
             </tr>
             <tr v-show="itemList.length == 0">
-              <div class="no__data">Không có dữ liệu</div>
+              <div class="no__data">{{ lang.dataNotFound }}</div>
             </tr>
           </tbody>
         </table>
@@ -93,6 +93,7 @@ import { vOnClickOutside } from "@vueuse/components";
 const refInput = ref(null);
 const isTableOpen = ref(false);
 const $axios = inject("$axios");
+const lang = inject("$lang");
 const itemList = ref([]);
 const typingTimers = [];
 const timeoutVal = 500;
@@ -110,12 +111,12 @@ const props = defineProps({
 
 const tableSchema = [
   {
-    name: "Số tài khoản",
+    name: lang.cash_receipt.accountComboboxTable.accountNumber,
     prop: "accountNumber",
     width: 40,
   },
   {
-    name: "Tên tài khoản",
+    name: lang.cash_receipt.accountComboboxTable.accountNameVi,
     prop: "accountNameVi",
     width: 60,
   },

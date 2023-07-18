@@ -100,6 +100,7 @@
           <div
             :class="[isLoadingExport ? 'disabled' : '']"
             class="minc mi-36 mi-excel"
+            @click="exportExcelOnClick"
           ></div>
           <div class="button__hoverbox--export">
             <div class="hover__arrow"></div>
@@ -151,6 +152,7 @@ import $api from "@/js/api";
 import { Customer } from "@/js/model/customer";
 import $error from "../../../../js/resources/error";
 import $message from "../../../../js/resources/message";
+import exportFormat from "@/js/resources/export-format";
 const lang = inject("$lang");
 // #endregion
 
@@ -311,10 +313,17 @@ function handleApiErrorResponse(error) {
       message: $error.serverDisconnected,
     });
   } else {
-    pushToast({
-      type: "fail",
-      message: error.response.data.UserMessage,
-    });
+    if (error.response && error.response.data) {
+      pushToast({
+        type: "fail",
+        message: error.response.data.UserMessage,
+      });
+    } else {
+      pushToast({
+        type: "fail",
+        message: $error.unexpectedError,
+      });
+    }
   }
 }
 
@@ -628,6 +637,50 @@ async function loadCustomerData() {
   } catch (error) {
     isLoadingData.value = false;
     handleApiErrorResponse(error);
+  }
+}
+
+/**
+ * Sự kiện click Export Excel
+ *
+ * Author: Dũng (04/06/2023)
+ */
+async function exportExcelOnClick() {
+  try {
+    if (isLoadingExport.value) return;
+    isLoadingExport.value = true;
+
+    const format = exportFormat.customer;
+    format.keySearch = cache.value.cusSearchPattern;
+
+    // Gọi api xuất file excel
+    const response = await $axios.post($api.customer.exportExcel, format, {
+      responseType: "blob",
+    });
+
+    // Tạo URL cho blob data
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Tạo thẻ a và gắn url blob data vào
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", format.fileName);
+
+    // Append link element vào DOM và tự click để download
+    document.body.appendChild(link);
+    link.click();
+
+    // Remove các element vừa mới tạo khỏi trang
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+    isLoadingExport.value = false;
+  } catch (error) {
+    isLoadingExport.value = false;
+    console.log(error);
+    pushToast({
+      type: "fail",
+      message: $error.exportFailed,
+    });
   }
 }
 

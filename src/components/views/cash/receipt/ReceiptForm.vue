@@ -25,7 +25,9 @@
       <div class="form__header">
         <div class="header__left">
           <div class="left__icon mi mi-24 mi-recent-log"></div>
-          <div class="left__title">Phiếu thu {{ receipt.receiptNo }}</div>
+          <div class="left__title">
+            {{ lang.cash_receipt.form.title }} {{ receipt.receiptNo }}
+          </div>
           <div class="left__select">
             <BaseSelectbox
               style="width: 390px"
@@ -43,14 +45,18 @@
           <BaseButton
             bname=""
             class="mi-36 btn--setting"
-            v-tooltip="'Tùy chỉnh giao diện'"
+            v-tooltip="lang.cash_receipt.tooltip.customDisplay"
           />
-          <BaseButton bname="" class="mi-36 btn--help" v-tooltip="'Giúp'" />
+          <BaseButton
+            bname=""
+            class="mi-36 btn--help"
+            v-tooltip="lang.cash_receipt.tooltip.help"
+          />
           <BaseButton
             bname=""
             class="mi-36 btn--close"
             @click="btnCloseOnClick"
-            v-tooltip="'Đóng (ESC)'"
+            v-tooltip="lang.cash_receipt.tooltip.close"
           />
         </div>
       </div>
@@ -71,14 +77,14 @@
                 <div class="lookup__btn">
                   <div
                     class="mi mi-24 mi--lookup"
-                    v-tooltip="'Xem công nợ'"
+                    v-tooltip="lang.cash_receipt.tooltip.watchDebt"
                   ></div>
                 </div>
               </div>
               <div class="tl__row">
                 <BaseTextfield
                   pholder=""
-                  label="Người nộp"
+                  :label="lang.cash_receipt.label.contactName"
                   :isrequired="false"
                   v-model:text="receipt.contactName"
                   noti=""
@@ -94,7 +100,9 @@
                 </div>
               </div>
               <div class="tl__row">
-                <div class="ref__text">Tham chiếu</div>
+                <div class="ref__text">
+                  {{ lang.cash_receipt.text.reference }}
+                </div>
                 <div class="ref__btn">...</div>
               </div>
             </div>
@@ -102,7 +110,7 @@
               <div class="tl__row">
                 <BaseTextfield
                   pholder=""
-                  label="Tên khách hàng"
+                  :label="lang.cash_receipt.label.customerName"
                   :isrequired="false"
                   v-model:text="receipt.customerName"
                   noti=""
@@ -111,7 +119,7 @@
               <div class="tl__row">
                 <BaseTextfield
                   pholder=""
-                  label="Địa chỉ"
+                  :label="lang.cash_receipt.label.address"
                   :isrequired="false"
                   v-model:text="receipt.customerAddress"
                   noti=""
@@ -121,7 +129,7 @@
                 <div class="receipt__reason fl2">
                   <BaseTextfield
                     pholder=""
-                    label="Lý do nộp"
+                    :label="lang.cash_receipt.label.reason"
                     :isrequired="false"
                     v-model:text="receipt.reason"
                     noti=""
@@ -129,8 +137,8 @@
                 </div>
                 <div class="document-included fl1">
                   <BaseTextfield
-                    pholder="Số lượng"
-                    label="Kèm theo"
+                    :pholder="lang.cash_receipt.text.amount"
+                    :label="lang.cash_receipt.label.documentIncluded"
                     :isrequired="false"
                     :textRight="true"
                     v-model:text="receipt.documentIncluded"
@@ -138,7 +146,9 @@
                   />
                 </div>
                 <div class="tl__textbox">
-                  <div class="tl__text">chứng từ gốc</div>
+                  <div class="tl__text">
+                    {{ lang.cash_receipt.text.originalDoc }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,7 +158,7 @@
               <div class="tr__row">
                 <BaseDatepicker
                   pholder=""
-                  label="Ngày hạch toán"
+                  :label="lang.cash_receipt.label.postedDate"
                   v-model:inputText="receipt.postedDate"
                   v-model:noti="formNoti.postedDate"
                   ref="postedDateRef"
@@ -157,7 +167,7 @@
               <div class="tr__row">
                 <BaseDatepicker
                   pholder=""
-                  label="Ngày phiếu thu"
+                  :label="lang.cash_receipt.label.receiptDate"
                   v-model:inputText="receipt.receiptDate"
                   v-model:noti="formNoti.receiptDate"
                   ref="receiptDateRef"
@@ -165,8 +175,8 @@
               </div>
               <BaseTextfield
                 pholder=""
-                label="Số phiếu thu"
-                autoFillMessage="Shift + F8 để tự tạo số phiếu thu"
+                :label="lang.cash_receipt.label.receiptNo"
+                :autoFillMessage="lang.cash_receipt.message.autoGenReceiptNo"
                 :autoFill="generateReceiptNo"
                 :isrequired="true"
                 v-model:text="receipt.receiptNo"
@@ -175,7 +185,9 @@
               />
             </div>
             <div class="tr__right">
-              <div class="trr__label">Tổng tiền</div>
+              <div class="trr__label">
+                {{ lang.cash_receipt.label.totalAmount }}
+              </div>
               <div class="trr__amount">
                 {{ numberFormater.format(receipt.totalAmount) }}
               </div>
@@ -184,7 +196,7 @@
         </div>
         <div class="body__bot">
           <div class="bot__table">
-            <div class="table__title">Hạch toán</div>
+            <div class="table__title">{{ lang.cash_receipt.text.posted }}</div>
             <div class="table__container">
               <table class="rdetail__table">
                 <thead>
@@ -286,12 +298,12 @@
             </div>
             <div class="table__control">
               <BaseButton
-                bname="Thêm dòng"
+                :bname="lang.button.addLine"
                 class="btn--secondary"
                 @click="receiptDetailAddOnClick"
               />
               <BaseButton
-                bname="Xóa hết dòng"
+                :bname="lang.button.deleteAllLine"
                 class="btn--secondary"
                 @click="softDeleteAllReceiptDetailOnClick"
               />
@@ -300,12 +312,16 @@
           <div class="bot__upload">
             <div class="upload__top">
               <div class="upload__icon mi mi-18 mi-attach"></div>
-              <div class="upload__title">Đính kèm</div>
-              <div class="upload__label">Dung lượng tối đa 5MB</div>
+              <div class="upload__title">
+                {{ lang.cash_receipt.text.attach }}
+              </div>
+              <div class="upload__label">
+                {{ lang.cash_receipt.text.maxCapacity }}
+              </div>
             </div>
             <div class="upload__bot">
               <div class="upload__text">
-                Kéo/thả tệp vào đây hoặc bấm vào đây
+                {{ lang.cash_receipt.text.attachMessage }}
               </div>
             </div>
           </div>
@@ -317,13 +333,13 @@
         </div>
         <div class="footer__right">
           <BaseButton
-            bname="Cất"
+            :bname="lang.cash_receipt.button.save"
             class="btn--secondary"
             @click="btnSaveOnClick"
             v-tooltip:top="'Cất (Ctrl + S)'"
           />
           <BaseButton
-            bname="Cất và Thêm"
+            :bname="lang.cash_receipt.button.saveAndAdd"
             class="btn--primary"
             v-tooltip:top="'Cất và thêm (Ctrl + Shift + S)'"
             @click="btnSaveAndAddOnClick"
@@ -343,11 +359,12 @@ import { useRoute, useRouter } from "vue-router";
 import { Receipt } from "@/js/model/receipt";
 import $enum from "@/js/common/enum";
 import $formatter from "../../../../js/common/formater";
-const emits = defineEmits(["updateEntityList", "update:metadata"]);
-const $axios = inject("$axios");
 import $api from "@/js/api";
 import { ReceiptDetail } from "../../../../js/model/receipt-detail";
 import numberFormater from "@/js/common/number-formater";
+
+const emits = defineEmits(["updateEntityList", "update:metadata"]);
+const $axios = inject("$axios");
 const lang = inject("$lang");
 const _ = require("lodash");
 var firstErrorRef = null;
@@ -355,12 +372,7 @@ const notiRef = ref(null);
 const receiptNoRef = ref(null);
 const formRef = ref(null);
 
-const formTypeList = [
-  "1. Thu tiền khách hàng (không theo hóa đơn)",
-  "2. Thu hoàn ứng nhân viên",
-  "3. Rút tiền gửi về nhập quỹ",
-  "4. Thu khác",
-];
+const formTypeList = lang.cash_receipt.formType;
 const formTypeId = ref(0);
 const router = useRouter();
 const route = useRoute();
@@ -374,46 +386,46 @@ const debitAccountRefs = ref([]);
 const creditAccountRefs = ref([]);
 const detailTableStructure = [
   {
-    name: "Diễn giải",
+    name: lang.cash_receipt.detailTable.description.text,
     prop: "",
     align: "text-left",
     width: 0,
-    tooltip: "",
+    tooltip: lang.cash_receipt.detailTable.description.tooltip,
   },
   {
-    name: "TK nợ",
+    name: lang.cash_receipt.detailTable.debitAccount.text,
     prop: "",
     align: "text-left",
     width: 200,
-    tooltip: "Tài khoản nợ",
+    tooltip: lang.cash_receipt.detailTable.debitAccount.tooltip,
   },
   {
-    name: "TK có",
+    name: lang.cash_receipt.detailTable.creditAccount.text,
     prop: "",
     align: "text-left",
     width: 200,
-    tooltip: "Tài khoản có",
+    tooltip: lang.cash_receipt.detailTable.creditAccount.tooltip,
   },
   {
-    name: "Đối tượng",
+    name: lang.cash_receipt.detailTable.object.text,
     prop: "",
     align: "text-left",
     width: 300,
-    tooltip: "",
+    tooltip: lang.cash_receipt.detailTable.object.tooltip,
   },
   {
-    name: "Tên đối tượng",
+    name: lang.cash_receipt.detailTable.objectName.text,
     prop: "",
     align: "text-left",
     width: 300,
-    tooltip: "",
+    tooltip: lang.cash_receipt.detailTable.objectName.tooltip,
   },
   {
-    name: "Số tiền",
+    name: lang.cash_receipt.detailTable.amount.text,
     prop: "",
     align: "text-right",
     width: 200,
-    tooltip: "",
+    tooltip: lang.cash_receipt.detailTable.amount.tooltip,
   },
 ];
 
@@ -424,25 +436,25 @@ const dialogRef = ref(null);
 
 const employeeComboboxTableStructure = [
   {
-    name: "Mã nhân viên",
+    name: lang.cash_receipt.employeeComboboxTable.employeeCode,
     prop: "employeeCode",
     align: "text-left",
     width: 160,
   },
   {
-    name: "Tên nhân viên",
+    name: lang.cash_receipt.employeeComboboxTable.employeeFullName,
     prop: "employeeFullName",
     align: "text-left",
     width: 200,
   },
   {
-    name: "Đơn vị",
+    name: lang.cash_receipt.employeeComboboxTable.departmentName,
     prop: "departmentName",
     align: "text-left",
     width: 210,
   },
   {
-    name: "ĐT di động",
+    name: lang.cash_receipt.employeeComboboxTable.phoneNumber,
     prop: "phoneNumber",
     align: "text-left",
     width: 180,
@@ -665,6 +677,7 @@ async function btnSaveOnClick() {
       router.replace("/CA/CAReceipt");
     }
   } catch (error) {
+    console.log(error);
     form.value.isLoading = false;
     await handleResponseStatusCode(error.response.status, error);
   }
@@ -724,18 +737,24 @@ async function validateData() {
 
   //validate số phiếu thu
   if (receipt.value.receiptNo == "") {
-    formNoti.value.receiptNo = "Số phiếu thu không được để trống";
+    formNoti.value.receiptNo = lang.cash_receipt.error.notEmpty(
+      lang.cash_receipt.label.receiptNo
+    );
     firstErrorRef = firstErrorRef ?? receiptNoRef;
   }
 
   // Validate receipt detail
   for (let i = 0; i < receiptDetailsDisplay.value.length; ++i) {
     if (receiptDetailsDisplay.value[i].debitAccountNumber == "") {
-      debitAccountRefs.value[i].noti = "Tài khoản nợ không được để trống";
+      debitAccountRefs.value[i].noti = lang.cash_receipt.error.notEmpty(
+        lang.cash_receipt.label.debitAccount
+      );
       firstErrorRef = firstErrorRef ?? debitAccountRefs.value[i];
     }
     if (receiptDetailsDisplay.value[i].creditAccountNumber == "") {
-      creditAccountRefs.value[i].noti = "Tài khoản có không được để trống";
+      creditAccountRefs.value[i].noti = lang.cash_receipt.error.notEmpty(
+        lang.cash_receipt.label.creditAccount
+      );
       firstErrorRef = firstErrorRef ?? creditAccountRefs.value[i];
     }
   }
@@ -743,26 +762,32 @@ async function validateData() {
   // Ngày hạch toán và ngày phiếu thu
   // Ngày hạch toán trống
   if (receipt.value.postedDate == "") {
-    formNoti.value.postedDate = "Ngày hạch toán không được để trống";
+    formNoti.value.postedDate = lang.cash_receipt.error.notEmpty(
+      lang.cash_receipt.label.postedDate
+    );
     firstErrorRef = firstErrorRef ?? postedDateRef;
   }
   // Ngày phiếu thu trống
   if (receipt.value.receiptDate == "") {
-    formNoti.value.receiptDate = "Ngày phiếu thu không được để trống";
+    formNoti.value.receiptDate = lang.cash_receipt.error.notEmpty(
+      lang.cash_receipt.label.receiptDate
+    );
     firstErrorRef = firstErrorRef ?? receiptDateRef;
   }
   // Ngày hạch toán nhỏ hơn ngày phiếu thu
   if (
     !$formatter.compareDate(receipt.value.receiptDate, receipt.value.postedDate)
   ) {
-    formNoti.value.postedDate = "Ngày hạch toán phải lớn hơn ngày phiếu thu";
+    formNoti.value.postedDate = lang.cash_receipt.error.dateMustAfter(
+      lang.cash_receipt.label.postedDate,
+      lang.cash_receipt.label.receiptDate
+    );
     firstErrorRef = firstErrorRef ?? postedDateRef;
   }
   if (firstErrorRef != null) {
     // Update notibox value
     formNoti.value.notiboxType = "alert";
-    formNoti.value.notiboxMessage =
-      "Dữ liệu không hợp lệ, vui lòng kiểm tra lại";
+    formNoti.value.notiboxMessage = lang.cash_receipt.error.invalidInput;
   } else {
     formNoti.value.notiboxMessage = "";
   }
@@ -797,7 +822,7 @@ async function handleResponseStatusCode(code, error) {
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     // Trường hợp backend trả về BadRequest
-    formNoti.value.notiboxMessage = "Dữ liệu đầu vào không hợp lệ";
+    formNoti.value.notiboxMessage = lang.cash_receipt.error.invalidInput;
     await displayNotiBox();
   } else if (code == 404) {
     // Trường hợp không tìm thấy ID của nhân viên trên URL

@@ -266,10 +266,17 @@ function handleApiErrorResponse(error) {
       message: $error.serverDisconnected,
     });
   } else {
-    pushToast({
-      type: "fail",
-      message: error.response.data.UserMessage,
-    });
+    if (error.response && error.response.data) {
+      pushToast({
+        type: "fail",
+        message: error.response.data.UserMessage,
+      });
+    } else {
+      pushToast({
+        type: "fail",
+        message: $error.unexpectedError,
+      });
+    }
   }
 }
 

@@ -4,7 +4,7 @@
   </div>
   <div class="page__wrapper" v-show="dialog.isDisplay">
     <BaseDialog
-      title="Xác nhận xóa phiếu thu"
+      :title="lang.cash_receipt.message.deleteConfirmTitle"
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
@@ -25,20 +25,35 @@
     <div class="rlist__pcontent__overview">
       <div class="overview__container">
         <div class="o_item item--total-receive">
-          <div class="o_item__left">Tổng thu đầu năm đến hiện tại</div>
-          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+          <div class="o_item__left">
+            {{ lang.cash_receipt.text.totalReceived }}
+          </div>
+          <div
+            class="o_item__right"
+            v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
+          >
             456.617.444
           </div>
         </div>
         <div class="o_item item--total-paid">
-          <div class="o_item__left">Tổng chi đầu năm đến hiện tại</div>
-          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+          <div class="o_item__left">
+            {{ lang.cash_receipt.text.totalPaid }}
+          </div>
+          <div
+            class="o_item__right"
+            v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
+          >
             200.456.546
           </div>
         </div>
         <div class="o_item item--total-left">
-          <div class="o_item__left">Tổng quỹ hiện tại</div>
-          <div class="o_item__right" v-tooltip="'Bấm vào để xem chi tiết'">
+          <div class="o_item__left">
+            {{ lang.cash_receipt.text.totalMoney }}
+          </div>
+          <div
+            class="o_item__right"
+            v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
+          >
             600.617.444
           </div>
         </div>
@@ -49,7 +64,7 @@
         <div class="searchbar__right">
           <div class="filter">
             <div class="filter__btn">
-              <div class="btn__text">Lọc</div>
+              <div class="btn__text">{{ lang.cash_receipt.text.filter }}</div>
               <div class="btn__icon mi mi-16 mi-arrowup--black"></div>
             </div>
             <div class="filter__panel">
@@ -75,6 +90,7 @@
           <div
             :class="[isLoadingExport ? 'disabled' : '']"
             class="minc mi-36 mi-excel"
+            @click="exportExcelOnClick"
           ></div>
           <div class="button__hoverbox--export">
             <div class="hover__arrow"></div>
@@ -84,7 +100,9 @@
             <BaseLoader></BaseLoader>
           </div>
           <div class="btn__add-receipt">
-            <div class="add__text" @click="btnAddOnClick">Thu tiền</div>
+            <div class="add__text" @click="btnAddOnClick">
+              {{ lang.cash_receipt.text.receive }}
+            </div>
             <div class="add__select">
               <div class="select__icon mi mi-16 mi-arrow-up--white"></div>
             </div>
@@ -92,13 +110,14 @@
         </div>
         <div class="searchbar__left" v-show="selectedEntityIds.length > 1">
           <div class="left__info">
-            Đã chọn: <strong>{{ selectedEntityIds.length }}</strong>
+            {{ lang.cash_receipt.text.selected
+            }}<strong>{{ selectedEntityIds.length }}</strong>
           </div>
           <div class="left__cancel" @click="cancelSelectOnClick">
             {{ lang.button.cancelSelect }}
           </div>
           <BaseButton
-            bname="Xóa hàng loạt"
+            :bname="lang.button.batchDelete"
             class="btn--secondary"
             @click="showBatchDeleteConfirmDialog"
           />
@@ -131,6 +150,7 @@ import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
 import $error from "../../../../js/resources/error";
+import exportFormat from "@/js/resources/export-format";
 // import $message from "../../../../js/resources/message";
 const lang = inject("$lang");
 // #endregion
@@ -255,7 +275,7 @@ function setToastTimeToLive(id, timeToLive) {
  * Author: Dũng (08/05/2023)
  */
 function showDeleteOneConfirmDialog(entityCode) {
-  dialog.value.message = "Xác nhận xóa phiếu thu này (fixed)";
+  dialog.value.message = lang.cash_receipt.message.deleteOneMessage;
   console.log(entityCode);
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
@@ -270,8 +290,7 @@ function showDeleteOneConfirmDialog(entityCode) {
  * Author: Dũng (08/05/2023)
  */
 function showBatchDeleteConfirmDialog() {
-  dialog.value.message =
-    "Bạn có chắc chắn muốn xóa hàng loạt phiếu thu? (fixed)";
+  dialog.value.message = lang.cash_receipt.message.deleteBatchMessage;
   dialog.value.isDisplay = true;
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
@@ -291,10 +310,17 @@ function handleApiErrorResponse(error) {
       message: $error.serverDisconnected,
     });
   } else {
-    pushToast({
-      type: "fail",
-      message: error.response.data.UserMessage,
-    });
+    if (error.response && error.response.data) {
+      pushToast({
+        type: "fail",
+        message: error.response.data.UserMessage,
+      });
+    } else {
+      pushToast({
+        type: "fail",
+        message: $error.unexpectedError,
+      });
+    }
   }
 }
 
@@ -332,7 +358,7 @@ async function deleteEntity() {
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
-      message: "Phiếu thu đã bị xóa khỏi hệ thống",
+      message: lang.cash_receipt.toast.deletedSuccess,
       timeToLive: 1500,
     });
   } catch (error) {
@@ -370,7 +396,7 @@ async function deleteBatchEntity() {
 
     pushToast({
       type: "success",
-      message: `Xóa thành công ${deletedSucess} phiếu thu`,
+      message: lang.cash_receipt.toast.deleteSuccessAmount(deletedSucess),
       timeToLive: 1500,
     });
   } catch (error) {
@@ -630,7 +656,7 @@ async function entityOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: "Tạo mới phiếu thu thành công",
+        message: lang.cash_receipt.toast.createSuccess,
         timeToLive: 1500,
       });
       break;
@@ -650,7 +676,7 @@ async function entityOnUpdate(type, data) {
       rowList.value.splice(i, 0, tempRow);
       pushToast({
         type: "success",
-        message: "Cập nhật phiếu thu thành công",
+        message: lang.cash_receipt.toast.updateSuccess,
         timeToLive: 1500,
       });
       break;
@@ -659,6 +685,50 @@ async function entityOnUpdate(type, data) {
       break;
   }
   // await loadDataFromApi();
+}
+
+/**
+ * Sự kiện click Export Excel
+ *
+ * Author: Dũng (04/06/2023)
+ */
+async function exportExcelOnClick() {
+  try {
+    if (isLoadingExport.value) return;
+    isLoadingExport.value = true;
+
+    const format = exportFormat.receipt;
+    format.keySearch = cache.value.searchPattern;
+
+    // Gọi api xuất file excel
+    const response = await $axios.post($api.receipt.exportExcel, format, {
+      responseType: "blob",
+    });
+
+    // Tạo URL cho blob data
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Tạo thẻ a và gắn url blob data vào
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", format.fileName);
+
+    // Append link element vào DOM và tự click để download
+    document.body.appendChild(link);
+    link.click();
+
+    // Remove các element vừa mới tạo khỏi trang
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+    isLoadingExport.value = false;
+  } catch (error) {
+    isLoadingExport.value = false;
+    console.log(error);
+    pushToast({
+      type: "fail",
+      message: $error.exportFailed,
+    });
+  }
 }
 
 function btnAddOnClick() {

@@ -6,14 +6,14 @@
         :class="[route.path.includes('CAProcess') ? 'tab--selected' : '']"
         @click="processTabOnClick"
       >
-        Quy trình
+        {{ lang.cash_page.tab.process }}
       </div>
       <div
         class="tab"
         @click="receiptTabOnClick"
         :class="[route.path.includes('CAReceipt') ? 'tab--selected' : '']"
       >
-        Thu, chi tiền
+        {{ lang.cash_page.tab.receipt }}
       </div>
     </div>
     <div class="pcontent__main">
@@ -24,9 +24,11 @@
 
 <script setup>
 import { useRouter, useRoute } from "vue-router";
+import { inject } from "vue";
 
 const router = useRouter();
 const route = useRoute();
+const lang = inject("$lang");
 
 function processTabOnClick() {
   router.replace("/CA/CAProcess");

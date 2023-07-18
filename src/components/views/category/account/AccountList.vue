@@ -4,7 +4,7 @@
   </div>
   <div class="page__wrapper" v-show="dialog.isDisplay">
     <BaseDialog
-      title="Xác nhận xóa tài khoản"
+      :title="lang.message.confirmDeleteTitle"
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
@@ -22,22 +22,22 @@
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
-      <div class="pcontent__title">{{ lang.cat_account.pageTitle }}</div>
+      <div class="pcontent__title">{{ lang.pageTitle }}</div>
       <BaseButton
-        :bname="lang.cat_account.button.addAccount"
+        :bname="lang.button.addAccount"
         class="btn--primary"
         @click="btnAddOnClick"
       />
     </div>
     <div class="pcontent__goback" @click="goToCategoryOnClick">
       <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
-      <div class="goback__text">Tất cả danh mục</div>
+      <div class="goback__text">{{ lang.button.goBack }}</div>
     </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
           <BaseTextfield
-            pholder="Tìm kiếm tài khoản"
+            :pholder="lang.text.searchAccount"
             :hideLabel="true"
             class="txtfield--search mw-300"
             noti=""
@@ -47,7 +47,7 @@
           />
           <div class="button__expanall">
             <div class="expandall__text" @click="expandAllBtnOnClick">
-              {{ expandBtnStatus == 0 ? "Mở rộng" : "Thu gọn" }}
+              {{ expandBtnStatus == 0 ? lang.text.expand : lang.text.collapse }}
             </div>
           </div>
           <BaseButton class="mi mi-36 mi-refresh" @click="loadAccountData" />
@@ -92,9 +92,10 @@ import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Account } from "@/js/model/account";
 import $error from "../../../../js/resources/error";
-import $enum from "@/js/common/enum";
 import AccountTable from "./AccountTable.vue";
-const lang = inject("$lang");
+import exportFormat from "@/js/resources/export-format";
+const $lang = inject("$lang");
+const lang = $lang.cat_account;
 // #endregion
 
 // #region init
@@ -209,7 +210,7 @@ function setToastTimeToLive(id, timeToLive) {
 }
 
 function showDeleteOneConfirmDialog(accNameVi) {
-  dialog.value.message = `Bạn có muốn xóa tài khoản ${accNameVi}?`;
+  dialog.value.message = lang.message.confirmDeleteMessage(accNameVi);
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
     await deleteAccount();
@@ -222,17 +223,23 @@ function showDeleteOneConfirmDialog(accNameVi) {
  * Author: Dũng (08/05/2023)
  */
 function handleApiErrorResponse(error) {
-  console.log(error);
   if (error.code == "ERR_NETWORK") {
     pushToast({
       type: "fail",
       message: $error.serverDisconnected,
     });
   } else {
-    pushToast({
-      type: "fail",
-      message: error.response.data.UserMessage,
-    });
+    if (error.response && error.response.data) {
+      pushToast({
+        type: "fail",
+        message: error.response.data.UserMessage,
+      });
+    } else {
+      pushToast({
+        type: "fail",
+        message: $error.unexpectedError,
+      });
+    }
   }
 }
 
@@ -241,26 +248,28 @@ async function deleteAccount() {
     isLoadingPage.value = true;
 
     await $axios.delete($api.account.one(cache.value.accDeleteId));
-
-    // Xóa KH đó trên table
-    rowList.value.splice(cache.value.accDeleteIndex, 1);
-
+    await loadAccountData();
     isLoadingPage.value = false;
 
-    // Update pagingData
-    // Cập nhật lại thông tin số bản ghi khách hàng
-    pagingData.value.curAmount -= 1;
-    pagingData.value.totalRecord -= 1;
-    if (pagingData.value.curAmount == 0) {
-      // Nếu trang hiện tại bị xóa hết thì load lại trang trước đó
-      if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
-      await loadAccountData();
-    }
+    // // Xóa KH đó trên table
+    // rowList.value.splice(cache.value.accDeleteIndex, 1);
+
+    // isLoadingPage.value = false;
+
+    // // Update pagingData
+    // // Cập nhật lại thông tin số bản ghi khách hàng
+    // pagingData.value.curAmount -= 1;
+    // pagingData.value.totalRecord -= 1;
+    // if (pagingData.value.curAmount == 0) {
+    //   // Nếu trang hiện tại bị xóa hết thì load lại trang trước đó
+    //   if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
+    //   await loadAccountData();
+    // }
 
     // Đẩy toast xóa thành công
     pushToast({
       type: "success",
-      message: "Tài khoản đã bị xóa",
+      message: lang.message.deleteSuccess,
       timeToLive: 1500,
     });
   } catch (error) {
@@ -290,10 +299,12 @@ async function exportExcelOnClick() {
   try {
     if (isLoadingExport.value) return;
     isLoadingExport.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const format = exportFormat.account;
+    format.keySearch = cache.value.accSearchPattern;
 
     // Gọi api xuất file excel
-    const response = await $axios.get("", {
+    const response = await $axios.post($api.account.exportExcel, format, {
       responseType: "blob",
     });
 
@@ -303,7 +314,7 @@ async function exportExcelOnClick() {
     // Tạo thẻ a và gắn url blob data vào
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", $enum.exportedFileName);
+    link.setAttribute("download", format.fileName);
 
     // Append link element vào DOM và tự click để download
     document.body.appendChild(link);
@@ -472,10 +483,13 @@ function deleteAccountOnClick(accId) {
   let accNameVi = "";
   cache.value.accDeleteId = accId;
   for (let index in rowList.value) {
-    if (rowList.value[index].acc.isParent) {
+    if (
+      rowList.value[index].acc.accountId == accId &&
+      rowList.value[index].acc.isParent
+    ) {
       pushToast({
         type: "fail",
-        message: "Không thể xóa danh mục cha nếu chưa xóa danh mục con",
+        message: lang.message.deleteParentWarnning,
       });
       return;
     }
@@ -630,7 +644,7 @@ async function accountOnUpdate(type, data) {
       haveDataAfterCallApi.value = true;
       pushToast({
         type: "success",
-        message: "Tạo mới tài khoản thành công (fixed)",
+        message: lang.message.createSuccess,
         timeToLive: 1500,
       });
       break;
@@ -647,7 +661,7 @@ async function accountOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: "Cập nhật tài khoản thành công (fixed)",
+        message: lang.message.updateSuccess,
         timeToLive: 1500,
       });
       break;

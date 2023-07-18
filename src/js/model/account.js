@@ -23,23 +23,7 @@ export class Account {
     this.parentId = a.parentId ?? "";
     this.parentNumber = a.parentNumber ?? "";
     this.categoryKind = a.categoryKind != null ? a.categoryKind.toString() : "";
-    switch (this.categoryKind) {
-      case "0":
-        this.categoryKindName = "Dư nợ";
-        break;
-      case "1":
-        this.categoryKindName = "Dư có";
-        break;
-      case "2":
-        this.categoryKindName = "Lưỡng tính";
-        break;
-      case "3":
-        this.categoryKindName = "Không có số dư";
-        break;
-      default:
-        this.categoryKindName = "";
-        break;
-    }
+    this.categoryKindName = a.categoryKindName ?? "";
     this.description = a.description ?? "";
     this.isParent = a.isParent ?? false;
     this.grade = a.grade ?? 0;
@@ -77,6 +61,7 @@ export class Account {
       parentId: this.parentId != "" ? this.parentId : null,
       parentNumber: this.parentNumber,
       categoryKind: this.categoryKind,
+      categoryKindName: this.categoryKindName,
       description: this.description,
       detailByBankAccount: this.detailByBankAccount,
       detailByAccountObject: this.detailByAccountObject,

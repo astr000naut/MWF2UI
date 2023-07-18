@@ -1,9 +1,15 @@
 import category from "./category-page";
 import cat_customer from "./category-customer";
 import cat_account from "./category-account";
+import cash_page from "./cash-page";
+import cash_process from "./cash-process";
+import cash_receipt from "./cash-receipt";
 const lang = {
   cat_customer: cat_customer,
   cat_account: cat_account,
+  cash_page: cash_page,
+  cash_process: cash_process,
+  cash_receipt: cash_receipt,
   sidebar_items: {
     dashboard: "Tổng quan",
     cash: "Tiền mặt",
@@ -131,6 +137,9 @@ const lang = {
     reload: "Tải lại dữ liệu",
     export: "Xuất dữ liệu",
     cancelSelect: "Bỏ chọn",
+    batchDelete: "Xóa hàng loạt",
+    addLine: "Thêm dòng",
+    deleteAllLine: "Xóa hết dòng",
   },
   employeeList: {
     title: "Nhân viên",
@@ -180,6 +189,7 @@ const lang = {
     closeForm: "Đóng (ESC)",
     help: "Giúp",
   },
+  dataNotFound: "Không có dữ liệu",
   category: category,
 };
 export default lang;

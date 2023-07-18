@@ -15,5 +15,6 @@ const $error = {
     "Xảy ra lỗi khi kết nối tới server, vui lòng liên hệ nhân viên hỗ trợ",
   exportFailed:
     "Quá trình xuất khẩu dữ liệu gặp lỗi, vui lòng liên hệ nhân viên hỗ trợ",
+  unexpectedError: "Đã xảy ra lỗi, vui lòng liên hệ nhân viên hỗ trợ",
 };
 export default $error;

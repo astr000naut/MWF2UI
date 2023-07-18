@@ -7,6 +7,7 @@ const customerApi = (baseUrl) => {
     deleteMultiple: baseUrl + controller + "/DeleteMultiple",
     newCode: baseUrl + controller + "/NewCustomerCode",
     checkCodeExist: baseUrl + controller + "/CheckCodeExist",
+    exportExcel: baseUrl + controller + "/ExportData",
   };
 };
 
