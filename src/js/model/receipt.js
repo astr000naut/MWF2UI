@@ -15,6 +15,7 @@ export class Receipt {
   receiptDate;
   receiptNo;
   totalAmount;
+  ledgerStatus;
   receiptDetailList;
 
   constructor(r) {
@@ -36,6 +37,7 @@ export class Receipt {
     this.receiptNo = r.receiptNo ?? "";
     this.totalAmount = numberFormater.format(r.totalAmount) ?? "0";
     this.receiptDetailList = r.receiptDetailList ?? [];
+    this.ledgerStatus = r.ledgerStatus;
   }
 
   cloneFromOtherReceipt(r) {
@@ -54,6 +56,7 @@ export class Receipt {
     this.receiptNo = r.receiptNo;
     this.totalAmount = r.totalAmount;
     this.receiptDetailList = r.receiptDetailList;
+    this.ledgerStatus = r.ledgerStatus;
   }
 
   convertToApiFormat() {
@@ -75,6 +78,7 @@ export class Receipt {
       receiptNo: this.receiptNo,
       totalAmount: numberFormater.getNumber(this.totalAmount),
       receiptDetailList: this.receiptDetailList,
+      ledgerStatus: this.ledgerStatus,
     };
     return obj;
   }
