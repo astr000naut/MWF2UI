@@ -428,7 +428,7 @@ import $api from "@/js/api";
 import { ReceiptDetail } from "../../../../js/model/receipt-detail";
 import numberFormater from "@/js/common/number-formater";
 
-// const emits = defineEmits(["updateEntityList", "update:metadata"]);
+const emits = defineEmits(["reloadEntityList", "update:metadata"]);
 const $axios = inject("$axios");
 const lang = inject("$lang");
 const _ = require("lodash");
@@ -746,8 +746,6 @@ async function btnSaveOnClick() {
         receipt.value.ledgerStatus = true;
         const newId = await callCreateAPI();
         receipt.value.receiptId = newId;
-        // Emit sự kiện thêm mới để cập nhật trên table
-        // emits("updateEntityList", "create", receipt.value);
       }
       // Status 4 to 1
       if (form.value.type == $enum.form.editType) {
@@ -767,6 +765,7 @@ async function btnSaveOnClick() {
       // load lại form
       resetFormState();
       await getDataFromApi();
+      emits("reloadEntityList");
       form.value.isLoading = false;
     }
   } catch (error) {
@@ -821,6 +820,7 @@ async function btnSaveAndAddOnClick() {
 
       resetFormState();
       await fetchNewReceiptNo();
+      emits("reloadEntityList");
       form.value.isLoading = false;
       return;
     }
@@ -843,6 +843,7 @@ async function doLedgeOnClick() {
     form.value.isLoading = true;
     receipt.value.ledgerStatus = true;
     await callEditAPI();
+    emits("reloadEntityList");
     form.value.isLoading = false;
   } catch (error) {
     console.log(error);
@@ -857,6 +858,7 @@ async function unLedgeOnClick() {
     form.value.isLoading = true;
     receipt.value.ledgerStatus = false;
     await callEditAPI();
+    emits("reloadEntityList");
     form.value.isLoading = false;
   } catch (error) {
     console.log(error);

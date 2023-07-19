@@ -19,7 +19,7 @@
   <router-view
     name="ReceiptForm"
     v-model:metadata="formMetadata"
-    @update-entity-list="entityOnUpdate"
+    @reload-entity-list="reloadList"
   ></router-view>
   <div class="rlist__pcontent">
     <div class="rlist__pcontent__overview">
@@ -146,7 +146,7 @@
 <script setup>
 // #region import
 import ReceiptTable from "./ReceiptTable.vue";
-import { ref, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
@@ -682,54 +682,8 @@ async function loadDataFromApi() {
  * @param {Object} data dữ liệu mới
  * Author: Dũng (08/05/2023)
  */
-async function entityOnUpdate(type, data) {
-  // console.log("Entity list updated");
-  // console.log(type);
-  // console.log(data);
-  switch (type) {
-    case "create":
-      pagingData.value.totalRecord += 1;
-      pagingData.value.curAmount += 1;
-      haveDataAfterCallApi.value = true;
-      rowList.value.unshift({
-        active: false,
-        selected: false,
-        entity: data,
-      });
-      if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
-        await loadDataFromApi();
-      }
-      pushToast({
-        type: "success",
-        message: lang.cash_receipt.toast.createSuccess,
-        timeToLive: 1500,
-      });
-      break;
-    case "edit": {
-      let tempRow = null;
-      let i = 0;
-      while (i < rowList.value.length) {
-        if (rowList.value[i].entity.receiptId == data.receiptId) {
-          tempRow = rowList.value[i];
-          tempRow.entity = data;
-          break;
-        }
-        ++i;
-      }
-      rowList.value.splice(i, 1);
-      await nextTick();
-      rowList.value.splice(i, 0, tempRow);
-      pushToast({
-        type: "success",
-        message: lang.cash_receipt.toast.updateSuccess,
-        timeToLive: 1500,
-      });
-      break;
-    }
-    default:
-      break;
-  }
-  // await loadDataFromApi();
+async function reloadList() {
+  await loadDataFromApi();
 }
 
 /**
