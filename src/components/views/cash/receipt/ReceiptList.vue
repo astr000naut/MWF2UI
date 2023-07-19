@@ -32,7 +32,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            456.617.444
+            {{ numberFormater.format(totalReceived) }}
           </div>
         </div>
         <div class="o_item item--total-paid">
@@ -43,7 +43,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            200.456.546
+            0
           </div>
         </div>
         <div class="o_item item--total-left">
@@ -54,7 +54,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            600.617.444
+            {{ numberFormater.format(totalReceived) }}
           </div>
         </div>
       </div>
@@ -151,6 +151,7 @@ import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
 import $error from "../../../../js/resources/error";
 import exportFormat from "@/js/resources/export-format";
+import numberFormater from "@/js/common/number-formater";
 // import $message from "../../../../js/resources/message";
 const lang = inject("$lang");
 // #endregion
@@ -165,6 +166,7 @@ const isLoadingExport = ref(false);
 const $axios = inject("$axios");
 const tableKey = ref(0);
 const haveDataAfterCallApi = ref(true);
+const totalReceived = ref(0);
 const pagingData = ref({
   totalRecord: 0,
   curAmount: 0,
@@ -591,7 +593,7 @@ async function loadDataFromApi() {
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // Gọi API filter KH
+    // Gọi API filter
     const response = await $axios.get($api.receipt.filter, {
       params: {
         skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
@@ -616,14 +618,15 @@ async function loadDataFromApi() {
       }
     }
     console.log(rowList.value);
-    // console.log(1);
-    // console.log(rowList.value);
-    // Số bản ghi ở trang hiện tại
     pagingData.value.curAmount = response.data.filteredList.length ?? 0;
     // Tổng số bản ghi
     pagingData.value.totalRecord = response.data.totalRecord ?? 0;
     // Số bản ghi ở trang hiện tại có trống hay không
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
+
+    // Gọi api lấy tổng thu
+    let totalReceiveResponse = await $axios.get($api.receipt.getTotalReceive);
+    totalReceived.value = totalReceiveResponse.data;
     isLoadingData.value = false;
   } catch (error) {
     isLoadingData.value = false;

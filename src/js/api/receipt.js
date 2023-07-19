@@ -7,6 +7,7 @@ const receiptApi = (baseUrl) => {
     newReceiptNo: baseUrl + controller + "/NewReceiptNo",
     deleteMultiple: baseUrl + controller + "/DeleteMultiple",
     exportExcel: baseUrl + controller + "/ExportData",
+    getTotalReceive: baseUrl + controller + "/GetTotalReceive",
   };
 };
 
