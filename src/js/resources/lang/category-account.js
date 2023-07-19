@@ -3,6 +3,8 @@ const cat_account = {
   button: {
     addAccount: "Thêm mới tài khoản",
     goBack: "Tất cả danh mục",
+    reload: "Tải lại dữ liệu",
+    export: "Xuất dữ liệu",
   },
   form: {
     title: {
