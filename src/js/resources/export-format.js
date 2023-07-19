@@ -45,6 +45,13 @@ const exportFormat = {
         align: "left",
         type: "text",
       },
+      {
+        name: "UsingStatusName",
+        caption: "Trạng thái",
+        width: 20,
+        align: "left",
+        type: "text",
+      },
     ],
     keySearch: "",
   },
