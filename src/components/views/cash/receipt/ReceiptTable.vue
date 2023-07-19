@@ -176,6 +176,10 @@
       <div class="noti__text">{{ lang.tableNoti.dataNotFound }}</div>
     </div>
   </div>
+  <div class="table__info">
+    <div class="ti__left">Tổng</div>
+    <div class="ti__right">{{ numberFormater.format(totalReceive) }}</div>
+  </div>
   <div class="table__pag">
     <div class="pag__leftside">
       <span
@@ -271,6 +275,7 @@ const props = defineProps({
   selectedEntityIds: Array,
   selectedAmountInPage: Number,
   haveDataAfterCallApi: Boolean,
+  totalReceive: String,
 });
 
 const emits = defineEmits([

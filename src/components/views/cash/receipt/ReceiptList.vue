@@ -32,7 +32,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            {{ numberFormater.format(totalReceived) }}
+            12.582.764.110
           </div>
         </div>
         <div class="o_item item--total-paid">
@@ -43,7 +43,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            0
+            502.260.510
           </div>
         </div>
         <div class="o_item item--total-left">
@@ -54,7 +54,7 @@
             class="o_item__right"
             v-tooltip="lang.cash_receipt.tooltip.clickToViewDetail"
           >
-            {{ numberFormater.format(totalReceived) }}
+            12.080.503.600
           </div>
         </div>
       </div>
@@ -134,6 +134,7 @@
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
         :paging-prev-page="pagingPrevPage"
+        :total-receive="totalReceived"
         @update-paging-data="pagingDataOnUpdate"
         @update-row-status="rowStatusOnUpdate"
         @update-dupplicate-entity="dupplicateEntityOnUpdate"
@@ -151,7 +152,6 @@ import $api from "@/js/api";
 import { Receipt } from "@/js/model/receipt";
 import $error from "../../../../js/resources/error";
 import exportFormat from "@/js/resources/export-format";
-import numberFormater from "@/js/common/number-formater";
 // import $message from "../../../../js/resources/message";
 const lang = inject("$lang");
 // #endregion

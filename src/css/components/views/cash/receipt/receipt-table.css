@@ -166,6 +166,15 @@
     border: none;
     font-weight: 500;
   }
+
+  .table__info {
+    border-left: 1px solid var(--clr-t-border);
+    border-right: 1px solid var(--clr-t-border);
+    font-weight: 500;
+    display: flex;
+    padding: 4px 416px 4px 120px;
+    justify-content: space-between;
+  }
   
   /* Table pagination */
   
