@@ -26,13 +26,16 @@
           <th
             v-for="header in tableStructure.headerList"
             :key="header.name"
-            :style="{ width: header.width != 0 ? header.width + 'px' : 'auto' }"
+            :style="{
+              minWidth: header.width != 0 ? header.width + 'px' : 'auto',
+              maxWidth: header.width != 0 ? header.width + 'px' : 'auto',
+            }"
           >
             <div :class="header.align" v-tooltip="header.tooltip">
               {{ header.name }}
             </div>
           </th>
-          <th class="thn--sticky w-120">
+          <th class="thn--sticky mw-90">
             <div class="align-center">{{ lang.tableHeader.tool }}</div>
           </th>
         </tr>
