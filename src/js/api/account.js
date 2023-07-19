@@ -6,6 +6,7 @@ const accountApi = (baseUrl) => {
     filter: baseUrl + controller + "/FilterAccount",
     checkNumberExist: baseUrl + controller + "/CheckCodeExist",
     exportExcel: baseUrl + controller + "/ExportData",
+    changeUsingStatus: baseUrl + controller + "/ChangeUsingStatus",
   };
 };
 

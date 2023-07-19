@@ -90,7 +90,7 @@
             </td>
             <td>
               <div class="text-left" v-tooltip="'Đang sử dụng'">
-                Đang sử dụng
+                {{ acc.usingStatusName }}
               </div>
             </td>
             <td
@@ -129,8 +129,21 @@
                       {{ lang.table_items.delete }}
                     </div>
                   </li>
-                  <li>
-                    <div class="li-data">{{ lang.table_items.stop }}</div>
+                  <li v-if="acc.usingStatus">
+                    <div
+                      class="li-data"
+                      @click="usingStatusOnClick(acc.mCodeId, false)"
+                    >
+                      {{ lang.table_items.stop }}
+                    </div>
+                  </li>
+                  <li v-if="!acc.usingStatus">
+                    <div
+                      class="li-data"
+                      @click="usingStatusOnClick(acc.mCodeId, true)"
+                    >
+                      {{ lang.table_items.startUsing }}
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -276,7 +289,11 @@ const props = defineProps({
   haveDataAfterCallApi: Boolean,
 });
 
-const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
+const emits = defineEmits([
+  "updatePagingData",
+  "updateRowStatus",
+  "updateUsingStatus",
+]);
 
 const table = ref({
   recordAmountOpen: false,
@@ -391,6 +408,11 @@ function trOnClick(accountId) {
  */
 function trOnDblclick(accId) {
   router.push(`/DI/DIAccount/${accId}`);
+}
+
+function usingStatusOnClick(mCodeId, usingStatus) {
+  const data = { mCodeId, usingStatus };
+  emits("updateUsingStatus", data);
 }
 
 // #endregion

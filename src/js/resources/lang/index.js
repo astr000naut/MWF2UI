@@ -124,6 +124,7 @@ const lang = {
     delete: "Xóa",
     dupplicate: "Nhân bản",
     stop: "Ngừng sử dụng",
+    startUsing: "Sử dụng",
     view: "Xem",
   },
   tableHeader: {

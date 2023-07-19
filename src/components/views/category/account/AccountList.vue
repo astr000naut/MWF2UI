@@ -80,6 +80,7 @@
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
         @update-row-status="rowStatusOnUpdate"
+        @update-using-status="usingStatusOnUpdate"
       />
     </div>
   </div>
@@ -686,6 +687,22 @@ async function expandAllBtnOnClick() {
   } else {
     collapseAllRow();
     expandBtnStatus.value = 0;
+  }
+}
+
+async function usingStatusOnUpdate(data) {
+  try {
+    const params = {
+      mCodeId: data.mCodeId,
+      usingStatus: data.usingStatus,
+    };
+    isLoadingPage.value = true;
+    await $axios.put($api.account.changeUsingStatus, params);
+    await loadAccountData();
+    isLoadingPage.value = false;
+  } catch (error) {
+    isLoadingPage.value = false;
+    handleApiErrorResponse(error);
   }
 }
 
