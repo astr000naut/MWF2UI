@@ -801,10 +801,6 @@ async function btnSaveAndAddOnClick() {
         // Nếu form là form thêm mới hoặc nhân bản
         // Gọi API thêm mới
         await callCreateAPI();
-        resetFormState();
-        await fetchNewReceiptNo();
-        form.value.isLoading = false;
-        return;
       }
 
       // Status 4 to 0
@@ -813,10 +809,6 @@ async function btnSaveAndAddOnClick() {
         // Gọi API thêm mới
         await callEditAPI();
         await router.replace("/CA/CAReceipt/create");
-        resetFormState();
-        await fetchNewReceiptNo();
-        form.value.isLoading = false;
-        return;
       }
 
       // Status 3 to 0
@@ -825,11 +817,12 @@ async function btnSaveAndAddOnClick() {
         // Gọi API thêm mới
         await callEditAPI();
         await router.replace("/CA/CAReceipt/create");
-        resetFormState();
-        await fetchNewReceiptNo();
-        form.value.isLoading = false;
-        return;
       }
+
+      resetFormState();
+      await fetchNewReceiptNo();
+      form.value.isLoading = false;
+      return;
     }
   } catch (error) {
     form.value.isLoading = false;
