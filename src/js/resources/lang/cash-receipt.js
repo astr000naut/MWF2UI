@@ -32,6 +32,7 @@ const cash_receipt = {
     deletedSuccessAmount: (amount) => `Xóa thành công ${amount} phiếu thu`,
     createSuccess: "Tạo mới phiếu thu thành công",
     updateSuccess: "Cập nhật phiếu thu thành công",
+    cannotDeleteRecordedReceipt: "Không thể xóa phiếu thu đã được ghi sổ",
   },
   table_header: {
     postedDate: "NGÀY HẠCH TOÁN",

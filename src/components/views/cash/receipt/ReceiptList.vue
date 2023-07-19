@@ -119,7 +119,7 @@
           <BaseButton
             :bname="lang.button.batchDelete"
             class="btn--secondary"
-            @click="showBatchDeleteConfirmDialog"
+            @click="batchDeleteBtnOnClick"
           />
         </div>
       </div>
@@ -184,6 +184,8 @@ const cache = ref({
   searchPattern: "",
 });
 const selectedEntityIds = ref([]);
+const selectedRecordedIds = ref([]);
+const selectedUnRecordedIds = ref([]);
 const selectedAmountInPage = ref(0);
 const toastList = ref([]);
 var toastId = 0;
@@ -284,6 +286,18 @@ function showDeleteOneConfirmDialog(entityCode) {
     await deleteEntity();
   };
   dialog.value.isDisplay = true;
+}
+
+function batchDeleteBtnOnClick() {
+  if (selectedRecordedIds.value.length > 0) {
+    pushToast({
+      type: "fail",
+      message: lang.cash_receipt.toast.cannotDeleteRecordedReceipt,
+      timeToLive: 2000,
+    });
+    return;
+  }
+  showBatchDeleteConfirmDialog();
 }
 
 /**
@@ -440,6 +454,11 @@ function rowStatusOnUpdate(data) {
         row.selected = true;
         row.active = true;
         selectedEntityIds.value.push(row.entity.receiptId);
+        if (row.entity.ledgerStatus) {
+          selectedRecordedIds.value.push(row.entity.receiptId);
+        } else {
+          selectedUnRecordedIds.value.push(row.entity.receiptId);
+        }
       }
     } else {
       // Nếu có ít nhất một entity đang được chọn
@@ -448,8 +467,23 @@ function rowStatusOnUpdate(data) {
       for (const row of rowList.value) {
         row.selected = false;
         row.active = false;
-        const index = selectedEntityIds.value.indexOf(row.entity.receiptId);
-        if (index > -1) selectedEntityIds.value.splice(index, 1);
+
+        const indexInSelectedEntityIds = selectedEntityIds.value.indexOf(
+          row.entity.receiptId
+        );
+        if (indexInSelectedEntityIds > -1)
+          selectedEntityIds.value.splice(indexInSelectedEntityIds, 1);
+
+        const indexInSelectedRecoredIds = selectedRecordedIds.value.indexOf(
+          row.entity.receiptId
+        );
+        if (indexInSelectedRecoredIds > -1)
+          selectedRecordedIds.value.splice(indexInSelectedRecoredIds, 1);
+
+        const indexInSelectedUnRecordedIds =
+          selectedUnRecordedIds.value.indexOf(row.entity.receiptId);
+        if (indexInSelectedUnRecordedIds > -1)
+          selectedUnRecordedIds.value.splice(indexInSelectedUnRecordedIds, 1);
       }
     }
     return;
@@ -458,18 +492,20 @@ function rowStatusOnUpdate(data) {
   if (type == "selected") {
     // Đổi trạng thái selected của row
     rowList.value[rowIndex].selected = !rowList.value[rowIndex].selected;
-
+    let selectReceiptId = rowList.value[rowIndex].entity.receiptId;
     // Nếu selected true thì thêm vào selectedEntityIds và bật active
     if (rowList.value[rowIndex].selected) {
       ++selectedAmountInPage.value;
-      selectedEntityIds.value.push(rowList.value[rowIndex].entity.receiptId);
+      selectedEntityIds.value.push(selectReceiptId);
+      if (rowList.value[rowIndex].entity.ledgerStatus) {
+        selectedRecordedIds.value.push(selectReceiptId);
+      } else {
+        selectedUnRecordedIds.value.push(selectReceiptId);
+      }
       rowList.value[rowIndex].active = true;
       // Tắt active của những ô khác mà không được selected
       for (const row of rowList.value) {
-        if (
-          row.entity.receiptId != rowList.value[rowIndex].entity.receiptId &&
-          !row.selected
-        )
+        if (row.entity.receiptId != selectReceiptId && !row.selected)
           row.active = false;
       }
     } else {
@@ -477,9 +513,15 @@ function rowStatusOnUpdate(data) {
       // Nếu seleted của entity này false
       // Xóa khỏi selectedEntityIds và tắt active
       selectedEntityIds.value.splice(
-        selectedEntityIds.value.indexOf(
-          rowList.value[rowIndex].entity.receiptId
-        ),
+        selectedEntityIds.value.indexOf(selectReceiptId),
+        1
+      );
+      selectedRecordedIds.value.splice(
+        selectedRecordedIds.value.indexOf(selectReceiptId),
+        1
+      );
+      selectedUnRecordedIds.value.splice(
+        selectedUnRecordedIds.value.indexOf(selectReceiptId),
         1
       );
       rowList.value[rowIndex].active = false;
