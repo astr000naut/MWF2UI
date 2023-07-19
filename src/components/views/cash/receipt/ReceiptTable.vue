@@ -275,7 +275,7 @@ const props = defineProps({
   selectedEntityIds: Array,
   selectedAmountInPage: Number,
   haveDataAfterCallApi: Boolean,
-  totalReceive: String,
+  totalReceive: Number,
 });
 
 const emits = defineEmits([
