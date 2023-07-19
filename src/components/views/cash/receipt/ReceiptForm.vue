@@ -461,21 +461,21 @@ const detailTableStructure = [
     name: lang.cash_receipt.detailTable.debitAccount.text,
     prop: "",
     align: "text-left",
-    width: 200,
+    width: 150,
     tooltip: lang.cash_receipt.detailTable.debitAccount.tooltip,
   },
   {
     name: lang.cash_receipt.detailTable.creditAccount.text,
     prop: "",
     align: "text-left",
-    width: 200,
+    width: 150,
     tooltip: lang.cash_receipt.detailTable.creditAccount.tooltip,
   },
   {
     name: lang.cash_receipt.detailTable.object.text,
     prop: "",
     align: "text-left",
-    width: 300,
+    width: 180,
     tooltip: lang.cash_receipt.detailTable.object.tooltip,
   },
   {
@@ -489,7 +489,7 @@ const detailTableStructure = [
     name: lang.cash_receipt.detailTable.amount.text,
     prop: "",
     align: "text-right",
-    width: 200,
+    width: 180,
     tooltip: lang.cash_receipt.detailTable.amount.tooltip,
   },
 ];
