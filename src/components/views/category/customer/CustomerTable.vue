@@ -126,9 +126,6 @@
                       {{ lang.table_items.delete }}
                     </div>
                   </li>
-                  <li>
-                    <div class="li-data">{{ lang.table_items.stop }}</div>
-                  </li>
                 </ul>
               </div>
             </td>
