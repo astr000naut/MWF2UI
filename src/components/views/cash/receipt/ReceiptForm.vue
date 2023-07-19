@@ -556,13 +556,17 @@ const formStatus = computed(() => {
 
 resetFormState();
 
-watch(receiptDetails.value, () => {
-  receipt.value.totalAmount = 0;
-  for (const rd of receiptDetails.value) {
-    if (rd.status != "delete")
-      receipt.value.totalAmount += numberFormater.getNumber(rd.amount);
-  }
-});
+watch(
+  receiptDetails,
+  () => {
+    receipt.value.totalAmount = 0;
+    for (const rd of receiptDetails.value) {
+      if (rd.status != "delete")
+        receipt.value.totalAmount += numberFormater.getNumber(rd.amount);
+    }
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   try {
@@ -1012,8 +1016,10 @@ function focusOnLastDescriptionInput() {
 async function receiptDetailAddOnClick() {
   if (receiptDetails.value.length == 20) return;
   const rd = new ReceiptDetail({});
-  if (receiptDetails.value.length) {
-    rd.cloneFromOther(receiptDetails.value[receiptDetails.value.length - 1]);
+  if (receiptDetailsDisplay.value.length) {
+    let lastRd =
+      receiptDetailsDisplay.value[receiptDetailsDisplay.value.length - 1];
+    rd.copyValueOf(lastRd);
   }
   receiptDetails.value.push(rd);
   await nextTick();

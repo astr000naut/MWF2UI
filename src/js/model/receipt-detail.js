@@ -43,6 +43,18 @@ export class ReceiptDetail {
     this.amount = r.amount;
   }
 
+  copyValueOf(r) {
+    this.receiptId = r.receiptId;
+    this.description = r.description;
+    this.debitAccountId = r.debitAccountId;
+    this.debitAccountNumber = r.debitAccountNumber;
+    this.creditAccountId = r.creditAccountId;
+    this.creditAccountNumber = r.creditAccountNumber;
+    this.customerCode = r.customerCode;
+    this.customerName = r.customerName;
+    this.amount = r.amount;
+  }
+
   convertToApiFormat() {
     const obj = {
       status: this.status,
