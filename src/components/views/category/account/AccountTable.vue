@@ -125,11 +125,6 @@
                   @mouseleave="table.expandAccId = ''"
                 >
                   <li>
-                    <div class="li-data">
-                      {{ lang.table_items.dupplicate }}
-                    </div>
-                  </li>
-                  <li>
                     <div class="li-data" @click="deleteFunction(acc.accountId)">
                       {{ lang.table_items.delete }}
                     </div>
