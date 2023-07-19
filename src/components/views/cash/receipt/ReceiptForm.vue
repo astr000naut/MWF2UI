@@ -236,7 +236,7 @@
                 <tbody>
                   <tr
                     v-for="(rdetail, index) in receiptDetailsDisplay"
-                    :key="rdetail.receiptId"
+                    :key="rdetail.receiptDetailId"
                   >
                     <td class="text-center">{{ index + 1 }}</td>
                     <td>
@@ -640,6 +640,7 @@ function resetFormState() {
   };
   receipt.value = new Receipt({});
   receiptDetails.value = [];
+  oldReceiptDetails.value = [];
   receiptDetails.value.push(new ReceiptDetail({}));
 }
 
@@ -745,20 +746,14 @@ async function btnSaveOnClick() {
         receipt.value.ledgerStatus = true;
         const newId = await callCreateAPI();
         receipt.value.receiptId = newId;
-        form.value.type = $enum.form.viewType;
         // Emit sự kiện thêm mới để cập nhật trên table
         // emits("updateEntityList", "create", receipt.value);
-        form.value.isLoading = false;
-        return;
       }
       // Status 4 to 1
       if (form.value.type == $enum.form.editType) {
         receipt.value.ledgerStatus = false;
         // Gọi API sửa
         await callEditAPI();
-        form.value.type = $enum.form.viewType;
-        form.value.isLoading = false;
-        return;
       }
 
       // Status 3 to 2
@@ -766,10 +761,13 @@ async function btnSaveOnClick() {
         receipt.value.ledgerStatus = true;
         // Gọi API sửa
         await callEditAPI();
-        form.value.type = $enum.form.viewType;
-        form.value.isLoading = false;
-        return;
       }
+      // chuyển sang view Type
+      form.value.type = $enum.form.viewType;
+      // load lại form
+      resetFormState();
+      await getDataFromApi();
+      form.value.isLoading = false;
     }
   } catch (error) {
     console.log(error);
