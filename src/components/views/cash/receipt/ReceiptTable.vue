@@ -144,10 +144,7 @@
                   @mouseleave="table.expandEntityId = ''"
                 >
                   <li>
-                    <div
-                      class="li-data"
-                      @click="dupplicateEntityOnClick(entity)"
-                    >
+                    <div class="li-data">
                       {{ lang.table_items.dupplicate }}
                     </div>
                   </li>
@@ -368,13 +365,6 @@ const isLastPage = computed(() => {
 // #endregion
 
 // #region handle event
-/**
- * Sự kiện click vào nhân bản
- * Author: Dũng (03/06/2023)
- */
-function dupplicateEntityOnClick(entity) {
-  emits("updateDupplicateEntity", entity);
-}
 
 /**
  * Sự kiện click vào ô check all
