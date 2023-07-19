@@ -129,6 +129,7 @@
     top: 36px;
     width: 130px;
     right: 5px;
+    color: #000 !important;
     background-color: #fff;
     /* z-index: 5; */
   }

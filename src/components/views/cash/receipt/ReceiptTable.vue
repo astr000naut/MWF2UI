@@ -77,6 +77,7 @@
             :class="{
               active: active,
             }"
+            :style="{ color: entity.ledgerStatus ? 'black' : '#14a200' }"
             @click="trOnClick(index)"
             @dblclick="trOnDblclick(entity.receiptId)"
           >
@@ -157,9 +158,6 @@
                     >
                       {{ lang.table_items.delete }}
                     </div>
-                  </li>
-                  <li>
-                    <div class="li-data">{{ lang.table_items.stop }}</div>
                   </li>
                 </ul>
               </div>
