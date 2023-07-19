@@ -746,6 +746,7 @@ async function btnSaveOnClick() {
         receipt.value.ledgerStatus = true;
         const newId = await callCreateAPI();
         receipt.value.receiptId = newId;
+        await router.replace(`/CA/CAReceipt/${newId}`);
       }
       // Status 4 to 1
       if (form.value.type == $enum.form.editType) {

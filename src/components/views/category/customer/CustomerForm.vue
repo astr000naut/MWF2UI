@@ -573,7 +573,11 @@
       <hr class="m-top-24" />
       <div class="form__footer m-top-24">
         <div class="footer__left">
-          <BaseButton bname="Hủy" class="btn--secondary" />
+          <BaseButton
+            bname="Hủy"
+            class="btn--secondary"
+            @click="btnCancelOnClick"
+          />
         </div>
         <div class="footer__right">
           <BaseButton
@@ -1202,6 +1206,10 @@ async function generateCusCode() {
     form.value.isLoading = false;
     await handleResponseStatusCode(error);
   }
+}
+
+function btnCancelOnClick() {
+  router.replace("/DI/DICustomer");
 }
 
 //#endregion

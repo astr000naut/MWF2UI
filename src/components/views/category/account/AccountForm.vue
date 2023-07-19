@@ -313,7 +313,11 @@
       <hr class="m-top-24" />
       <div class="form__footer m-top-24">
         <div class="footer__left">
-          <BaseButton bname="Hủy" class="btn--secondary" />
+          <BaseButton
+            bname="Hủy"
+            class="btn--secondary"
+            @click="btnCancelOnClick"
+          />
         </div>
         <div class="footer__right">
           <BaseButton
@@ -853,6 +857,10 @@ async function formDialogYesBtnOnClick() {
 
 function detailByAccountObjectOnClick() {
   account.value.detailByAccountObject = !account.value.detailByAccountObject;
+}
+
+function btnCancelOnClick() {
+  router.replace("/DI/DIAccount");
 }
 
 //#endregion
