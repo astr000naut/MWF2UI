@@ -9,6 +9,7 @@
   
   .content {
     padding: 150px;
+    font-size: 32px;
     background-color: #fff;
     display: flex;
     align-items: center;

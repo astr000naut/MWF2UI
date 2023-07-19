@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="content"></div>
+    <div class="content">Tính năng này đang trong quá trình phát triển</div>
   </div>
 </template>
 
