@@ -336,7 +336,7 @@
 
 <script setup>
 //#region import
-import { nextTick, ref, onMounted, inject } from "vue";
+import { nextTick, ref, onMounted, inject, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import $enum from "@/js/common/enum";
 import $error from "@/js/resources/error";
@@ -432,6 +432,18 @@ onMounted(async () => {
     await handleResponseStatusCode(error);
   }
 });
+
+watch(
+  () => account.value.parentNumber,
+  () => {
+    if (
+      formNoti.value.accountNumber ==
+      "Số tài khoản có độ dài > 3 ký tự phải điền thông tin <tài khoản tổng hợp>"
+    ) {
+      formNoti.value.accountNumber = "";
+    }
+  }
+);
 //#endregion
 
 //#region function
@@ -452,6 +464,16 @@ function resetFormState() {
     type: route.params.id ? $enum.form.editType : $enum.form.createType,
     accId: route.params.id ?? "",
     isLoading: false,
+  };
+  formNoti.value = {
+    showNotibox: false,
+    notiboxType: "",
+    notiboxMessage: "",
+
+    accountNumber: "",
+    accountNameVi: "",
+    accountKind: "",
+    categoryKind: "",
   };
   account.value = new Account({});
 }
