@@ -667,7 +667,11 @@ async function loadDataFromApi() {
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
 
     // Gọi api lấy tổng thu
-    let totalReceiveResponse = await $axios.get($api.receipt.getTotalReceive);
+    let totalReceiveResponse = await $axios.get($api.receipt.getTotalReceive, {
+      params: {
+        keySearch: cache.value.searchPattern ?? "",
+      },
+    });
     totalReceived.value = totalReceiveResponse.data;
     isLoadingData.value = false;
   } catch (error) {
