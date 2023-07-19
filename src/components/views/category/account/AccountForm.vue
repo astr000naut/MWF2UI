@@ -10,8 +10,8 @@
     </div>
     <div class="form__wrapper" v-show="formDialog.isShow">
       <BaseDialog
-        :title="lang.dialog.savingChanges.title"
-        :message="lang.dialog.savingChanges.message"
+        :title="lang.common.dialog.savingChanges.title"
+        :message="lang.common.dialog.savingChanges.message"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
         :yes-on-click="formDialogYesBtnOnClick"

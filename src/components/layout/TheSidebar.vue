@@ -45,14 +45,14 @@
         "
       ></div>
       <div v-show="isSidebarBig" class="item__text" data-text="Thu gọn">
-        {{ lang.sidebar_items.minimize }}
+        {{ lang.common.sidebar_items.minimize }}
       </div>
       <div
         v-show="!isSidebarBig && displayExpandTooltip"
         class="item__hoverbox"
       >
         <div class="hover__arrow"></div>
-        <div class="hover__text">{{ lang.sidebar_items.maximize }}</div>
+        <div class="hover__text">{{ lang.common.sidebar_items.maximize }}</div>
       </div>
     </div>
   </div>

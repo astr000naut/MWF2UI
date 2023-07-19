@@ -4,40 +4,14 @@ import cat_account from "./category-account";
 import cash_page from "./cash-page";
 import cash_process from "./cash-process";
 import cash_receipt from "./cash-receipt";
+import lang_common from "./lang-common";
 const lang = {
   cat_customer: cat_customer,
   cat_account: cat_account,
   cash_page: cash_page,
   cash_process: cash_process,
   cash_receipt: cash_receipt,
-  sidebar_items: {
-    dashboard: "Tổng quan",
-    cash: "Tiền mặt",
-    bank: "Tiền gửi",
-    purchase: "Mua hàng",
-    sale: "Bán hàng",
-    invoice: "Quản lý hóa đơn",
-    stock: "Kho",
-    tools: "Công cụ dụng cụ",
-    fixedAssets: "Tài sản cố định",
-    tax: "Thuế",
-    price: "Giá thành",
-    general: "Tổng hợp",
-    budget: "Ngân sách",
-    report: "Báo cáo",
-    finance: "Phân tích tài chính",
-    minimize: "Thu gọn",
-    maximize: "Mở rộng",
-  },
-  dialog: {
-    savingChanges: {
-      title: "Lưu lại thay đổi",
-      message: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?",
-    },
-    deleteConfirmation: {
-      title: "Xác nhận xóa nhân viên",
-    },
-  },
+  common: lang_common,
   form: {
     title: {
       add: "Thêm mới nhân viên",
