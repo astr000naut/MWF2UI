@@ -141,7 +141,7 @@ async function fetchNewItem(skip, take, keySearch, reload) {
   });
   if (reload) itemList.value = [];
   for (const item of response.data.filteredList) {
-    itemList.value.push(item);
+    if (item.usingStatus) itemList.value.push(item);
   }
   totalRecord = response.data.totalRecord;
 }
