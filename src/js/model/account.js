@@ -35,7 +35,7 @@ export class Account {
     this.detailByAccountObjectKind = a.detailByAccountObjectKind;
     this.foreignCurrencyAccounting = a.foreignCurrencyAccounting ?? false;
     this.usingStatus = a.usingStatus ?? true;
-    this.usingStatusName = a.usingStatusName ?? "";
+    this.usingStatusName = a.usingStatusName ?? "Đang sử dụng";
   }
 
   cloneFromOtherAccount(a) {
