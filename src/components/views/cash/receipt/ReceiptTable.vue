@@ -151,7 +151,7 @@
                       {{ lang.table_items.dupplicate }}
                     </div>
                   </li>
-                  <li>
+                  <li v-show="!entity.ledgerStatus">
                     <div
                       class="li-data"
                       @click="deleteEntityFunction(entity.receiptId)"
