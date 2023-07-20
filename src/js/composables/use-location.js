@@ -35,7 +35,7 @@ export function useLocation(customer) {
     () => customer.value.provinceOrCityId,
     async (newId) => {
       if (newId == "undefined" || newId == "null") return;
-      if (districtCache[newId] == null) {
+      if (districtCache[newId] == null && newId != null && newId.length > 0) {
         const response = await axios.get(api.location.district(newId));
         districtCache[newId] = response.data;
       }
@@ -46,7 +46,7 @@ export function useLocation(customer) {
     () => customer.value.districtId,
     async (newId) => {
       if (newId == "undefined" || newId == "null") return;
-      if (wardCache[newId] == null) {
+      if (wardCache[newId] == null && newId != null && newId.length > 0) {
         const response = await axios.get(api.location.ward(newId));
         wardCache[newId] = response.data;
       }

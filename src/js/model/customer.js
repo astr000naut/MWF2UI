@@ -67,10 +67,13 @@ export class Customer {
     this.envoiceContactMobile = e.envoiceContactMobile ?? "";
     this.paymentTermName = e.paymentTermName ?? "";
     this.dueTime = "";
-    if (e.dueTime != null) {
-      this.dueTime = String(e.dueTime);
+    if (e.dueTime != null && e.dueTime > 0) {
+      this.dueTime = e.dueTime.toString();
     }
-    this.maximizeDebtAmount = numberFormater.format(e.maximizeDebtAmount);
+    this.maximizeDebtAmount = "";
+    if (e.maximizeDebtAmount != null && e.maximizeDebtAmount > 0) {
+      this.maximizeDebtAmount = numberFormater.format(e.maximizeDebtAmount);
+    }
     this.receiveAccount = e.receiveAccount ?? "";
     this.payAccount = e.payAccount ?? "";
     this.payAccountId = e.payAccountId ?? "";

@@ -129,7 +129,7 @@ async function fetchNewItem(skip, take, keySearch, reload) {
   for (const item of response.data.filteredList) {
     itemList.value.push(item);
   }
-  console.log(itemList.value);
+  // console.log(itemList.value);
 }
 
 async function tableContentOnScroll(e) {

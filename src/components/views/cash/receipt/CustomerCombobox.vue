@@ -274,7 +274,7 @@ function trOnClick(index) {
     "update:selectedEntityAddress",
     entityList.value[index][entityStructure.address]
   );
-  console.log(entityList.value[index][entityStructure.address]);
+  // console.log(entityList.value[index][entityStructure.address]);
   emits(
     "update:selectedEntityContact",
     entityList.value[index][entityStructure.contact]

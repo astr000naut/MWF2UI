@@ -674,7 +674,7 @@ function softDeleteReceiptDetail(id) {
   if (formStatus.value == 3 || formStatus.value == 1 || formStatus.value == 2)
     return;
   let i = 0;
-  console.log(receiptDetails.value);
+  // console.log(receiptDetails.value);
   while (i < receiptDetails.value.length) {
     if (receiptDetails.value[i].receiptDetailId == id) {
       if (receiptDetails.value[i].status != "create") {
@@ -686,7 +686,7 @@ function softDeleteReceiptDetail(id) {
     }
     ++i;
   }
-  console.log(receiptDetails);
+  // console.log(receiptDetails);
 }
 
 async function softDeleteAllReceiptDetailOnClick() {

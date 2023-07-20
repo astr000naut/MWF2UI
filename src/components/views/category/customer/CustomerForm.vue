@@ -364,7 +364,6 @@
                     :isrequired="false"
                     type="money"
                     v-model:text="customer.maximizeDebtAmount"
-                    @update:text="textOnUpdate"
                     noti=""
                   />
                 </div>
@@ -897,10 +896,6 @@ async function closeBtnOnClick() {
   formDialog.value.isShow = true;
   await nextTick();
   await dialogRef.value.yesBtn.refBtn.focus();
-}
-
-function textOnUpdate() {
-  console.log(customer.value.maximizeDebtAmount);
 }
 
 function tabInfoOnClick(tabId) {
