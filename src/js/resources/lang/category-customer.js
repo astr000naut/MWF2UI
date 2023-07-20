@@ -76,6 +76,12 @@ const cat_customer = {
   dialog: {
     deleteConfirmation: "Xác nhận xóa khách hàng",
   },
+  employeeComboboxTable: {
+    employeeCode: "Mã nhân viên",
+    employeeFullName: "Tên nhân viên",
+    departmentName: "Đơn vị",
+    phoneNumber: "ĐT di động",
+  },
   tableStructure: {
     cusCode: "MÃ KHÁCH HÀNG",
     cusFullName: "TÊN KHÁCH HÀNG",

@@ -717,13 +717,13 @@ const pCustomerFullNameRef = ref(null);
 
 const employeeComboboxTableStructure = [
   {
-    name: "Mã nhân viên",
+    name: lang.cat_customer.employeeComboboxTable.employeeCode,
     prop: "employeeCode",
     align: "text-left",
     width: 200,
   },
   {
-    name: "Tên nhân viên",
+    name: lang.cat_customer.employeeComboboxTable.employeeFullName,
     prop: "employeeFullName",
     align: "text-left",
     width: 248,
