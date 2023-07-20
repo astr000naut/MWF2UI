@@ -5,6 +5,7 @@ import cash_page from "./cash-page";
 import cash_process from "./cash-process";
 import cash_receipt from "./cash-receipt";
 import lang_common from "./lang-common";
+
 const lang = {
   cat_customer: cat_customer,
   cat_account: cat_account,

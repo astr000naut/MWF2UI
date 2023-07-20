@@ -26,8 +26,8 @@
         <div class="header__left">
           {{
             form.type == "edit"
-              ? "Sửa thông tin khách hàng"
-              : "Thêm mới khách hàng"
+              ? lang.cat_customer.form.title.edit
+              : lang.cat_customer.form.title.add
           }}
         </div>
         <div class="header__mid">
@@ -35,9 +35,9 @@
             <BaseRadiogroup
               label=""
               :options="[
-                { text: 'Tổ chức', value: 0 },
+                { text: lang.cat_customer.text.group, value: 0 },
                 {
-                  text: 'Cá nhân',
+                  text: lang.cat_customer.text.personal,
                   value: 1,
                 },
               ]"
@@ -50,15 +50,21 @@
               :class="[customer.isProvider ? 'mi-checkbox-checked' : '']"
               @click="customer.isProvider = !customer.isProvider"
             ></div>
-            <div class="checkbox__label">Là nhà cung cấp</div>
+            <div class="checkbox__label">
+              {{ lang.cat_customer.text.isProvider }}
+            </div>
           </div>
         </div>
         <div class="header__right">
-          <BaseButton bname="" class="mi-36 btn--help" v-tooltip="'Giúp'" />
+          <BaseButton
+            bname=""
+            class="mi-36 btn--help"
+            v-tooltip="lang.cat_customer.tooltip.help"
+          />
           <BaseButton
             bname=""
             class="mi-36 btn--close"
-            v-tooltip="'Đóng (ESC)'"
+            v-tooltip="lang.cat_customer.tooltip.close"
             @click="closeBtnOnClick"
           />
         </div>
@@ -75,7 +81,7 @@
               <div class="fu__taxCode">
                 <BaseTextfield
                   pholder=""
-                  label="Mã số thuế"
+                  :label="lang.cat_customer.label.TIN"
                   :isrequired="false"
                   v-model:text="customer.customerTIN"
                   noti=""
@@ -85,8 +91,8 @@
               <div class="fu__code">
                 <BaseTextfield
                   pholder=""
-                  label="Mã khách hàng"
-                  autoFillMessage="Shift + F8 để tự tạo mã"
+                  :label="lang.cat_customer.label.cusCode"
+                  :autoFillMessage="lang.cat_customer.text.autofillCusCode"
                   :autoFill="generateCusCode"
                   :isrequired="true"
                   v-model:text="customer.customerCode"
@@ -102,7 +108,7 @@
               <div class="fu__name">
                 <BaseTextfield
                   pholder=""
-                  label="Tên khách hàng"
+                  :label="lang.cat_customer.label.cusName"
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
@@ -117,7 +123,7 @@
               <div class="fu__name_xungho">
                 <BaseTextfield
                   pholder=""
-                  label="Xưng hô"
+                  :label="lang.cat_customer.label.preName"
                   :isrequired="false"
                   v-model:text="customer.contactNamePrefix"
                   noti=""
@@ -126,7 +132,7 @@
               <div class="fu__name_real">
                 <BaseTextfield
                   pholder="Họ và tên"
-                  label="Tên khách hàng"
+                  :label="lang.cat_customer.label.cusName"
                   :isrequired="true"
                   v-model:text="customer.customerFullName"
                   v-model:noti="formNoti.customerFullName"
@@ -138,7 +144,7 @@
               <div class="fu__address">
                 <BaseTextfield
                   pholder=""
-                  label="Địa chỉ"
+                  :label="lang.cat_customer.label.address"
                   :isrequired="false"
                   v-model:text="customer.address"
                   noti=""
@@ -154,7 +160,7 @@
               <div class="fu__phone">
                 <BaseTextfield
                   pholder=""
-                  label="Điện thoại"
+                  :label="lang.cat_customer.label.phoneNumber"
                   :isrequired="false"
                   v-model:text="customer.phoneNumber"
                   noti=""
@@ -163,7 +169,7 @@
               <div class="fu__website">
                 <BaseTextfield
                   pholder=""
-                  label="Website"
+                  :label="lang.cat_customer.label.website"
                   :isrequired="false"
                   v-model:text="customer.website"
                   noti=""
@@ -203,8 +209,8 @@
                   <div class="mileft__top">
                     <div class="mileft__call">
                       <BaseTextfield
-                        pholder="Xưng hô"
-                        label="Người liên hệ"
+                        :pholder="lang.cat_customer.text.preName"
+                        :label="lang.cat_customer.label.preName"
                         :isrequired="false"
                         v-model:text="customer.contactNamePrefix"
                         noti=""
@@ -212,7 +218,7 @@
                     </div>
                     <div class="mileft__name">
                       <BaseTextfield
-                        pholder="Họ và tên"
+                        :pholder="lang.cat_customer.text.fullName"
                         label=""
                         :isrequired="false"
                         v-model:text="customer.contactName"
@@ -222,7 +228,7 @@
                   </div>
                   <div class="mileft__mid m-top-6">
                     <BaseTextfield
-                      pholder="Email"
+                      :pholder="lang.cat_customer.text.email"
                       label=""
                       :isrequired="false"
                       v-model:text="customer.contactEmail"
@@ -231,7 +237,7 @@
                   </div>
                   <div class="mileft__bot m-top-6">
                     <BaseTextfield
-                      pholder="Số điện thoại"
+                      :pholder="lang.cat_customer.text.phoneNumber"
                       label=""
                       :isrequired="false"
                       v-model:text="customer.contactMobile"
@@ -241,15 +247,15 @@
                 </div>
                 <div class="custype--per" v-show="customer.customerType == 1">
                   <BaseTextfield
-                    pholder="Email"
-                    label="Thông tin liên hệ"
+                    :pholder="lang.cat_customer.text.email"
+                    :label="lang.cat_customer.label.contactInfo"
                     :isrequired="false"
                     v-model:text="customer.contactEmail"
                     noti=""
                   />
                   <BaseTextfield
                     class="m-top-6"
-                    pholder="Điện thoại di động"
+                    :pholder="lang.cat_customer.text.mobile"
                     label=""
                     :isrequired="false"
                     v-model:text="customer.phoneNumber"
@@ -257,7 +263,7 @@
                   />
                   <BaseTextfield
                     class="m-top-6"
-                    pholder="Điện thoại cố định"
+                    :pholder="lang.cat_customer.text.landline"
                     label=""
                     :isrequired="false"
                     v-model:text="customer.landLineNumber"
@@ -266,9 +272,9 @@
                 </div>
                 <div class="mileft__last m-top-12">
                   <BaseTextfield
-                    pholder="Đại diện theo PL"
-                    label="Đại diện theo PL"
-                    tooltip="Đại diện theo pháp luật"
+                    :pholder="lang.cat_customer.text.legalRep"
+                    :label="lang.cat_customer.label.legalRep"
+                    :tooltip="lang.cat_customer.tooltip.legalRep"
                     :isrequired="false"
                     v-model:text="customer.legalRepresentative"
                     noti=""
@@ -279,8 +285,8 @@
                 <div class="miright--org" v-show="customer.customerType == 0">
                   <div class="miright__top">
                     <BaseTextfield
-                      pholder="Họ và tên"
-                      label="Người nhận hóa đơn điện tử"
+                      :pholder="lang.cat_customer.text.fullName"
+                      :label="lang.cat_customer.label.envoiceName"
                       :isrequired="false"
                       v-model:text="customer.envoiceContactName"
                       noti=""
@@ -288,7 +294,7 @@
                   </div>
                   <div class="miright__mid m-top-6">
                     <BaseTextfield
-                      pholder="Email (Ngăn cách nhiều email bởi dấu chấm phẩy ';')"
+                      :pholder="lang.cat_customer.text.envoiceEmail"
                       label=""
                       :isrequired="false"
                       v-model:text="customer.envoiceContactEmail"
@@ -297,7 +303,7 @@
                   </div>
                   <div class="miright__bot m-top-6">
                     <BaseTextfield
-                      pholder="Số điện thoại"
+                      :pholder="lang.cat_customer.text.phoneNumber"
                       label=""
                       :isrequired="false"
                       v-model:text="customer.envoiceContactMobile"
@@ -307,14 +313,14 @@
                 </div>
                 <div class="miright--per" v-show="customer.customerType == 1">
                   <BaseTextfield
-                    pholder="Số CMND/Thẻ căn cước"
-                    label="Thông tin CMND/Thẻ căn cước"
+                    :pholder="lang.cat_customer.text.identityInfo"
+                    :label="lang.cat_customer.label.envoiceName"
                     :isrequired="false"
                     v-model:text="customer.identityNumber"
                     noti=""
                   />
                   <BaseDatepicker
-                    pholder="Ngày cấp"
+                    :pholder="lang.cat_customer.text.identityDate"
                     class="m-top-6"
                     label=""
                     v-model:inputText="customer.identityDate"
@@ -322,7 +328,7 @@
                   />
                   <BaseTextfield
                     class="m-top-6"
-                    pholder="Nơi cấp"
+                    :pholder="lang.cat_customer.text.identityPlace"
                     label=""
                     :isrequired="false"
                     v-model:text="customer.identityPlace"
@@ -336,7 +342,7 @@
                 <div class="mp__top__left">
                   <BaseTextfield
                     pholder=""
-                    label="Điều khoản thanh toán"
+                    :label="lang.cat_customer.label.paymentTermName"
                     :isrequired="false"
                     v-model:text="customer.paymentTermName"
                     noti=""
@@ -345,7 +351,7 @@
                 <div class="mp__top__mid">
                   <BaseTextfield
                     pholder=""
-                    label="Số ngày được nợ"
+                    :label="lang.cat_customer.label.dueTime"
                     :isrequired="false"
                     v-model:text="customer.dueTime"
                     noti=""
@@ -354,7 +360,7 @@
                 <div class="mp__top__right">
                   <BaseTextfield
                     pholder=""
-                    label="Số nợ tối đa"
+                    :label="lang.cat_customer.label.maxDebt"
                     :isrequired="false"
                     type="money"
                     v-model:text="customer.maximizeDebtAmount"
@@ -365,7 +371,9 @@
               </div>
               <div class="mp__mid m-top-12">
                 <div class="receive-account">
-                  <div class="ra__label">Tài khoản công nợ phải thu</div>
+                  <div class="ra__label">
+                    {{ lang.cat_customer.text.receiveAccount }}
+                  </div>
                   <FormAccountCombobox
                     :mheight="240"
                     v-model:selectedItemName="customer.receiveAccount"
@@ -373,7 +381,9 @@
                   />
                 </div>
                 <div class="pay-account" v-if="customer.isProvider">
-                  <div class="ra__label">Tài khoản công nợ phải trả</div>
+                  <div class="ra__label">
+                    {{ lang.cat_customer.text.payAccount }}
+                  </div>
                   <FormAccountCombobox
                     :mheight="240"
                     v-model:selectedItemName="customer.payAccount"
@@ -388,16 +398,24 @@
                   <thead>
                     <tr>
                       <th>
-                        <div class="text-left">Số tài khoản</div>
+                        <div class="text-left">
+                          {{ lang.cat_customer.text.accNumber }}
+                        </div>
                       </th>
                       <th>
-                        <div class="text-left">Tên ngân hàng</div>
+                        <div class="text-left">
+                          {{ lang.cat_customer.text.bankName }}
+                        </div>
                       </th>
                       <th>
-                        <div class="text-left">Chi nhánh</div>
+                        <div class="text-left">
+                          {{ lang.cat_customer.text.bankBranch }}
+                        </div>
                       </th>
                       <th>
-                        <div class="text-left">Tỉnh/TP của ngân hàng</div>
+                        <div class="text-left">
+                          {{ lang.cat_customer.text.bankPlace }}
+                        </div>
                       </th>
                       <th></th>
                     </tr>
@@ -442,12 +460,12 @@
               </div>
               <div class="table__control">
                 <BaseButton
-                  bname="Thêm dòng"
+                  :bname="lang.cat_customer.button.addLine"
                   class="btn--secondary"
                   @click="bankAccAddOnClick"
                 />
                 <BaseButton
-                  bname="Xóa hết dòng"
+                  :bname="lang.cat_customer.button.delAllLine"
                   class="btn--secondary"
                   @click="bankAccDeleteAllOnClick"
                 />
@@ -457,8 +475,8 @@
               <div class="oad__left">
                 <div class="oad__left__top">
                   <BaseCombobox
-                    label="Vị trí địa lý"
-                    pholder="Quốc gia"
+                    :label="lang.cat_customer.label.location"
+                    :pholder="lang.cat_customer.text.country"
                     :isrequired="false"
                     :option-list="countryList"
                     v-model:text="customer.country"
@@ -470,7 +488,7 @@
 
                   <BaseCombobox
                     label=""
-                    pholder="Tỉnh/Thành phố"
+                    :pholder="lang.cat_customer.text.province"
                     :isrequired="false"
                     :option-list="provinceList"
                     v-model:text="customer.provinceOrCity"
@@ -483,7 +501,7 @@
                 <div class="oad__left__bot m-top-6">
                   <BaseCombobox
                     label=""
-                    pholder="Quận/Huyện"
+                    :pholder="lang.cat_customer.text.district"
                     :isrequired="false"
                     :option-list="districtList"
                     v-model:text="customer.district"
@@ -495,7 +513,7 @@
 
                   <BaseCombobox
                     label=""
-                    pholder="Xã/Phường"
+                    :pholder="lang.cat_customer.text.ward"
                     :isrequired="false"
                     :option-list="wardList"
                     v-model:text="customer.wardOrCommune"
@@ -508,9 +526,11 @@
               </div>
               <div class="oad__right">
                 <div class="oad__right__title">
-                  <div class="title__text">Địa chỉ giao hàng</div>
+                  <div class="title__text">
+                    {{ lang.cat_customer.label.shippingAddress }}
+                  </div>
                   <BaseCheckbox
-                    label="Giống địa chỉ khách hàng"
+                    :label="lang.cat_customer.label.sameOfAddress"
                     v-model:checked="customer.shippingAddressList.sameOfAddress"
                     @click="sameOfAddressOnClick"
                   />
@@ -543,12 +563,12 @@
                 </div>
                 <div class="oad__right__control m-top-12">
                   <BaseButton
-                    bname="Thêm dòng"
+                    :bname="lang.cat_customer.button.addLine"
                     class="btn--secondary"
                     @click="osAddressBtnAddOnClick"
                   />
                   <BaseButton
-                    bname="Xóa hết dòng"
+                    :bname="lang.cat_customer.button.delAllLine"
                     class="btn--secondary"
                     @click="deleteAllShippingAddressOnClick"
                   />
@@ -557,7 +577,9 @@
             </div>
             <div class="main__panel main__note" v-show="selectedTabId == 4">
               <div class="text__area">
-                <div class="text__area__label">Ghi chú</div>
+                <div class="text__area__label">
+                  {{ lang.cat_customer.text.description }}
+                </div>
                 <textarea
                   name=""
                   id=""
@@ -574,22 +596,22 @@
       <div class="form__footer m-top-24">
         <div class="footer__left">
           <BaseButton
-            bname="Hủy"
+            :bname="lang.button.cancel"
             class="btn--secondary"
             @click="btnCancelOnClick"
           />
         </div>
         <div class="footer__right">
           <BaseButton
-            bname="Cất"
+            :bname="lang.button.save"
             class="btn--secondary"
             @click="btnSaveOnClick"
-            v-tooltip:top="'Cất (Ctrl + S)'"
+            v-tooltip:top="lang.tooltip.save"
           />
           <BaseButton
-            bname="Cất và Thêm"
+            :bname="lang.button.saveAndAdd"
             class="btn--primary"
-            v-tooltip:top="'Cất (Ctrl + Shift + S)'"
+            v-tooltip:top="lang.tooltip.saveAndAdd"
             @click="btnSaveAndAddOnClick"
           />
         </div>

@@ -79,7 +79,7 @@
               </td>
             </tr>
             <tr v-show="itemList.length == 0">
-              <div class="no__data">Không có dữ liệu</div>
+              <div class="no__data">{{ lang.dataNotFound }}</div>
             </tr>
           </tbody>
         </table>
@@ -99,6 +99,7 @@ const timeoutVal = 500;
 const isLoadingData = ref(false);
 const talbeContentRef = ref(null);
 const selectedItemIndex = ref(0);
+const lang = inject("$lang");
 var totalRecord = 0;
 
 const props = defineProps({

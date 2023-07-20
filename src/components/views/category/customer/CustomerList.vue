@@ -32,31 +32,42 @@
     </div>
     <div class="pcontent__goback" @click="goToCategoryOnClick">
       <div class="goback__icon mi mi-16 mi-chevron-left--primary"></div>
-      <div class="goback__text">Tất cả danh mục</div>
+      <div class="goback__text">{{ lang.cat_customer.text.goBack }}</div>
     </div>
     <div class="pcontent__overview">
       <div class="overview__container" v-show="displayOverview">
-        <div class="o_item item--dued-debit" v-tooltip="'Bấm vào để lọc'">
+        <div
+          class="o_item item--dued-debit"
+          v-tooltip="lang.cat_customer.tooltip.clickToFilter"
+        >
           <div class="item__top">
             <div class="top__number">523.230.201</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
-          <div class="item__bottom">Nợ quá hạn</div>
+          <div class="item__bottom">{{ lang.cat_customer.text.dueDebt }}</div>
         </div>
-        <div class="o_item item--total-debt" v-tooltip="'Bấm vào để lọc'">
+        <div
+          class="o_item item--total-debt"
+          v-tooltip="lang.cat_customer.tooltip.clickToFilter"
+        >
           <div class="item__top">
             <div class="top__number">1.230.402.868</div>
             <div class="top__filter mi funnel-icon"></div>
           </div>
-          <div class="item__bottom">Tổng nợ phải thu</div>
+          <div class="item__bottom">{{ lang.cat_customer.text.totalDebt }}</div>
         </div>
-        <div class="o_item item--paid" v-tooltip="'Bấm vào để lọc'">
+        <div
+          class="o_item item--paid"
+          v-tooltip="lang.cat_customer.tooltip.clickToFilter"
+        >
           <div class="item__top">
             <div class="top__number">636.545.751</div>
           </div>
           <div class="item__bottom">
-            <div class="left__text">Đã thanh toán (30 ngày gần đây)</div>
-            <div class="right__text">Số liệu tính đến: 13h48</div>
+            <div class="left__text">{{ lang.cat_customer.text.paidDebt }}</div>
+            <div class="right__text">
+              {{ lang.cat_customer.text.updateTime }}
+            </div>
           </div>
         </div>
       </div>
@@ -84,7 +95,7 @@
             </div>
           </div>
           <BaseTextfield
-            pholder="Tìm kiếm khách hàng"
+            :pholder="lang.cat_customer.text.findCustomer"
             :hideLabel="true"
             class="txtfield--search mw-300"
             noti=""
@@ -118,7 +129,7 @@
             {{ lang.button.cancelSelect }}
           </div>
           <BaseButton
-            bname="Xóa hàng loạt"
+            :bname="lang.cat_customer.button.batchDelete"
             class="btn--secondary"
             @click="showBatchDeleteConfirmDialog"
           />

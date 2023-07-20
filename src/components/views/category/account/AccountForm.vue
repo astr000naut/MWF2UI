@@ -37,7 +37,7 @@
           <BaseButton
             bname=""
             class="mi-36 btn--close"
-            v-tooltip="'Đóng (ESC)'"
+            v-tooltip="lang.cat_account.tooltip.closeBtn"
             @click="closeBtnOnClick"
           />
         </div>
@@ -48,7 +48,7 @@
             <div class="line__left flex-1">
               <BaseTextfield
                 pholder=""
-                label="Số tài khoản"
+                :label="lang.cat_account.label.accNumber"
                 :isrequired="true"
                 v-model:text="account.accountNumber"
                 v-model:noti="formNoti.accountNumber"
@@ -60,7 +60,7 @@
             <div class="line__left flex-1">
               <BaseTextfield
                 pholder=""
-                label="Tên tài khoản"
+                :label="lang.cat_account.label.accName"
                 :isrequired="true"
                 v-model:text="account.accountNameVi"
                 v-model:noti="formNoti.accountNameVi"
@@ -70,7 +70,7 @@
             <div class="line__right flex-1">
               <BaseTextfield
                 pholder=""
-                label="Tên tiếng Anh"
+                :label="lang.cat_account.label.accNameVi"
                 :isrequired="false"
                 v-model:text="account.accountNameEn"
                 noti=""
@@ -80,7 +80,7 @@
           <div class="upper__line">
             <div class="line__left flex-1">
               <AccountCombobox
-                label="Tài khoản tổng hợp"
+                :label="lang.cat_account.label.parentNumber"
                 v-model:selectedItemId="account.parentId"
                 v-model:selectedItemName="account.parentNumber"
                 :ranking="true"
@@ -89,7 +89,7 @@
             </div>
             <div class="line__right flex-1">
               <BaseCombobox
-                label="Tính chất"
+                :label="lang.cat_account.label.categoryKind"
                 pholder=""
                 :isrequired="true"
                 :option-list="categoryKindList"
@@ -104,7 +104,9 @@
           <div class="upper__line">
             <div class="flex-1">
               <div class="text__area">
-                <div class="text__area__label">Diễn giải</div>
+                <div class="text__area__label">
+                  {{ lang.cat_account.label.description }}
+                </div>
                 <textarea
                   name=""
                   id=""
@@ -117,7 +119,7 @@
           </div>
           <div class="upper__line">
             <BaseCheckbox
-              label="Có hạch toán ngoại tệ"
+              :label="lang.cat_account.label.foreignCurrency"
               v-model:checked="account.foreignCurrencyAccounting"
             />
           </div>
@@ -127,14 +129,14 @@
             <div class="collapse__title">
               <div class="title__icon mi mi-16 mi-arrow-right-black"></div>
               <div class="title__text" @click="collapseOnClick">
-                Theo dõi chi tiết theo
+                {{ lang.cat_account.text.detailBy }}
               </div>
             </div>
             <div class="collapse__option" v-show="!form.collapse">
               <div class="option__line">
                 <div class="line__box">
                   <BaseCheckbox
-                    label="Đối tượng"
+                    :label="lang.cat_account.label.object"
                     :checked="account.detailByAccountObject"
                     class="flex-1"
                     @click="detailByAccountObjectOnClick"
@@ -152,7 +154,7 @@
                 </div>
                 <div class="line__box">
                   <BaseCheckbox
-                    label="Tài khoản ngân hàng"
+                    :label="lang.cat_account.label.bankAcc"
                     :checked="account.detailByBankAccount"
                     @click="
                       account.detailByBankAccount = !account.detailByBankAccount
@@ -164,8 +166,8 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Đối tượng THCP"
-                    v-tooltip="'Đối tượng tập hợp chi phí'"
+                    :label="lang.cat_account.label.objectCollectionCost"
+                    v-tooltip="lang.cat_account.tooltip.objectCollectionCost"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -182,43 +184,7 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Công trình"
-                    :checked="false"
-                  />
-                  <BaseSelectbox
-                    class="flex-1"
-                    :isActive="false"
-                    label=""
-                    pholder=""
-                    :isrequired="false"
-                    :option-list="[]"
-                    noti=""
-                    :selectedItemId="-1"
-                  />
-                </div>
-              </div>
-              <div class="option__line">
-                <div class="line__box">
-                  <BaseCheckbox
-                    class="flex-1"
-                    label="Đơn đặt hàng"
-                    :checked="false"
-                  />
-                  <BaseSelectbox
-                    class="flex-1"
-                    :isActive="false"
-                    label=""
-                    pholder=""
-                    :isrequired="false"
-                    :option-list="[]"
-                    noti=""
-                    :selectedItemId="-1"
-                  />
-                </div>
-                <div class="line__box">
-                  <BaseCheckbox
-                    class="flex-1"
-                    label="Hợp đồng bán"
+                    :label="lang.cat_account.label.construction"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -237,7 +203,7 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Hợp đồng mua"
+                    :label="lang.cat_account.label.order"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -254,8 +220,7 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Khoản mục CP"
-                    v-tooltip="'Khoản mục chi phí'"
+                    :label="lang.cat_account.label.sellContract"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -274,7 +239,7 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Đơn vị"
+                    :label="lang.cat_account.label.buyContract"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -291,7 +256,44 @@
                 <div class="line__box">
                   <BaseCheckbox
                     class="flex-1"
-                    label="Mã thống kê"
+                    :label="lang.cat_account.label.expenseItem"
+                    v-tooltip="lang.cat_account.tooltip.expenseItem"
+                    :checked="false"
+                  />
+                  <BaseSelectbox
+                    class="flex-1"
+                    :isActive="false"
+                    label=""
+                    pholder=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    noti=""
+                    :selectedItemId="-1"
+                  />
+                </div>
+              </div>
+              <div class="option__line">
+                <div class="line__box">
+                  <BaseCheckbox
+                    class="flex-1"
+                    :label="lang.cat_account.label.unit"
+                    :checked="false"
+                  />
+                  <BaseSelectbox
+                    class="flex-1"
+                    :isActive="false"
+                    label=""
+                    pholder=""
+                    :isrequired="false"
+                    :option-list="[]"
+                    noti=""
+                    :selectedItemId="-1"
+                  />
+                </div>
+                <div class="line__box">
+                  <BaseCheckbox
+                    class="flex-1"
+                    :label="lang.cat_account.label.statisticCode"
                     :checked="false"
                   />
                   <BaseSelectbox
@@ -321,15 +323,15 @@
         </div>
         <div class="footer__right">
           <BaseButton
-            bname="Cất"
+            :bname="lang.button.save"
             class="btn--secondary"
             @click="btnSaveOnClick"
-            v-tooltip:top="'Cất (Ctrl + S)'"
+            v-tooltip:top="lang.tooltip.save"
           />
           <BaseButton
-            bname="Cất và Thêm"
+            :bname="lang.button.saveAndAdd"
             class="btn--primary"
-            v-tooltip:top="'Cất và Thêm (Ctrl + Shift + S)'"
+            v-tooltip:top="lang.tooltip.saveAndAdd"
             @click="btnSaveAndAddOnClick"
           />
         </div>
