@@ -389,7 +389,11 @@ const form = ref({
   isLoading: false,
 });
 
-const accountObjectOptionList = ["Nhà cung cấp", "Khách hàng", "Nhân viên"];
+const accountObjectOptionList = [
+  lang.cat_account.accountObjectOption.provider,
+  lang.cat_account.accountObjectOption.customer,
+  lang.cat_account.accountObjectOption.employee,
+];
 
 const categoryKindSchema = {
   id: "optionId",
@@ -398,19 +402,19 @@ const categoryKindSchema = {
 const categoryKindList = [
   {
     optionId: "0",
-    optionName: "Dư nợ",
+    optionName: lang.cat_account.categoryKind.debitBalance,
   },
   {
     optionId: "1",
-    optionName: "Dư có",
+    optionName: lang.cat_account.categoryKind.creditBalance,
   },
   {
     optionId: "2",
-    optionName: "Lưỡng tính",
+    optionName: lang.cat_account.categoryKind.biAccount,
   },
   {
     optionId: "3",
-    optionName: "Không có số dư",
+    optionName: lang.cat_account.categoryKind.noBalance,
   },
 ];
 

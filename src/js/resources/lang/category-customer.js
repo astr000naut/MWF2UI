@@ -89,5 +89,12 @@ const cat_customer = {
     phoneNumber: "SỐ ĐIỆN THOẠI",
     identityNumber: "SỐ CMND",
   },
+  tabList: {
+    personalInfo: "Thông tin liên hệ",
+    paymentTerm: "Điều khoản thanh toán",
+    bankAccount: "Tài khoản ngân hàng",
+    otherAddress: "Địa chỉ khác",
+    description: "Ghi chú",
+  },
 };
 export default cat_customer;

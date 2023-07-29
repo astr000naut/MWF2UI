@@ -60,5 +60,16 @@ const cat_account = {
     description: "DIỄN GIẢI",
     usingStatus: "TRẠNG THÁI",
   },
+  accountObjectOption: {
+    provider: "Nhà cung cấp",
+    customer: "Khách hàng",
+    employee: "Nhân viên",
+  },
+  categoryKind: {
+    debitBalance: "Dư nợ",
+    creditBalance: "Dư có",
+    biAccount: "Lưỡng tính",
+    noBalance: "Không có số dư",
+  },
 };
 export default cat_account;

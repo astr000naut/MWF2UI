@@ -678,23 +678,23 @@ const selectedTabId = ref(0);
 const tabList = ref([
   {
     id: 0,
-    name: "Thông tin liên hệ",
+    name: lang.cat_customer.tabList.personalInfo,
   },
   {
     id: 1,
-    name: "Điều khoản thanh toán",
+    name: lang.cat_customer.tabList.paymentTerm,
   },
   {
     id: 2,
-    name: "Tài khoản ngân hàng",
+    name: lang.cat_customer.tabList.bankAccount,
   },
   {
     id: 3,
-    name: "Địa chỉ khác",
+    name: lang.cat_customer.tabList.otherAddress,
   },
   {
     id: 4,
-    name: "Ghi chú",
+    name: lang.cat_customer.tabList.description,
   },
 ]);
 
