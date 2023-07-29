@@ -11,8 +11,6 @@ export function useLocation(customer) {
   const districtCache = [];
   const wardCache = [];
 
-  // const response = await axios.get(api.location.province(1));
-  // provinceList.value = response.data;
   countryList.value = [
     {
       countryId: "1",
